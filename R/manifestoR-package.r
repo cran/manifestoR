@@ -15,6 +15,8 @@
 #' @references \url{https://manifesto-project.wzb.eu/}
 #' 
 #' @importFrom utils head tail
+#' @import zoo
+#' @importFrom psych fa
 #' @import NLP
 #' @import dplyr
 #' @import functional
@@ -27,6 +29,9 @@ NULL
 globalVariables(c("one_of", ".", "matches", # dplyr
                   "manifesto_id", "country", "party", "edate", # general dataset
                   "md5sum_text.x", "md5sum_text.y", # & metadata
-                  "download", "url_original",
+                  "download", "url_original", "is_primary_doc",
                   "leadedate", "leglength", "festername", "w", "p", # scaling
-                  "p_lead", "p_lag", "lrcorescores"))
+                  "p_lead", "p_lag", "lrcorescores", # median_voter_single
+                  "position", "voteshare", "cumvoteshare",
+                  "above50", "contains_median", "leftbound", "rightbound"
+                ))

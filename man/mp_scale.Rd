@@ -7,9 +7,11 @@
 \title{Scaling annotated manifesto documents}
 \usage{
 mp_scale(data, scalingfun = rile,
-  scalingname = as.character(substitute(scalingfun)), ...)
+  scalingname = as.character(substitute(scalingfun)),
+  aggregate_to_v4 = (scalingname == "rile"), ...)
 
-document_scaling(scalingfun, returndf = FALSE, scalingname = "scaling", ...)
+document_scaling(scalingfun, returndf = FALSE, scalingname = "scaling",
+  aggregate_to_v4 = FALSE, ...)
 
 corpus_scaling(scalingfun, scalingname = "scaling", ...)
 }
@@ -21,6 +23,8 @@ annotations or a data.frame with category percentages}
 category percentages and returns scaled positions, e.g. \code{\link{scale_weighted}}.}
 
 \item{scalingname}{the name of the scale which will be used as a column name when a data.frame is produced}
+
+\item{aggregate_to_v4}{aggregate codes to handbook version 4 scheme before scaling}
 
 \item{...}{further arguments passed on to the scaling function \code{scalingfun},
 or \code{\link{count_codes}}}

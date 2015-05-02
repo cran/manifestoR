@@ -7,8 +7,8 @@
 \alias{scale_weighted}
 \title{Scaling functions}
 \usage{
-scale_weighted(data, vars = grep("per\\\\d{3}$", names(data), value = TRUE),
-  weights = 1)
+scale_weighted(data, vars = grep("per((\\\\d{3}(_\\\\d)?)|\\\\d{4}|(uncod))$",
+  names(data), value = TRUE), weights = 1)
 
 scale_logit(data, pos, neg, N = data[, "total"], zero_offset = 0.5, ...)
 

@@ -4,7 +4,8 @@
 \alias{mp_bootstrap}
 \title{Compute bootstrap distributions for scaling functions}
 \usage{
-mp_bootstrap(data, fun = rile, col_filter = "per(\\\\d{3,4}|(uncod))",
+mp_bootstrap(data, fun = rile,
+  col_filter = "per((\\\\d{3}(_\\\\d)?)|\\\\d{4}|(uncod))",
   statistics = list(sd), N = 1000, ...)
 }
 \arguments{
@@ -25,7 +26,7 @@ functions or numbers, where numbers are interpreted as quantiles.}
 }
 \description{
 Bootstrapping of distributions of scaling functions as described by
-Benoit, Mikhaylov, and Laver 2009. Given a dataset with percentages of CMP
+Benoit, Mikhaylov, and Laver (2009). Given a dataset with percentages of CMP
 categories, for each case the distribution of categories is resampled from
 a multinomial distribution and the scaling function computed for the resampled
 values. Arbitrary statistics of the resulting bootstrap distribution can be

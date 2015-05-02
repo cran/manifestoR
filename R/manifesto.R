@@ -145,7 +145,7 @@ mp_metadata <- function(ids, apikey=NULL, cache=TRUE) {
   ## type conversion for certain metadata entries
   metadata <- within(metadata, {
     if (exists("manifesto_id")) {
-      manifesto_id <- as.integer(manifesto_id)
+      manifesto_id <- as.character(manifesto_id)
     } else {
       manifesto_id <- NA
     }
@@ -157,6 +157,7 @@ mp_metadata <- function(ids, apikey=NULL, cache=TRUE) {
     }
     if (exists("has_eu_code")) {
       has_eu_code <- as.logical(has_eu_code)
+      has_eu_code[is.na(has_eu_code)] <- FALSE
     }
   })
   
@@ -186,6 +187,11 @@ as.metaids <- function(ids, apikey=NULL, cache=TRUE) {
   if ( !("ManifestoMetadata" %in% class(ids)) ) {
     ids <- mp_metadata(ids, apikey=apikey, cache=cache)
   }
+
+  if ("is_primary_doc" %in% names(ids)) {
+    ids <- subset(ids, is.na(is_primary_doc) | is_primary_doc)
+  }
+
   return(ids)
 }
 
@@ -299,7 +305,7 @@ print.ManifestoAvailability <- function(x, ...) {
   languages <- na.omit(unique(avl$availability$language))
   
   summary <- list('Queried for'=nqueried,
-                  'Raw Texts found'=paste(length(which(avl$availability$manifestos)),
+                  'Documents found'=paste(length(which(avl$availability$manifestos)),
                                           " (", round(100*ncoveredtexts/nqueried, decs), "%)",
                                           sep=""),
                   'Coded Documents found'=paste(length(which(avl$availability$annotations)),
@@ -384,7 +390,7 @@ mp_corpus <- function(ids,
       textToManifestoDocument <- function(idx) {    
         the.meta <- structure(as.list(left_join(
           within(texts[idx, the.names], {
-            manifesto_id <- as.integer(manifesto_id)
+            manifesto_id <- as.character(manifesto_id)
           }), ids, by = "manifesto_id")))
         the.meta$kind <- NULL
         class(the.meta) <- "TextDocumentMeta"

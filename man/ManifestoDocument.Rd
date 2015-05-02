@@ -5,11 +5,13 @@
 \alias{ManifestoDocument}
 \title{Manifesto Document}
 \usage{
-ManifestoDocument(content = data.frame(names = c("text", "cmp_code")),
-  id = character(0), meta = ManifestoDocumentMeta())
+ManifestoDocument(content = data.frame(), id = character(0),
+  meta = ManifestoDocumentMeta())
 }
 \arguments{
-\item{content}{data.frame of text and codes for the ManifestoDocument to be constructed}
+\item{content}{data.frame of text and codes for the ManifestoDocument to be constructed.
+There can be multiple columns of codes, but by default the accessor method \code{\link{codes}}
+searches for the column named "cmp_code".}
 
 \item{id}{an id to identify the Document}
 

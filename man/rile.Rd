@@ -2,30 +2,12 @@
 % Please edit documentation in R/scaling_rile.R
 \name{rile}
 \alias{logit_rile}
-\alias{logit_rile.ManifestoCorpus}
-\alias{logit_rile.ManifestoDocument}
-\alias{logit_rile.default}
 \alias{rile}
-\alias{rile.ManifestoCorpus}
-\alias{rile.ManifestoDocument}
-\alias{rile.default}
 \title{RILE}
 \usage{
 rile(x)
 
-\method{rile}{default}(...)
-
-\method{rile}{ManifestoDocument}(x)
-
-\method{rile}{ManifestoCorpus}(x)
-
 logit_rile(x)
-
-\method{logit_rile}{default}(...)
-
-\method{logit_rile}{ManifestoDocument}(x)
-
-\method{logit_rile}{ManifestoCorpus}(x)
 }
 \arguments{
 \item{x}{A data.frame with cases to be scaled, variables named "per..."}
