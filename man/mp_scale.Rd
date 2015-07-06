@@ -8,10 +8,10 @@
 \usage{
 mp_scale(data, scalingfun = rile,
   scalingname = as.character(substitute(scalingfun)),
-  aggregate_to_v4 = (scalingname == "rile"), ...)
+  recode_v5_to_v4 = (scalingname == "rile"), ...)
 
 document_scaling(scalingfun, returndf = FALSE, scalingname = "scaling",
-  aggregate_to_v4 = FALSE, ...)
+  recode_v5_to_v4 = FALSE, ...)
 
 corpus_scaling(scalingfun, scalingname = "scaling", ...)
 }
@@ -24,7 +24,9 @@ category percentages and returns scaled positions, e.g. \code{\link{scale_weight
 
 \item{scalingname}{the name of the scale which will be used as a column name when a data.frame is produced}
 
-\item{aggregate_to_v4}{aggregate codes to handbook version 4 scheme before scaling}
+\item{recode_v5_to_v4}{recode handbook version 5 scheme to version 4 before scaling; this
+parameter is only relevant if data is a ManifestoDocument or ManifestoCorpus, but not for
+data.frames with code percentages}
 
 \item{...}{further arguments passed on to the scaling function \code{scalingfun},
 or \code{\link{count_codes}}}

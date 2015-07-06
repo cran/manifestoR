@@ -10,13 +10,15 @@
 #' category percentages and returns scaled positions, e.g. \code{\link{scale_weighted}}.
 #' @param ... further arguments passed on to the scaling function \code{scalingfun},
 #' or \code{\link{count_codes}}
-#' @param aggregate_to_v4 aggregate codes to handbook version 4 scheme before scaling
+#' @param recode_v5_to_v4 recode handbook version 5 scheme to version 4 before scaling; this
+#' parameter is only relevant if data is a ManifestoDocument or ManifestoCorpus, but not for 
+#' data.frames with code percentages
 #' @seealso \code{\link{scale}}
 #' @export
 mp_scale <- function(data,
                      scalingfun = rile,
                      scalingname = as.character(substitute(scalingfun)),
-                     aggregate_to_v4 = (scalingname == "rile"),
+                     recode_v5_to_v4 = (scalingname == "rile"),
                      ...) {
   UseMethod("mp_scale", data)
 }
@@ -26,7 +28,7 @@ mp_scale <- function(data,
 mp_scale.default <- function(data,
                              scalingfun = rile,
                              scalingname = as.character(substitute(scalingfun)),
-                             aggregate_to_v4 = (scalingname == "rile"),
+                             recode_v5_to_v4 = (scalingname == "rile"),
                              ...) {
   scalingfun(data, ...)
 }
@@ -36,13 +38,13 @@ mp_scale.default <- function(data,
 mp_scale.ManifestoDocument <- function(data,
         scalingfun = rile,
         scalingname = as.character(substitute(scalingfun)),
-        aggregate_to_v4 = (scalingname == "rile"),
+        recode_v5_to_v4 = (scalingname == "rile"),
         ...) {
 
   do.call(document_scaling(scalingfun,
                            returndf = FALSE,
                            scalingname = scalingname,
-                           aggregate_to_v4),
+                           recode_v5_to_v4),
           list(data, ...))
 
 }
@@ -155,6 +157,18 @@ rep.data.frame <- function(x, times = 1, ...) {
   }
 }
 
+#' Convert NULL to NA
+#' 
+#' @param x element
+#' @return NA if the element is NULL, the element otherwise
+null_to_na <- function(x) {
+  if (is.null(x)) {
+    return(NA)
+  } else {
+    return(x)
+  }
+}
+
 
 #' \code{scale_logit} scales the data on a logit scale as described by Lowe et al. (2011).
 #'
@@ -165,6 +179,7 @@ rep.data.frame <- function(x, times = 1, ...) {
 #' @param ... further parameters passed on to \code{\link{scale_weighted}}
 #' @references Lowe, W., Benoit, K., Mikhaylov, S., & Laver, M. (2011). Scaling Policy Preferences from Coded Political Texts. Legislative Studies Quarterly, 36(1), 123-155. 
 #' @rdname scale
+#' @export
 scale_logit <- function(data, pos, neg, N = data[,"total"], zero_offset = 0.5, ...) {
   abs.data <- data[,intersect(union(pos, neg), names(data))]*unlist(N)
   log( (scale_weighted(abs.data, pos) + zero_offset) /
@@ -207,19 +222,18 @@ scale_ratio <- function(data, pos, neg, ...) {
 document_scaling <- function(scalingfun,
                              returndf = FALSE,
                              scalingname = "scaling",
-                             aggregate_to_v4 = FALSE,
+                             recode_v5_to_v4 = FALSE,
                              ...) {
   
   count_codes_loc <- functional::Curry(count_codes, ...)
 
   return(function(x) {
     
-    if (aggregate_to_v4) {
-      x <- aggregate_v5_to_v4(x)
+    if (recode_v5_to_v4) {
+      x <- recode_v5_to_v4(x)
     }
 
-    df <- data.frame(party=meta(x, "party"), date=meta(x, "date"))
-    df <- bind_cols(df, count_codes_loc(x))
+    df <- count_codes_loc(x)
 
     df[,scalingname] <- scalingfun(df)
 
@@ -238,15 +252,28 @@ document_scaling <- function(scalingfun,
 #' @export
 #' @rdname mp_scale
 corpus_scaling <- function(scalingfun, scalingname = "scaling", ...) {
-  
+
   doc_scale_loc <- document_scaling(scalingfun, ...)
-  
+
   function(x) {
-    df <- data.frame(party = unlist(lapply(content(x), function(doc) { meta(doc, "party")})),
-                     date = unlist(lapply(content(x), function(doc) { meta(doc, "date")})),
-                     scaling = unlist(lapply(content(x), doc_scale_loc)))
-    names(df)[3] <- scalingname
-    df
+    scalings <- lapply(content(x), doc_scale_loc)
+    
+    has_party_date <- unlist(lapply(scalings, function(scale) {
+      c("party" %in% names(scale), "date" %in% names(scale))
+    }))
+
+    if (all(has_party_date)) {
+      return(bind_rows(scalings))
+    } else {
+      if (any(has_party_date)) {
+        warning("Some scaled documents have party and date and some don't!")
+      }
+      df <- data.frame(party = unlist(lapply(content(x), function(doc) { null_to_na(meta(doc, "party")) })),
+                       date = unlist(lapply(content(x), function(doc) { null_to_na(meta(doc, "date")) })),
+                       scaling = unlist(scalings))
+      names(df)[3] <- scalingname
+      return(df)
+    }
   }
 }
 

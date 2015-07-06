@@ -4,13 +4,17 @@
 \alias{count_codes}
 \title{Count the codings from a ManifestoDocument}
 \usage{
-count_codes(doc, with_eu_codes = meta(doc, "has_eu_code"), prefix = "per",
-  relative = TRUE)
+count_codes(doc, code_layers = c("cmp_code"), with_eu_codes = "auto",
+  prefix = "per", relative = TRUE)
 }
 \arguments{
-\item{doc}{ManifestoDocument to use}
+\item{doc}{ManifestoDocument, ManifestoCorpus or vector of codes}
 
-\item{with_eu_codes}{Whether to include special EU code layer; by default taken
+\item{code_layers}{vector of names of code layers to use, defaults to cmp_code; Caution:
+The layer eu_code is handled separately in the parameter with_eu_codes due to its
+different logic}
+
+\item{with_eu_codes}{Whether to include special EU code layer; by default ("auto") taken
 from the document's metadata}
 
 \item{prefix}{prefix for naming the count/percentage columns in the resulting data.frame}

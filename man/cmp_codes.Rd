@@ -2,12 +2,12 @@
 % Please edit documentation in R/codes.R
 \name{aggregate_cee_codes}
 \alias{aggregate_cee_codes}
-\alias{aggregate_v5_to_v4}
+\alias{recode_v5_to_v4}
 \title{Process CMP codings}
 \usage{
 aggregate_cee_codes(x)
 
-aggregate_v5_to_v4(x)
+recode_v5_to_v4(x)
 }
 \arguments{
 \item{x}{Vector of codes, ManifestoDocument or ManifestoCorpus}
@@ -20,7 +20,7 @@ Several functions to process the CMP codings
 in coding several manifestos in Central and Eastern Europe (4 digits) to
 the main categories in the coding scheme (3 digits).
 
-\code{aggregate_v5_to_v4} aggregates the CMP codings according to
+\code{recode_v5_to_v4} recode the CMP codings according to
 the more specialized Coding Handbook Version 5 to the more general
 categories of Handbook Version 4. Codes 202.2, 605.2 and 703.2 are
 converted to a 000, while all other subcategory codes with an appended
