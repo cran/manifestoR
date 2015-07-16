@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Downloading documents from the Manifesto Corpus</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{The workflow with the manifestoR package}
+\usepackage[utf8]{inputenc}
+-->
+
+<p>\newpage</p>
+
+<h1>Downloading documents from the Manifesto Corpus</h1>
+
+<p>When publishing work using the Manifesto Corpus, please make sure to give the identification number of the corpus version used for your analysis and to reference</p>
+
+<p>Lehmann, Pola / Merz, Nicolas / Regel, Sven / Werner, Annika (2015): Manifesto Corpus. Berlin: WZB Berlin Social Science Center.</p>
+
+<p>You can print citation and version information with the function <code>mp_cite()</code>.</p>
+
+<h2>Loading the package</h2>
+
+<p>First of all, load the <code>manifestoR</code> package with the usual R syntax:</p>
+
+<pre><code class="r">library(manifestoR)
+</code></pre>
+
+<pre><code>## Loading required package: NLP
+## Loading required package: tm
+## Loading required package: dplyr
+## 
+## Attaching package: &#39;dplyr&#39;
+## 
+## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union
+</code></pre>
+
+<h2>Connecting to the Manifesto Project Database API</h2>
+
+<p>To access the data in the Manifesto Corpus, an account for the Manifesto Project
+webpage with an API key is required.
+If you do not yet have an account, you can create one at 
+<a href="">https://manifesto-project.wzb.eu/signup</a>.
+If you have an account, you can create and download the API key on your profile page.</p>
+
+<p>For every R session using manifestoR and connecting to the Manifesto Corpus database,
+you need to set the API key in your work environment.
+This can be done by passing either a key or the name of a file containing the
+key to manifestoR&#39;s <code>mp_setapikey()</code> function (see documentation <code>?mp_setapikey</code>
+for details).
+Thus, your R script using manifestoR usually will start like this:</p>
+
+<pre><code class="r">library(manifestoR)
+mp_setapikey(&quot;manifesto_apikey.txt&quot;)
+</code></pre>
+
+<p>This R code presumes that you have stored and downloaded the API key in a file
+name <code>manifesto_apikey.txt</code> in your current R working directory.</p>
+
+<p>Note that it is a security risk to store the API key file or a script containing
+the key in public repositories.</p>
+
+<h2>Downloading documents</h2>
+
+<p>(Bulk-)Downloading documents works via the function <code>mp_corpus(...)</code>.
+It can be called with a logical expression specifying the subset of the Manifesto
+Corpus that you want to download:</p>
+
+<pre><code class="r">my_corpus &lt;- mp_corpus(countryname == &quot;Austria&quot; &amp; edate &gt; as.Date(&quot;2000-01-01&quot;))
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code class="r">my_corpus
+</code></pre>
+
+<pre><code>## &lt;&lt;ManifestoCorpus&gt;&gt;
+## Metadata:  corpus specific: 0, document level (indexed): 0
+## Content:  documents: 15
+</code></pre>
+
+<p><code>mp_corpus</code> returns a <code>ManifestoCorpus</code> object, a subclass of <code>Corpus</code> as defined
+in the natural language processing package <code>tm</code> (Feinerer &amp; Hornik 2015).
+Following <code>tm</code>s logic, a <code>ManifestoCorpus</code> consists of <code>ManifestoDocuments</code>.
+For both, corpus and documents, <code>tm</code> provides accessor functions to the corpus
+and documents content and metadata:</p>
+
+<pre><code class="r">head(content(my_corpus[[1]]))
+</code></pre>
+
+<pre><code>## [1] &quot;“Wir können heute die Existenzgrundlagen&quot;  
+## [2] &quot;künftiger Generationen zerstören.&quot;         
+## [3] &quot;Oder sie sichern.”&quot;                        
+## [4] &quot;Dr. Eva Glawischnig&quot;                       
+## [5] &quot;Österreich braucht jetzt Weitblick.&quot;       
+## [6] &quot;Nachhaltigkeit für zukünftige Generationen&quot;
+</code></pre>
+
+<pre><code class="r">meta(my_corpus[[1]])
+</code></pre>
+
+<pre><code>##   manifesto_id               : 42110_2002
+##   party                      : 42110
+##   date                       : 200211
+##   language                   : german
+##   has_eu_code                : FALSE
+##   is_primary_doc             : TRUE
+##   may_contradict_core_dataset: TRUE
+##   md5sum_text                : 04f07de517283243fdaaf0cbddc2a09e
+##   url_original               : NA
+##   md5sum_original            : NA
+##   annotations                : TRUE
+##   id                         : 1
+</code></pre>
+
+<p>For more information on the available metadata per document, refer to the section
+<a href="#using-the-document-metadata">Using the document metadata</a> below.
+For more information on how to use the text mining functions provided by <code>tm</code>
+for the data from the Manifesto Corpus, refer to the section
+<a href="#processing-and-analysing-the-corpus-documents">Processing and analysing the corpus documents</a> below.</p>
+
+<p>The variable names in the logical expression used for querying the corpus
+database (<code>countryname</code> and <code>edate</code> in the example above) can be any column names from the
+Manifesto Project&#39;s Main Dataset or your current R environment. The Main Dataset
+itself is available in manifestoR via the funcion <code>mp_maindataset()</code>:</p>
+
+<pre><code class="r">mpds &lt;- mp_maindataset()
+print(head(names(mpds)))
+</code></pre>
+
+<pre><code>## [1] &quot;country&quot;     &quot;countryname&quot; &quot;oecdmember&quot;  &quot;eumember&quot;    &quot;edate&quot;      
+## [6] &quot;date&quot;
+</code></pre>
+
+<pre><code class="r">mp_corpus(rile &gt; 60) ## another example of data set based corpus query
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code>## &lt;&lt;ManifestoCorpus&gt;&gt;
+## Metadata:  corpus specific: 0, document level (indexed): 0
+## Content:  documents: 5
+</code></pre>
+
+<p>Alternatively, you can download election programmes on an individual basis
+by listing combinations of party ids and election dates in a <code>data.frame</code>
+and passing it to <code>mp_corpus(...)</code>:</p>
+
+<pre><code class="r">wanted &lt;- data.frame(party=c(41220, 41320),
+                     date=c(200909, 200909))
+mp_corpus(wanted)
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code>## &lt;&lt;ManifestoCorpus&gt;&gt;
+## Metadata:  corpus specific: 0, document level (indexed): 0
+## Content:  documents: 1
+</code></pre>
+
+<p>The party ids (41220 and 41320 in the example) are the ids as in the Manifesto Project&#39;s
+main dataset.
+They can be found in the current dataset documentation at
+<a href="">https://manifesto-project.wzb.eu/datasets</a> or in the main dataset.</p>
+
+<p>Note that we received only 1 document, while querying for two.
+This is because the party with the id 41220 (KPD) did not run for elections
+in September 2009.
+Also, not for every party and election data manifesto documents are availabe in the Manifesto Project Corpus.
+You can check availability of your query beforehand with the function
+<code>mp_availability(...)</code>:</p>
+
+<pre><code class="r">mp_availability(party == 41113)
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code>##           Queried for       Documents found Coded Documents found 
+##                     6              6 (100%)           5 (83.333%) 
+##       Originals found             Languages 
+##              6 (100%)         2 (german NA)
+</code></pre>
+
+<p>Downloaded documents are automatically cached locally. To learn about
+the caching mechanism read the section
+<a href="#efficiency-and-reproducibility-caching-and-versioning">Efficiency and reproducibility: caching and versioning</a>
+below.</p>
+
+<h2>Viewing original documents</h2>
+
+<p>Apart from the machine-readable, annotated documents, the Manifesto Corpus also
+contains original layouted election programmes in PDF format. If available, they
+can be viewed via the function <code>mp_view_originals(...)</code>, which takes exactly the
+format of arguments as <code>mp_corpus(...)</code> (<a href="#downloading-documents">see above</a>), e.g.:</p>
+
+<pre><code class="r">mp_view_originals(party == 41320 &amp; date == 200909)
+</code></pre>
+
+<p>The original documents are shown in you system&#39;s web browser. All URLs opened
+by this function refer only to the Manifesto Project&#39;s Website. If you want to
+open more than 5 PDF documents at once, you have to specify the maximum number
+of URLs allows to be opened manually via the parameter <code>maxn</code>. Since opening
+URLs in an external browser costs computing resources on your local machine,
+make sure to use only values for <code>maxn</code> that do not slow down or make your computer
+unresponsive.</p>
+
+<pre><code class="r">mp_view_originals(party &gt; 41000 &amp; party &lt; 41999, maxn = 20)
+</code></pre>
+
+<h1>Processing and analysing the corpus documents</h1>
+
+<p>As in <code>tm</code>, the textual content of a document is returned by the function <code>content</code>:</p>
+
+<pre><code class="r">txt &lt;- content(my_corpus[[2]])
+class(txt)
+</code></pre>
+
+<pre><code>## [1] &quot;character&quot;
+</code></pre>
+
+<pre><code class="r">head(txt, n = 4)
+</code></pre>
+
+<pre><code>## [1] &quot;1 Lebensqualität&quot;                                                 
+## [2] &quot;1.1 Grüne Energiewende&quot;                                           
+## [3] &quot;Lebensqualität bedeutet in einer unversehrten Umwelt zu leben.&quot;   
+## [4] &quot;Die Verantwortung dafür liegt bei uns: Wir alle gestalten Umwelt.&quot;
+</code></pre>
+
+<h2>Working with the CMP codings</h2>
+
+<p>The central way for accessing the CMP codings is the accessor method <code>codes(...)</code>.
+It can be called on <code>ManifestoDocument</code>s and <code>ManifestoCorpus</code>s and returns a vector
+of the CMP codings attached to the quasi-sentences of the document/corpus in a row:</p>
+
+<pre><code class="r">doc &lt;- my_corpus[[2]]
+head(codes(doc), n = 15)
+</code></pre>
+
+<pre><code>##  [1]  NA  NA 501 606 501 501 501 416 416 412 503 411 501 416  NA
+</code></pre>
+
+<pre><code class="r">head(codes(my_corpus), n = 15)
+</code></pre>
+
+<pre><code>##  11  12  13  14  15  16  17  18  19 110 111 112 113 114 115 
+## 305 305 305  NA  NA  NA 601 416 416 107 107 107 416 416 416
+</code></pre>
+
+<p>Thus you can for example use R&#39;s functionality to count the codes or select quasi-
+sentences (units of texts) based on their code:</p>
+
+<pre><code class="r">table(codes(doc))
+</code></pre>
+
+<pre><code>## 
+## 104 105 106 107 108 109 201 202 203 303 305 401 402 403 408 409 411 412 
+##   3   9   2  52  36  11  36  17   1   3   1   2   6  20   1   1  38  17 
+## 413 416 501 502 503 504 506 601 604 605 606 607 608 701 703 704 706 
+##   1  13  62  48  83  24  46  14  20   9  10  15   5  33  13   9  32
+</code></pre>
+
+<pre><code class="r">doc_subcodes &lt;- subset(doc, codes(doc) %in% c(202, 503, 607))
+length(doc_subcodes)
+</code></pre>
+
+<pre><code>## [1] 115
+</code></pre>
+
+<pre><code class="r">length(doc_subcodes)/length(doc)
+</code></pre>
+
+<pre><code>## [1] 0.1489637
+</code></pre>
+
+<p>The CMP coding scheme can be found in the online documentation of the Manifesto
+Project dataset at <a href="">https://manifesto-project.wzb.eu/coding_schemes/1</a>.</p>
+
+<h2>Working with additional layers of codings</h2>
+
+<p>Besides the main layer of CMP codings, you can create, store and access additional
+layers of codings in <code>ManifestoDocument</code>s by passing a name of the coding layer 
+as additional argument to the function <code>codes()</code>:</p>
+
+<pre><code class="r">## assigning a dummy code of alternating As and Bs
+codes(doc, &quot;my_code&quot;) &lt;- rep_len(c(&quot;A&quot;, &quot;B&quot;), length.out = length(doc))
+head(codes(doc, &quot;my_code&quot;))
+</code></pre>
+
+<pre><code>## [1] &quot;A&quot; &quot;B&quot; &quot;A&quot; &quot;B&quot; &quot;A&quot; &quot;B&quot;
+</code></pre>
+
+<p>You can view the names of the coding layers stored in a <code>ManifestoDocument</code> with
+the function <code>code_layers()</code>:</p>
+
+<pre><code class="r">code_layers(doc)
+</code></pre>
+
+<pre><code>## [1] &quot;cmp_code&quot; &quot;eu_code&quot;  &quot;my_code&quot;
+</code></pre>
+
+<p>Note that certain documents downloaded from the Manifesto Corpus Database already
+have a second layer of codes named <code>eu_code</code>. These are codes that have been assigned
+to quasi-sentences by CMP coders additionally to the main CMP code to indicate
+policy statements that should or should not be implemented on the level of the
+European union. The documents that were coded in this way are marked in the
+corpus&#39; metadata with the flag <code>has_eu_code</code>
+(see below <a href="#using-the-document-metadata">Using the document metadata</a>).
+Note that, since these codes also have been used for computing the <code>per</code> and <code>rile</code>
+variables in the Manifesto Project Main Dataset, they are also used in <code>manifestoR</code>s
+<code>count_codes</code> and <code>rile</code> functions (see below <a href="#scaling-texts">Scaling texts</a>) if the respective metadata flag is present.</p>
+
+<h2>Text mining tools</h2>
+
+<p>Since the Manifesto Corpus uses the infrastructure of the <code>tm</code> package
+(Feinerer &amp; Hornik 2015), all of <code>tm</code>s filtering and transformation functionality
+can be applied directly to the downloaded <code>ManifestoCorpus</code>.</p>
+
+<p>For example, standard natural language processors are available to clean the corpus:</p>
+
+<pre><code class="r">head(content(my_corpus[[3]]))
+</code></pre>
+
+<pre><code>## [1] &quot;1. SONNE STATT ÖL: WIR  HELFEN  BEIM  SPAREN&quot;  
+## [2] &quot;Der Umstieg hat begonnen.&quot;                     
+## [3] &quot;Die Menschen in Österreich fahren weniger Auto&quot;
+## [4] &quot;und mehr mit dem öffentlichen Verkehr&quot;         
+## [5] &quot;und dem Rad.&quot;                                  
+## [6] &quot;Sie sanieren Häuser und Wohnungen&quot;
+</code></pre>
+
+<pre><code class="r">corpus_cleaned &lt;- tm_map(my_corpus, removePunctuation)
+corpus_nostop &lt;- tm_map(corpus_cleaned, removeWords, stopwords(&quot;german&quot;))
+head(content(corpus_nostop[[3]]))
+</code></pre>
+
+<pre><code>## [1] &quot;1 SONNE STATT ÖL WIR  HELFEN  BEIM  SPAREN&quot;  
+## [2] &quot;Der Umstieg  begonnen&quot;                       
+## [3] &quot;Die Menschen  Österreich fahren weniger Auto&quot;
+## [4] &quot; mehr   öffentlichen Verkehr&quot;                
+## [5] &quot;  Rad&quot;                                       
+## [6] &quot;Sie sanieren Häuser  Wohnungen&quot;
+</code></pre>
+
+<p>So is analysis in form of term document matrices:</p>
+
+<pre><code class="r">tdm &lt;- TermDocumentMatrix(corpus_nostop)
+inspect(tdm[c(&quot;menschen&quot;, &quot;wahl&quot;, &quot;familie&quot;),])
+</code></pre>
+
+<pre><code>## &lt;&lt;TermDocumentMatrix (terms: 3, documents: 15)&gt;&gt;
+## Non-/sparse entries: 36/9
+## Sparsity           : 20%
+## Maximal term length: 8
+## Weighting          : term frequency (tf)
+## 
+##           Docs
+## Terms       1  2  3  4  5  6  7  8 9 10 11 12 13 14 15
+##   menschen 65 41 20 15 78 24 50 38 0  6 47 49 27  8  3
+##   wahl      2  0  3  3  2  0  0  1 0  0  2  0  1  1  0
+##   familie   2  4  2  0  2  3  2 17 3  1 20 20 12  4  6
+</code></pre>
+
+<pre><code class="r">findAssocs(tdm, &quot;stadt&quot;, 0.97) ## find correlated terms, see ?tm::findAssocs
+</code></pre>
+
+<pre><code>## $stadt
+##            schrittweise              auszubauen               erfordert 
+##                    0.99                    0.98                    0.98 
+##                     övp            pflegeberufe           denkmalschutz 
+##                    0.98                    0.98                    0.97 
+##                dienstes                 geprüft nonprofitorganisationen 
+##                    0.97                    0.97                    0.97
+</code></pre>
+
+<p>For more information about the functionality provided by the <code>tm</code>,
+please refer to its <a href="http://cran.r-project.org/web/packages/tm/vignettes/tm.pdf">documentation</a>.</p>
+
+<h2>Selecting relevant parts of text</h2>
+
+<p>For applications in which not the entire text of a document is of interest, but
+rather a subset of the quasi-sentences matching certain criteria,
+<code>manifestoR</code> provides a function <code>subset(...)</code> working just like R&#39;s internal
+<code>subset</code> function.</p>
+
+<p>It can, for example, be used to filter quasi-sentences based on codes or the text:</p>
+
+<pre><code class="r"># subsetting based on codes (as example above)
+doc_subcodes &lt;- subset(doc, codes(doc) %in% c(202, 503, 607))
+length(doc_subcodes)
+</code></pre>
+
+<pre><code>## [1] 115
+</code></pre>
+
+<pre><code class="r"># subsetting based on text
+doc_subtext &lt;- subset(doc, grepl(&quot;Demokratie&quot;, content(doc)))
+head(content(doc_subtext), n = 3)
+</code></pre>
+
+<pre><code>## [1] &quot;Eine Demokratie benötigt auch die Unterstützung von Forschung jenseits wirtschaftlicher Interessen.&quot;      
+## [2] &quot;In einer Demokratie sollen all jene wählen dürfen, die von den politischen Entscheidungen betroffen sind.&quot;
+## [3] &quot;Demokratie braucht die Teilhabe der BürgerInnen.&quot;
+</code></pre>
+
+<pre><code class="r">head(codes(doc_subtext), n = 10)
+</code></pre>
+
+<pre><code>## [1] 506 202 202 201 108  NA 202 107
+</code></pre>
+
+<p>Via <code>tm_map</code> the filtering operations can also be applied to an entire corpus:</p>
+
+<pre><code class="r">corp_sub &lt;- tm_map(my_corpus, function(doc) {
+  subset(doc, codes(doc) %in% c(202, 503, 607))
+})
+head(content(corp_sub[[3]]))
+</code></pre>
+
+<pre><code>## [1] &quot;Das hat einen einzigen Grund: die hohen Öl- und Gaspreise.&quot;           
+## [2] &quot;Immer mehr Menschen können sich Heizung&quot;                              
+## [3] &quot;und Mobilität immer weniger leisten.&quot;                                 
+## [4] &quot;Ob wir das wollen oder nicht – Erdöl und Erdgas werden weiter teurer.&quot;
+## [5] &quot;Wir verbrennen Milliarden in unseren Tanks und Öfen,&quot;                 
+## [6] &quot;und: SPAREN STATT VERSCHWENDEN.&quot;
+</code></pre>
+
+<pre><code class="r">head(codes(corp_sub))
+</code></pre>
+
+<pre><code>##  11  12  13  14  15  16 
+## 503 202 202 503 503 503
+</code></pre>
+
+<p>For convenience, it is also possible to filter quasi-sentences with specific
+codes directly when downloading a corpus. For this, the additional argument
+<code>codefilter</code> with a list of CMP codes of interest is passed to <code>mp_corpus</code>:</p>
+
+<pre><code class="r">corp_sub &lt;- mp_corpus(countryname == &quot;Australia&quot;, codefilter = c(103, 104))
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code class="r">head(content(corp_sub[[1]]))
+</code></pre>
+
+<pre><code>## [1] &quot;The pursuit of military and economic dominance by the United States at the expense of international law and human rights is destabilising the world.&quot;
+## [2] &quot;and Iraqis allowed their self-determination.&quot;                                                                                                        
+## [3] &quot;while maintaining an adequate defence force&quot;
+</code></pre>
+
+<pre><code class="r">head(codes(corp_sub))
+</code></pre>
+
+<pre><code>##  11  12  13   2  31  32 
+## 103 103 104 104 103 103
+</code></pre>
+
+<h2>Using the document metadata</h2>
+
+<p>Each document in the Manifesto Corpus has meta information about itself attached.
+They can be accessed via the function <code>meta</code>:</p>
+
+<pre><code class="r">meta(doc)
+</code></pre>
+
+<pre><code>##   manifesto_id               : 42110_2006
+##   party                      : 42110
+##   date                       : 200610
+##   language                   : german
+##   has_eu_code                : FALSE
+##   is_primary_doc             : TRUE
+##   may_contradict_core_dataset: FALSE
+##   md5sum_text                : 37744e88ed32bbf176656883526fc56c
+##   url_original               : /down/originals/42110_2006.pdf
+##   md5sum_original            : CURRENTLY_UNAVAILABLE
+##   annotations                : TRUE
+##   id                         : 2
+</code></pre>
+
+<p>It is possible to access and also modify specific metadata entries:</p>
+
+<pre><code class="r">meta(doc, &quot;party&quot;)
+</code></pre>
+
+<pre><code>## [1] 42110
+</code></pre>
+
+<pre><code class="r">meta(doc, &quot;manual_edits&quot;) &lt;- TRUE
+meta(doc)
+</code></pre>
+
+<pre><code>##   manifesto_id               : 42110_2006
+##   party                      : 42110
+##   date                       : 200610
+##   language                   : german
+##   has_eu_code                : FALSE
+##   is_primary_doc             : TRUE
+##   may_contradict_core_dataset: FALSE
+##   md5sum_text                : 37744e88ed32bbf176656883526fc56c
+##   url_original               : /down/originals/42110_2006.pdf
+##   md5sum_original            : CURRENTLY_UNAVAILABLE
+##   annotations                : TRUE
+##   id                         : 2
+##   manual_edits               : TRUE
+</code></pre>
+
+<p>Document metadata can also be bulk-downloaded with the function <code>mp_metadata</code>,
+taking the same set of parameters as <code>mp_corpus</code>:</p>
+
+<pre><code class="r">metas &lt;- mp_metadata(countryname == &quot;Spain&quot;)
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code class="r">head(metas)
+</code></pre>
+
+<pre><code>## Source: local data frame [6 x 11]
+## 
+##   party   date language has_eu_code is_primary_doc
+## 1 33908 201111 galician       FALSE           TRUE
+## 2 33907 201111  spanish       FALSE           TRUE
+## 3 33905 201111  catalan       FALSE           TRUE
+## 4 33902 201111  spanish       FALSE           TRUE
+## 5 33611 201111  catalan       FALSE           TRUE
+## 6 33610 201111  spanish       FALSE           TRUE
+## Variables not shown: may_contradict_core_dataset (lgl), manifesto_id
+##   (chr), md5sum_text (chr), url_original (chr), md5sum_original (chr),
+##   annotations (lgl)
+</code></pre>
+
+<p>The field &hellip;</p>
+
+<ul>
+<li>&hellip; <code>party</code> contains the party id from the Manifesto Project Dataset.</li>
+<li>&hellip; <code>date</code> contains the month of the election in the same format as in the
+Manifesto Project Dataset (<code>YYYYMM</code>)</li>
+<li>&hellip; <code>language</code> specifies the language of the document as a word.</li>
+<li>&hellip; <code>is_primary_doc</code> is FALSE only in cases where for a single party and
+election date multiple manifestos are available and this is the document not used
+for coding by the Manifesto Project.</li>
+<li>&hellip; <code>may_contradict_core_dataset</code> is TRUE for documents where the CMP codings
+in the corpus documents might be inconsistent with the coding aggregates in the
+Manifesto Project&#39;s Main Dataset. This applies to manifestos which have been either
+recoded after they entered the dataset or cases where the dataset entries are
+derived from hand-written coding sheets used prior to the digitalization of the
+Manifesto Project&#39;s data workflow, but the documents were digitalized and added
+to the Manifesto Corpus afterwards.</li>
+<li>&hellip; <code>annotations</code> is TRUE whenenver there are CMP codings available for the document.</li>
+<li>&hellip; <code>has_eu_code</code> marks document in which the additional coding layer <code>eu_code</code> is present. These codes have been assigned to quasi-sentences by CMP coders additionally to the main CMP code to indicate policy statements that should or should not be implemented on the level of the European union.</li>
+</ul>
+
+<p>The other metadata entries have primarily technical functions for communication
+between the <code>manifestoR</code> package and the online database.</p>
+
+<h1>Efficiency and reproducibility: caching and versioning</h1>
+
+<p>To save time and network traffic, <code>manifestoR</code> caches all downloaded data and
+documents in your computer&#39;s working memory and connects to the online database
+only when data is required that has not been downloaded before.</p>
+
+<pre><code class="r">corpus &lt;- mp_corpus(wanted)
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code class="r">subcorpus &lt;- mp_corpus(wanted[3:7,])
+</code></pre>
+
+<p>Note that in the second query no message informing about the connection to the
+Manifesto Project&#39;s Database is printed, since no data is actually downloaded.</p>
+
+<p>This mechanism also ensures <strong>reproducibility</strong> of your scripts, analyses
+and results: executing your code again will yield the same results, even if
+the Manifesto Project&#39;s Database is updated in the meantime.
+Since the cache is only stored in the working memory, however, in order to ensure
+reproducibility across R sessions, it is advisable to
+<strong>save the cache to the hard drive</strong> at the end of analyses and load it in the
+beginning:</p>
+
+<pre><code class="r">mp_save_cache(file = &quot;manifesto_cache.RData&quot;)
+
+## ... start new R session ... then:
+
+library(manifestoR)
+mp_setapikey(&quot;manifesto_apikey.txt&quot;)
+mp_load_cache(file = &quot;manifesto_cache.RData&quot;)
+</code></pre>
+
+<p>This way <code>manifestoR</code> always works with the same snapshot of the Manifesto Project
+Database and Corpus, saves a lot of unnecessary online traffic and also enables
+you to continue with your analyses offline.</p>
+
+<p>Each snapshot of the Manifesto Corpus is identified via a version number, which is
+stored in the cache together with the data and can be accessed via</p>
+
+<pre><code class="r">mp_which_corpus_version()
+</code></pre>
+
+<pre><code>## [1] &quot;2015-3&quot;
+</code></pre>
+
+<p>When collaborating on a project with other researchers, it is advisable to use
+the same corpus version for reproducibility of the results.
+<code>manifestoR</code> can be set to use a specific version with the functions</p>
+
+<pre><code class="r">mp_use_corpus_version(&quot;2015-3&quot;)
+</code></pre>
+
+<p>In order to guarantee reproducibility of <strong>published work</strong>, please also mention
+the corpus version id used for the reported analyses in the publication.</p>
+
+<p>For updating locally cached data to the most recent version of the
+Manifesto Project Corpus, <code>manifestoR</code> provides two functions:</p>
+
+<pre><code class="r">mp_check_for_corpus_update()
+</code></pre>
+
+<pre><code>## $update_available
+## [1] FALSE
+## 
+## $versionid
+## [1] &quot;2015-3&quot;
+</code></pre>
+
+<pre><code class="r">mp_update_cache()
+</code></pre>
+
+<pre><code>## [1] &quot;2015-3&quot;
+</code></pre>
+
+<pre><code class="r">mp_check_for_corpus_update()
+</code></pre>
+
+<pre><code>## $update_available
+## [1] FALSE
+## 
+## $versionid
+## [1] &quot;2015-3&quot;
+</code></pre>
+
+<p>For more detailed information on the caching mechanism and on how to use and load
+specific snapshots of the Manifesto Corpus, refer to the R documentations of the
+functions mentioned here as well <code>mp_use_corpus_version</code>, <code>mp_corpusversions</code>,
+<code>mp_which_corpus_version</code>.</p>
+
+<h1>Exporting documents</h1>
+
+<p>If required <code>ManifestoCorpus</code> as well as <code>ManifestoDocument</code> objects can be
+converted to R&#39;s internal <code>data.frame</code> format and processed further:</p>
+
+<pre><code class="r">doc_df &lt;- as.data.frame(doc)
+head(within(doc_df, {
+  ## for pretty printing
+  text &lt;- paste0(substr(text, 1, 60), &quot;...&quot;)
+}))
+</code></pre>
+
+<pre><code>##                                                              text cmp_code
+## 1                                             1 Lebensqualität...       NA
+## 2                                       1.1 Grüne Energiewende...       NA
+## 3 Lebensqualität bedeutet in einer unversehrten Umwelt zu lebe...      501
+## 4 Die Verantwortung dafür liegt bei uns: Wir alle gestalten Um...      606
+## 5 Ein Umdenken in der Energiepolitik ist eine wesentliche Vora...      501
+## 6 Wir Grüne stehen für eine Energiewende hin zu einem Aufbruch...      501
+##   eu_code my_code pos
+## 1      NA       A   1
+## 2      NA       B   2
+## 3      NA       A   3
+## 4      NA       B   4
+## 5      NA       A   5
+## 6      NA       B   6
+</code></pre>
+
+<p>The function also provides a parameter to include all available metadata in
+the export:</p>
+
+<pre><code class="r">doc_df_with_meta &lt;- as.data.frame(doc, with.meta = TRUE)
+print(names(doc_df_with_meta))
+</code></pre>
+
+<pre><code>##  [1] &quot;text&quot;                        &quot;cmp_code&quot;                   
+##  [3] &quot;eu_code&quot;                     &quot;my_code&quot;                    
+##  [5] &quot;pos&quot;                         &quot;manifesto_id&quot;               
+##  [7] &quot;party&quot;                       &quot;date&quot;                       
+##  [9] &quot;language&quot;                    &quot;has_eu_code&quot;                
+## [11] &quot;is_primary_doc&quot;              &quot;may_contradict_core_dataset&quot;
+## [13] &quot;md5sum_text&quot;                 &quot;url_original&quot;               
+## [15] &quot;md5sum_original&quot;             &quot;annotations&quot;                
+## [17] &quot;id&quot;                          &quot;manual_edits&quot;
+</code></pre>
+
+<p>For more information on the available metadata per document, refer to the section
+<a href="#using-the-document-metadata">Using the document metadata</a> above.</p>
+
+<p>Note again that also all functionality provided by <code>tm</code>, such as <code>writeCorpus</code>
+is available on a <code>ManifestoCorpus</code>.</p>
+
+<h1>Scaling texts</h1>
+
+<p>Scaling of political content refers to the estimation of its location in a policy
+space (Grimmer &amp; Stewart 2013). <code>manifestoR</code> provides several functions to scale coded documents by
+known routines such as the RILE measure (see sections
+<a href="#using-manifestors-scaling-functions">Using manifestoR&#39;s scaling functions</a>),
+as well as infrastructure to create new scales (see section <a href="#writing-custom-scaling-functions">Writing custom scaling functions</a>) and statistical analysis routines for the
+distributions of scaling functions (see section <a href="#bootstrapping-scaling-function-distributions-and-standard-errors">Bootstrapping scaling function distributions and standard errors</a>).</p>
+
+<h2>Using manifestoR&#39;s scaling functions</h2>
+
+<p>Implementationwise, a scaling function in <code>manifestoR</code> takes a data.frame of cases
+and outputs a position value for each case. For example, you can compute the RILE
+scores of cases from the main dataset by calling:</p>
+
+<pre><code class="r">rile(subset(mpds, countryname == &quot;Albania&quot;))
+</code></pre>
+
+<pre><code>##  [1]  1.592900e+01 -1.146300e+01  1.027400e+01  1.111100e+01  7.176000e+00
+##  [6]  1.792300e+01  5.405000e+00  5.882000e+00 -7.298000e+00 -1.354000e+01
+## [11]  6.012000e+00  4.232200e+01  1.431200e+01  2.220446e-16 -9.090000e+00
+## [16] -9.350000e-01 -2.187000e+00 -9.180000e-01  5.596200e+01 -1.304900e+01
+## [21]  8.059000e+00  9.919000e+00 -4.166000e+00  7.760000e-01  5.710000e-01
+## [26] -2.187000e+00 -9.180000e-01  5.596200e+01  2.718500e+01  2.428600e+01
+## [31]  9.919000e+00 -4.166000e+00  2.247200e+01  5.710000e-01 -2.187000e+00
+## [36] -9.180000e-01 -4.166000e+00  2.247200e+01
+</code></pre>
+
+<p>What variables are used from the input data depends on the scaling function. All
+currently implemented functions use only the percentages of coded categories,
+in the form of variables starting with &ldquo;per&rdquo; as in the Manifesto Project Dataset.
+The following functions are currently available:</p>
+
+<ul>
+<li>RILE according to Laver &amp; Budge (1992): <code>rile</code></li>
+<li>logit rile according to Lowe et al. (2011): <code>logit_rile</code></li>
+<li>Vanilla scaling according to Gabel &amp; Huber (2000): <code>vanilla</code></li>
+<li>&hellip; (more scaling functions are planned and contributions are welcome, see
+<a href="#contributing-to-manifestor">Contributing to manifestoR</a>).</li>
+</ul>
+
+<p>To apply scaling functions directly to coded documents or corpora
+you can use the function <code>mp_scale</code>. It takes a <code>ManifestoCorpus</code>
+or <code>ManifestoDocument</code> and returns the scaled positions for each document:</p>
+
+<pre><code class="r">corpus &lt;- mp_corpus(countryname == &quot;Romania&quot;)
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3 
+## Connecting to Manifesto Project DB API... corpus version: 2015-3
+</code></pre>
+
+<pre><code class="r">mp_scale(corpus, scalingfun = logit_rile)
+</code></pre>
+
+<pre><code>##   party   date logit_rile
+## 1 93031 201212  0.7176668
+## 2 93061 201212 -0.4813032
+## 3 93981 201212 -0.7845814
+</code></pre>
+
+<h2>Writing custom scaling functions</h2>
+
+<p>Writing custom scaling functions for texts in <code>manifestoR</code> is easy, since it
+requires nothing more than writing a function that takes a <code>data.frame</code> of cases
+as input and returns a vector of values. <code>mp_scale</code> provides the mechanism
+that converts a coded text to a <code>data.frame</code> with &ldquo;per&rdquo; variables such that your function
+can handle it:</p>
+
+<pre><code class="r">custom_scale &lt;- function(data) { 
+  data$per402 - data$per401
+}
+mp_scale(corpus, scalingfun = custom_scale)
+</code></pre>
+
+<pre><code>##   party   date custom_scale
+## 1 93031 201212     1.558442
+## 2 93061 201212     3.296703
+## 3 93981 201212     2.962963
+</code></pre>
+
+<p>In addition, <code>manifestoR</code> provides several function templates you can use for
+creating scales, e.g. a weighted sum of per variables
+(<code>scale_weighted</code>), the logit ratio of category counts (<code>scale_logit</code>)
+or ratio scaling as suggested by Kim and Fording (1998) and by Laver &amp; Garry (2000)
+(<code>scale_ratio</code>). For example, the ratio equivalent to the simple function
+above can be implemented as:</p>
+
+<pre><code class="r">custom_scale &lt;- function(data) {
+    scale_ratio(data, pos = c(&quot;per402&quot;), neg = c(&quot;per401&quot;))
+}
+mp_scale(corpus, scalingfun = custom_scale)
+</code></pre>
+
+<pre><code>##   party   date custom_scale
+## 1 93031 201212     1.857143
+## 2 93061 201212     4.000000
+## 3 93981 201212     2.333333
+</code></pre>
+
+<p>For details on these template functions, their parameters and how to use them,
+see the R documentation <code>?scale</code>.</p>
+
+<h2>Bootstrapping scaling function distributions and standard errors</h2>
+
+<p>In order to better evaluate the significance of analysis results based on
+scaled coded texts, Benoit, Mikhaylov, and Laver (2009) proposed to approximate
+the standard errors of the scale variable by bootstrapping its distribution.
+This procedure is available via the function <code>mp_bootstrap</code>:</p>
+
+<pre><code class="r">data &lt;- subset(mpds, countryname == &quot;Albania&quot;)
+mp_bootstrap(data, fun = rile)
+</code></pre>
+
+<pre><code>## Source: local data frame [38 x 2]
+## 
+##       rile       sd
+## 1   15.929 7.328464
+## 2  -11.463 4.138605
+## 3   10.274 4.831586
+## 4   11.111 7.901768
+## 5    7.176 4.328210
+## 6   17.923 5.799810
+## 7    5.405 4.275950
+## 8    5.882 7.201544
+## 9   -7.298 4.069295
+## 10 -13.540 6.852035
+## ..     ...      ...
+</code></pre>
+
+<p>Note that the argument <code>fun</code> can be any scaling function and the returned <code>data.frame</code>
+containes the scaled position as well as the bootstrapped standard deviations.
+Also, with the additional parameters <code>statistics</code>, you can compute arbitrary statistics
+from the bootstrapped distribution, such as variance or quantiles:</p>
+
+<pre><code class="r">custom_scale &lt;- function(data) { 
+  data$per402 - data$per401
+}
+mp_bootstrap(data,
+             fun = custom_scale,
+             statistics = list(var, 0.025, 0.975))
+</code></pre>
+
+<pre><code>## Source: local data frame [38 x 4]
+## 
+##    custom_scale        var     q0.025    q0.975
+## 1         0.885  2.2208370  -1.769912 3.5398230
+## 2        -0.395  0.1552858  -1.185771 0.0000000
+## 3         0.685  1.4072578  -1.369863 2.7397260
+## 4        -1.111  1.3371878  -3.333333 0.0000000
+## 5         0.000  2.7308726  -2.870813 3.3492823
+## 6         0.000  1.8229684  -2.830189 2.8301887
+## 7        -1.081  1.1283485  -3.243243 0.5405405
+## 8        -5.882 16.3693105 -14.705882 0.0000000
+## 9         0.000  0.5124629  -1.459854 1.4598540
+## 10        3.125  3.3098159   0.000000 7.2916667
+## ..          ...        ...        ...       ...
+</code></pre>
+
+<h1>Additional Information</h1>
+
+<p>For a more detailed reference and complete list of the functions provided
+by <code>manifestoR</code>, see the R package reference manual on CRAN:
+<a href="http://cran.r-project.org/web/packages/manifestoR/manifestoR.pdf">http://cran.r-project.org/web/packages/manifestoR/manifestoR.pdf</a></p>
+
+<h2>Contacting the Manifesto Project team</h2>
+
+<p>You can get in touch with the Manifesto Project team by e-mailing to
+<a href="mailto:manifesto-communication@wzb.eu">manifesto-communication@wzb.eu</a>.
+We are happy to receive your feedback and answer questions about the Manifesto
+Corpus, including errors or obscurities in the corpus documents. In this case
+please make sure to include the party id, election date and the corpus version
+you were working with (accessible via <code>mp_which_corpus_version</code>).
+For general questions about the Project and dataset, please check the
+<a href="https://manifesto-project.wzb.eu/questions">Frequently Asked Questions</a> section
+on our website first.</p>
+
+<h2>Contributing to manifestoR</h2>
+
+<p>We welcome bug reports, feature requests or (planned) source code contributions for the
+<code>manifestoR</code> package. For all of these, best refer to our repository on github:
+<a href="https://github.com/ManifestoProject/manifestoR">https://github.com/ManifestoProject/manifestoR</a>.
+For more information, please refer to the Section &ldquo;Developing&rdquo; in the README file
+of the github repository.</p>
+
+<p>\newpage</p>
+
+<h1>References</h1>
+
+<p>Benoit, K., Laver, M., &amp; Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. <a href="http://doi.org/10.1111/j.1540-5907.2009.00383.x">http://doi.org/10.1111/j.1540-5907.2009.00383.x</a></p>
+
+<p>Feinerer, I., &amp; Hornik, K. (2015). Tm: Text Mining Package. <a href="http://cran.r-project.org/web/packages/tm/index.html">http://cran.r-project.org/web/packages/tm/index.html</a></p>
+
+<p>Gabel, M. J., &amp; Huber, J. D. (2000). Putting Parties in Their Place: Inferring Party Left-Right Ideological Positions from Party Manifestos Data. American Journal of Political Science, 44(1), 94-103.</p>
+
+<p>Grimmer, J., and Stewart, B.. 2013. Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts. Political Analysis 21(3): 267–97.</p>
+
+<p>Kim, H., &amp; Fording, R. C. (1998). Voter ideology in western democracies, 1946-1989. European Journal of Political Research, 33(1), 73-97.</p>
+
+<p>Laver, M. &amp; Budge, I., eds. (1992). Party Policy and Government Coalitions, Houndmills, Basingstoke, Hampshire: The MacMillan Press 1992</p>
+
+<p>Laver, M., &amp; Garry, J. (2000). Estimating Policy Positions from Political Texts. American Journal of Political Science, 44(3), 619-634.</p>
+
+<p>Lehmann, P., Merz, N., Regel, S. &amp; Werner, A. (2015). Manifesto Corpus. Berlin: WZB Berlin Social Science Center.</p>
+
+<p>Lowe, W., Benoit, K., Mikhaylov, S., &amp; Laver, M. (2011). Scaling Policy Preferences from Coded Political Texts. Legislative Studies Quarterly, 36(1), 123-155.</p>
+
+</body>
+
+</html>
