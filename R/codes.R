@@ -17,9 +17,7 @@ aggregate_cee_codes <- function(x) {
 #' @method aggregate_cee_codes default
 #' @export
 aggregate_cee_codes.default <- function(x) {
-  cee_codes <- grepl("^\\d{4}$", x)
-  x[cee_codes] <- floor(as.integer(x[cee_codes])/10)
-  return(x)
+  gsub("^(\\d{3})\\d$", "\\1", x)
 }
 #' @method aggregate_cee_codes ManifestoDocument
 aggregate_cee_codes.ManifestoDocument <- function(x) {
@@ -52,11 +50,12 @@ recode_v5_to_v4 <- function(x) {
 #' @export
 recode_v5_to_v4.default <- function(x) {
   x <- as.character(x)
-  x[x %in% c("202.2", "605.2", "703.2")] <- 0L
-  return(as.integer(gsub("^(\\d{3})\\.\\d$", "\\1", x)))
+  x[x %in% c("202.2", "605.2", "703.2")] <- "0"
+  return(gsub("^(\\d{3})\\.\\d$", "\\1", x))
 }
 
 #' @method recode_v5_to_v4 ManifestoDocument
+#' @export
 recode_v5_to_v4.ManifestoDocument <- function(x) {
   doc <- x
   codes(doc) <- recode_v5_to_v4(codes(doc))
@@ -119,6 +118,7 @@ fix_names_code_table <- function(df, prefix, include_codes) {
     select(the_order) %>%
     select(matches("party"),
            matches("date"),
+           # matches(paste0(prefix, "\\d+$")),  # use this line when aggregation is implemented
            starts_with(prefix),
            one_of(ensure_names),
            matches("total"))
@@ -180,7 +180,6 @@ count_codes.ManifestoDocument <- function(doc,
     eu_codes <- codes(doc, "eu_code")
     the_codes <- c(the_codes, eu_codes[!is.na(eu_codes) & eu_codes != 0L])
   }
-  
   data.frame(party = null_to_na(meta(doc, "party")),
              date = null_to_na(meta(doc, "date"))) %>%
     bind_cols(count_codes(the_codes, code_layers, with_eu_codes, prefix, relative, include_codes))
@@ -198,7 +197,7 @@ count_codes.default <- function(doc,
                                                    { v4_categories() } else { c() }) {
   
   tt <- table(doc)
-  
+
   df <- as.data.frame(t(as.matrix(tt)))
   if (ncol(df) > 0) {
     names(df) <- paste0(prefix, names(df))
@@ -208,11 +207,7 @@ count_codes.default <- function(doc,
       df$total <- n
     }
   } else {
-    if (relative) {
-      df <- data.frame(total = 0L)
-    } else {
-      df <- data.frame()
-    }
+    df <- data.frame(total = 0L)
   }
   
   if (length(include_codes) > 0) {

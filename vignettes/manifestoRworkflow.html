@@ -211,9 +211,7 @@ hr {
 
 <h1>Downloading documents from the Manifesto Corpus</h1>
 
-<p>When publishing work using the Manifesto Corpus, please make sure to give the identification number of the corpus version used for your analysis and to reference</p>
-
-<p>Lehmann, Pola / Merz, Nicolas / Regel, Sven / Werner, Annika (2015): Manifesto Corpus. Berlin: WZB Berlin Social Science Center.</p>
+<p>When publishing work using the Manifesto Corpus, please make sure to cite it correctly and to give the identification number of the corpus version used for your analysis.</p>
 
 <p>You can print citation and version information with the function <code>mp_cite()</code>.</p>
 
@@ -222,21 +220,6 @@ hr {
 <p>First of all, load the <code>manifestoR</code> package with the usual R syntax:</p>
 
 <pre><code class="r">library(manifestoR)
-</code></pre>
-
-<pre><code>## Loading required package: NLP
-## Loading required package: tm
-## Loading required package: dplyr
-## 
-## Attaching package: &#39;dplyr&#39;
-## 
-## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag
-## 
-## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union
 </code></pre>
 
 <h2>Connecting to the Manifesto Project Database API</h2>
@@ -264,6 +247,14 @@ name <code>manifesto_apikey.txt</code> in your current R working directory.</p>
 <p>Note that it is a security risk to store the API key file or a script containing
 the key in public repositories.</p>
 
+<h2>Downloading the Manifesto Project Dataset</h2>
+
+<p>You can download the Manifesto Project Dataset (MPDS) with the function <code>mp_maindataset()</code>.
+By default the most recent update is returned, but you can specify older versions
+to get for reproducibility (type <code>mp_coreversions()</code> for a list of version and <code>?mp_maindataset</code>
+for usage information). For analysing the dataset using scaling functions, refer
+to the section <a href="#using-manifestors-scaling-functions">Using manifestoR&#39;s scaling functions</a> below.</p>
+
 <h2>Downloading documents</h2>
 
 <p>(Bulk-)Downloading documents works via the function <code>mp_corpus(...)</code>.
@@ -274,9 +265,9 @@ Corpus that you want to download:</p>
 </code></pre>
 
 <pre><code>## Connecting to Manifesto Project DB API... 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3
+## Connecting to Manifesto Project DB API... corpus version: 2015-4 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code class="r">my_corpus
@@ -311,6 +302,7 @@ and documents content and metadata:</p>
 ##   party                      : 42110
 ##   date                       : 200211
 ##   language                   : german
+##   source                     : MARPOR
 ##   has_eu_code                : FALSE
 ##   is_primary_doc             : TRUE
 ##   may_contradict_core_dataset: TRUE
@@ -343,8 +335,8 @@ print(head(names(mpds)))
 <pre><code class="r">mp_corpus(rile &gt; 60) ## another example of data set based corpus query
 </code></pre>
 
-<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code>## &lt;&lt;ManifestoCorpus&gt;&gt;
@@ -361,8 +353,8 @@ and passing it to <code>mp_corpus(...)</code>:</p>
 mp_corpus(wanted)
 </code></pre>
 
-<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code>## &lt;&lt;ManifestoCorpus&gt;&gt;
@@ -385,7 +377,7 @@ You can check availability of your query beforehand with the function
 <pre><code class="r">mp_availability(party == 41113)
 </code></pre>
 
-<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code>##           Queried for       Documents found Coded Documents found 
@@ -450,14 +442,15 @@ of the CMP codings attached to the quasi-sentences of the document/corpus in a r
 head(codes(doc), n = 15)
 </code></pre>
 
-<pre><code>##  [1]  NA  NA 501 606 501 501 501 416 416 412 503 411 501 416  NA
+<pre><code>##  [1] NA    NA    &quot;501&quot; &quot;606&quot; &quot;501&quot; &quot;501&quot; &quot;501&quot; &quot;416&quot; &quot;416&quot; &quot;412&quot; &quot;503&quot;
+## [12] &quot;411&quot; &quot;501&quot; &quot;416&quot; NA
 </code></pre>
 
 <pre><code class="r">head(codes(my_corpus), n = 15)
 </code></pre>
 
-<pre><code>##  11  12  13  14  15  16  17  18  19 110 111 112 113 114 115 
-## 305 305 305  NA  NA  NA 601 416 416 107 107 107 416 416 416
+<pre><code>##  [1] &quot;305&quot; &quot;305&quot; &quot;305&quot; NA    NA    NA    &quot;601&quot; &quot;416&quot; &quot;416&quot; &quot;107&quot; &quot;107&quot;
+## [12] &quot;107&quot; &quot;416&quot; &quot;416&quot; &quot;416&quot;
 </code></pre>
 
 <p>Thus you can for example use R&#39;s functionality to count the codes or select quasi-
@@ -619,7 +612,7 @@ head(content(doc_subtext), n = 3)
 <pre><code class="r">head(codes(doc_subtext), n = 10)
 </code></pre>
 
-<pre><code>## [1] 506 202 202 201 108  NA 202 107
+<pre><code>## [1] &quot;506&quot; &quot;202&quot; &quot;202&quot; &quot;201&quot; &quot;108&quot; NA    &quot;202&quot; &quot;107&quot;
 </code></pre>
 
 <p>Via <code>tm_map</code> the filtering operations can also be applied to an entire corpus:</p>
@@ -641,8 +634,7 @@ head(content(corp_sub[[3]]))
 <pre><code class="r">head(codes(corp_sub))
 </code></pre>
 
-<pre><code>##  11  12  13  14  15  16 
-## 503 202 202 503 503 503
+<pre><code>## [1] &quot;503&quot; &quot;202&quot; &quot;202&quot; &quot;503&quot; &quot;503&quot; &quot;503&quot;
 </code></pre>
 
 <p>For convenience, it is also possible to filter quasi-sentences with specific
@@ -652,8 +644,8 @@ codes directly when downloading a corpus. For this, the additional argument
 <pre><code class="r">corp_sub &lt;- mp_corpus(countryname == &quot;Australia&quot;, codefilter = c(103, 104))
 </code></pre>
 
-<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code class="r">head(content(corp_sub[[1]]))
@@ -667,8 +659,7 @@ codes directly when downloading a corpus. For this, the additional argument
 <pre><code class="r">head(codes(corp_sub))
 </code></pre>
 
-<pre><code>##  11  12  13   2  31  32 
-## 103 103 104 104 103 103
+<pre><code>## [1] &quot;103&quot; &quot;103&quot; &quot;104&quot; &quot;104&quot; &quot;103&quot; &quot;103&quot;
 </code></pre>
 
 <h2>Using the document metadata</h2>
@@ -683,6 +674,7 @@ They can be accessed via the function <code>meta</code>:</p>
 ##   party                      : 42110
 ##   date                       : 200610
 ##   language                   : german
+##   source                     : MARPOR
 ##   has_eu_code                : FALSE
 ##   is_primary_doc             : TRUE
 ##   may_contradict_core_dataset: FALSE
@@ -709,6 +701,7 @@ meta(doc)
 ##   party                      : 42110
 ##   date                       : 200610
 ##   language                   : german
+##   source                     : MARPOR
 ##   has_eu_code                : FALSE
 ##   is_primary_doc             : TRUE
 ##   may_contradict_core_dataset: FALSE
@@ -726,21 +719,22 @@ taking the same set of parameters as <code>mp_corpus</code>:</p>
 <pre><code class="r">metas &lt;- mp_metadata(countryname == &quot;Spain&quot;)
 </code></pre>
 
-<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code class="r">head(metas)
 </code></pre>
 
-<pre><code>## Source: local data frame [6 x 11]
+<pre><code>## Source: local data frame [6 x 12]
 ## 
-##   party   date language has_eu_code is_primary_doc
-## 1 33908 201111 galician       FALSE           TRUE
-## 2 33907 201111  spanish       FALSE           TRUE
-## 3 33905 201111  catalan       FALSE           TRUE
-## 4 33902 201111  spanish       FALSE           TRUE
-## 5 33611 201111  catalan       FALSE           TRUE
-## 6 33610 201111  spanish       FALSE           TRUE
+##   party   date language source has_eu_code is_primary_doc
+##   (dbl)  (dbl)    (chr)  (chr)       (lgl)          (lgl)
+## 1 33908 201111 galician MARPOR       FALSE           TRUE
+## 2 33907 201111  spanish MARPOR       FALSE           TRUE
+## 3 33905 201111  catalan MARPOR       FALSE           TRUE
+## 4 33902 201111  spanish MARPOR       FALSE           TRUE
+## 5 33611 201111  catalan MARPOR       FALSE           TRUE
+## 6 33610 201111  spanish MARPOR       FALSE           TRUE
 ## Variables not shown: may_contradict_core_dataset (lgl), manifesto_id
 ##   (chr), md5sum_text (chr), url_original (chr), md5sum_original (chr),
 ##   annotations (lgl)
@@ -779,8 +773,8 @@ only when data is required that has not been downloaded before.</p>
 <pre><code class="r">corpus &lt;- mp_corpus(wanted)
 </code></pre>
 
-<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code class="r">subcorpus &lt;- mp_corpus(wanted[3:7,])
@@ -816,7 +810,7 @@ stored in the cache together with the data and can be accessed via</p>
 <pre><code class="r">mp_which_corpus_version()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-3&quot;
+<pre><code>## [1] &quot;2015-4&quot;
 </code></pre>
 
 <p>When collaborating on a project with other researchers, it is advisable to use
@@ -824,6 +818,9 @@ the same corpus version for reproducibility of the results.
 <code>manifestoR</code> can be set to use a specific version with the functions</p>
 
 <pre><code class="r">mp_use_corpus_version(&quot;2015-3&quot;)
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-3
 </code></pre>
 
 <p>In order to guarantee reproducibility of <strong>published work</strong>, please also mention
@@ -836,16 +833,19 @@ Manifesto Project Corpus, <code>manifestoR</code> provides two functions:</p>
 </code></pre>
 
 <pre><code>## $update_available
-## [1] FALSE
+## [1] TRUE
 ## 
 ## $versionid
-## [1] &quot;2015-3&quot;
+## [1] &quot;2015-4&quot;
 </code></pre>
 
 <pre><code class="r">mp_update_cache()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-3&quot;
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4
+</code></pre>
+
+<pre><code>## [1] &quot;2015-4&quot;
 </code></pre>
 
 <pre><code class="r">mp_check_for_corpus_update()
@@ -855,7 +855,7 @@ Manifesto Project Corpus, <code>manifestoR</code> provides two functions:</p>
 ## [1] FALSE
 ## 
 ## $versionid
-## [1] &quot;2015-3&quot;
+## [1] &quot;2015-4&quot;
 </code></pre>
 
 <p>For more detailed information on the caching mechanism and on how to use and load
@@ -876,19 +876,19 @@ head(within(doc_df, {
 </code></pre>
 
 <pre><code>##                                                              text cmp_code
-## 1                                             1 Lebensqualität...       NA
-## 2                                       1.1 Grüne Energiewende...       NA
+## 1                                             1 Lebensqualität...     &lt;NA&gt;
+## 2                                       1.1 Grüne Energiewende...     &lt;NA&gt;
 ## 3 Lebensqualität bedeutet in einer unversehrten Umwelt zu lebe...      501
 ## 4 Die Verantwortung dafür liegt bei uns: Wir alle gestalten Um...      606
 ## 5 Ein Umdenken in der Energiepolitik ist eine wesentliche Vora...      501
 ## 6 Wir Grüne stehen für eine Energiewende hin zu einem Aufbruch...      501
 ##   eu_code my_code pos
-## 1      NA       A   1
-## 2      NA       B   2
-## 3      NA       A   3
-## 4      NA       B   4
-## 5      NA       A   5
-## 6      NA       B   6
+## 1    &lt;NA&gt;       A   1
+## 2    &lt;NA&gt;       B   2
+## 3    &lt;NA&gt;       A   3
+## 4    &lt;NA&gt;       B   4
+## 5    &lt;NA&gt;       A   5
+## 6    &lt;NA&gt;       B   6
 </code></pre>
 
 <p>The function also provides a parameter to include all available metadata in
@@ -902,11 +902,12 @@ print(names(doc_df_with_meta))
 ##  [3] &quot;eu_code&quot;                     &quot;my_code&quot;                    
 ##  [5] &quot;pos&quot;                         &quot;manifesto_id&quot;               
 ##  [7] &quot;party&quot;                       &quot;date&quot;                       
-##  [9] &quot;language&quot;                    &quot;has_eu_code&quot;                
-## [11] &quot;is_primary_doc&quot;              &quot;may_contradict_core_dataset&quot;
-## [13] &quot;md5sum_text&quot;                 &quot;url_original&quot;               
-## [15] &quot;md5sum_original&quot;             &quot;annotations&quot;                
-## [17] &quot;id&quot;                          &quot;manual_edits&quot;
+##  [9] &quot;language&quot;                    &quot;source&quot;                     
+## [11] &quot;has_eu_code&quot;                 &quot;is_primary_doc&quot;             
+## [13] &quot;may_contradict_core_dataset&quot; &quot;md5sum_text&quot;                
+## [15] &quot;url_original&quot;                &quot;md5sum_original&quot;            
+## [17] &quot;annotations&quot;                 &quot;id&quot;                         
+## [19] &quot;manual_edits&quot;
 </code></pre>
 
 <p>For more information on the available metadata per document, refer to the section
@@ -927,8 +928,16 @@ distributions of scaling functions (see section <a href="#bootstrapping-scaling-
 <h2>Using manifestoR&#39;s scaling functions</h2>
 
 <p>Implementationwise, a scaling function in <code>manifestoR</code> takes a data.frame of cases
-and outputs a position value for each case. For example, you can compute the RILE
-scores of cases from the main dataset by calling:</p>
+and outputs a position value for each case. The Manifesto Project Dataset (MPDS)
+can be downloaded in <code>manifestoR</code> using the function <code>mp_maindataset()</code> (see section
+<a href="#downloading-the-manifesto-project-dataset">Downloading the Manifesto Project Dataset</a> above). Then you can e.g. compute the RILE scores of cases from the main dataset by calling:</p>
+
+<pre><code class="r">mpds &lt;- mp_maindataset()
+</code></pre>
+
+<pre><code>## Connecting to Manifesto Project DB API... 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4
+</code></pre>
 
 <pre><code class="r">rile(subset(mpds, countryname == &quot;Albania&quot;))
 </code></pre>
@@ -963,10 +972,8 @@ or <code>ManifestoDocument</code> and returns the scaled positions for each docu
 <pre><code class="r">corpus &lt;- mp_corpus(countryname == &quot;Romania&quot;)
 </code></pre>
 
-<pre><code>## Connecting to Manifesto Project DB API... 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3 
-## Connecting to Manifesto Project DB API... corpus version: 2015-3
+<pre><code>## Connecting to Manifesto Project DB API... corpus version: 2015-4 
+## Connecting to Manifesto Project DB API... corpus version: 2015-4
 </code></pre>
 
 <pre><code class="r">mp_scale(corpus, scalingfun = logit_rile)
@@ -1034,16 +1041,17 @@ mp_bootstrap(data, fun = rile)
 <pre><code>## Source: local data frame [38 x 2]
 ## 
 ##       rile       sd
-## 1   15.929 7.328464
-## 2  -11.463 4.138605
-## 3   10.274 4.831586
-## 4   11.111 7.901768
-## 5    7.176 4.328210
-## 6   17.923 5.799810
-## 7    5.405 4.275950
-## 8    5.882 7.201544
-## 9   -7.298 4.069295
-## 10 -13.540 6.852035
+##      (dbl)    (dbl)
+## 1   15.929 7.496183
+## 2  -11.463 4.248530
+## 3   10.274 4.796508
+## 4   11.111 7.926599
+## 5    7.176 4.239248
+## 6   17.923 6.017582
+## 7    5.405 4.351554
+## 8    5.882 7.190107
+## 9   -7.298 4.095676
+## 10 -13.540 6.968436
 ## ..     ...      ...
 </code></pre>
 
@@ -1062,18 +1070,19 @@ mp_bootstrap(data,
 
 <pre><code>## Source: local data frame [38 x 4]
 ## 
-##    custom_scale        var     q0.025    q0.975
-## 1         0.885  2.2208370  -1.769912 3.5398230
-## 2        -0.395  0.1552858  -1.185771 0.0000000
-## 3         0.685  1.4072578  -1.369863 2.7397260
-## 4        -1.111  1.3371878  -3.333333 0.0000000
-## 5         0.000  2.7308726  -2.870813 3.3492823
-## 6         0.000  1.8229684  -2.830189 2.8301887
-## 7        -1.081  1.1283485  -3.243243 0.5405405
-## 8        -5.882 16.3693105 -14.705882 0.0000000
-## 9         0.000  0.5124629  -1.459854 1.4598540
-## 10        3.125  3.3098159   0.000000 7.2916667
-## ..          ...        ...        ...       ...
+##    custom_scale        var     q0.025   q0.975
+##           (dbl)      (dbl)      (dbl)    (dbl)
+## 1         0.885  2.5923261  -2.654867 4.424779
+## 2        -0.395  0.1557837  -1.185771 0.000000
+## 3         0.685  1.3530588  -1.369863 3.424658
+## 4        -1.111  1.1774429  -3.333333 0.000000
+## 5         0.000  2.7397503  -3.349282 3.349282
+## 6         0.000  1.8868771  -2.830189 2.830189
+## 7        -1.081  1.0384061  -3.243243 1.081081
+## 8        -5.882 17.6819034 -14.705882 0.000000
+## 9         0.000  0.5075712  -1.459854 1.459854
+## 10        3.125  3.0498283   0.000000 7.291667
+## ..          ...        ...        ...      ...
 </code></pre>
 
 <h1>Additional Information</h1>
@@ -1112,7 +1121,7 @@ of the github repository.</p>
 
 <p>Gabel, M. J., &amp; Huber, J. D. (2000). Putting Parties in Their Place: Inferring Party Left-Right Ideological Positions from Party Manifestos Data. American Journal of Political Science, 44(1), 94-103.</p>
 
-<p>Grimmer, J., and Stewart, B.. 2013. Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts. Political Analysis 21(3): 267–97.</p>
+<p>Grimmer, J., &amp; Stewart, B.. 2013. Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts. Political Analysis 21(3): 267–97.</p>
 
 <p>Kim, H., &amp; Fording, R. C. (1998). Voter ideology in western democracies, 1946-1989. European Journal of Political Research, 33(1), 73-97.</p>
 
@@ -1120,9 +1129,11 @@ of the github repository.</p>
 
 <p>Laver, M., &amp; Garry, J. (2000). Estimating Policy Positions from Political Texts. American Journal of Political Science, 44(3), 619-634.</p>
 
-<p>Lehmann, P., Merz, N., Regel, S. &amp; Werner, A. (2015). Manifesto Corpus. Berlin: WZB Berlin Social Science Center.</p>
+<p>Lehmann, P.,  Matthieß, T., Merz, N., Regel, S., &amp; Werner, A. (2015): Manifesto Corpus. Version: 2015-4. Berlin: WZB Berlin Social Science Center.</p>
 
 <p>Lowe, W., Benoit, K., Mikhaylov, S., &amp; Laver, M. (2011). Scaling Policy Preferences from Coded Political Texts. Legislative Studies Quarterly, 36(1), 123-155.</p>
+
+<p>Volkens, A., Lehmann, P., Matthieß, T., Merz, N., Regel, S., &amp; Werner, A (2015): The Manifesto Data Collection. Manifesto Project (MRG/CMP/MARPOR). Version 2015a. Berlin: Wissenschaftszentrum Berlin für Sozialforschung (WZB)</p>
 
 </body>
 

@@ -4,11 +4,14 @@
 \alias{mp_check_for_corpus_update}
 \alias{mp_update_cache}
 \alias{mp_which_corpus_version}
+\alias{mp_which_dataset_versions}
 \title{Check for Updates of Corpus in Manifesto Project DB}
 \usage{
 mp_check_for_corpus_update(apikey = NULL, only_stable = TRUE)
 
-mp_which_corpus_version()
+mp_which_corpus_version(cache_env = mp_cache())
+
+mp_which_dataset_versions(cache_env = mp_cache())
 
 mp_update_cache(apikey = NULL, only_stable = TRUE)
 }
@@ -18,6 +21,8 @@ the API key set via \code{\link{mp_setapikey}}.}
 
 \item{only_stable}{Consider only for versions marked as stable by the Manifesto
 Projec Team, defaults to TRUE}
+
+\item{cache_env}{Cache environment}
 }
 \value{
 \code{mp_update_cache} returns a list with a boolean
@@ -26,6 +31,9 @@ Projec Team, defaults to TRUE}
 
 \code{mp_which_corpus_version} returns the current version id of the
 corpus and metadata stored in the cache
+
+\code{mp_which_dataset_versions} returns the names of the main dataset
+versions which are in the cache, i.e. have been downloaded
 
 \code{mp_update_cache} returns the character identifier of the version updated to
 }

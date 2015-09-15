@@ -116,7 +116,9 @@ codes.ManifestoDocument <- function(x, layer = "cmp_code") {
 #' @rdname codes
 #' @export
 codes.ManifestoCorpus <- function(x, layer = "cmp_code") {
-  c(unlist(lapply(x, codes, layer)))
+  l <- lapply(x, codes, layer)
+  names(l) <- NULL
+  return(unlist(l))
 }
 
 #' @param value new codes
@@ -181,13 +183,16 @@ as.data.frame.ManifestoDocument <- function(x,
                                             stringsAsFactors = FALSE,
                                             with.meta = FALSE,
                                             ...) {
-    
   dftotal <- data.frame(x$content,
-                        pos = 1:length(x),
+                        pos = if (length(x) > 0) {
+                          1:length(x)
+                        } else {
+                          integer(0)
+                        },
                         row.names = row.names,
                         stringsAsFactors = stringsAsFactors,
                         ...)
-  if (with.meta) {
+  if (with.meta & nrow(dftotal) > 0) {
     metadata <- data.frame(t(unlist(meta(x))),
                             stringsAsFactors = stringsAsFactors) %>%
                 mutate(party = as.numeric(as.character(party)),
