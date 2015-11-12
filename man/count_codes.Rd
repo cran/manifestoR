@@ -6,7 +6,8 @@
 \usage{
 count_codes(doc, code_layers = c("cmp_code"), with_eu_codes = "auto",
   prefix = "per", relative = TRUE, include_codes = if ("cmp_code" \%in\%
-  code_layers) {     v4_categories() } else {     c() })
+  code_layers) {     v4_categories() } else {     c() },
+  aggregate_v5_subcategories = TRUE)
 }
 \arguments{
 \item{doc}{ManifestoDocument, ManifestoCorpus or vector of codes}
@@ -25,6 +26,9 @@ from the document's metadata}
 \item{include_codes}{Vector of categories that should be included even if they are not
 present in the data; the value of the created variables then defaults to 0.0 (or NA if
 no codes are present at all);}
+
+\item{aggregate_v5_subcategories}{if TRUE, for handbook version 5 subcategories, the aggregate
+category's count/percentage is computed as well}
 }
 \value{
 A data.frame with onw row and the counts/percentages as columns

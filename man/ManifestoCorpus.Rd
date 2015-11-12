@@ -5,10 +5,10 @@
 \alias{ManifestoCorpus}
 \title{Manifesto Corpus class}
 \usage{
-ManifestoCorpus(csource)
+ManifestoCorpus(csource = ManifestoJSONSource())
 }
 \arguments{
-\item{csource}{a \code{\link{ManifestoSource}}, see \code{\link[tm]{Source}}}
+\item{csource}{a \code{\link{ManifestoJSONSource}}, see \code{\link[tm]{Source}}}
 }
 \description{
 Objects of this class are returned by \code{\link{mp_corpus}}.

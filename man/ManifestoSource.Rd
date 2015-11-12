@@ -2,13 +2,19 @@
 % Please edit documentation in R/corpus.R
 \docType{class}
 \name{ManifestoSource}
+\alias{ManifestoJSONSource}
 \alias{ManifestoSource}
 \title{Data Source for Manifesto Corpus}
 \usage{
 ManifestoSource(texts)
+
+ManifestoJSONSource(texts = list(manifesto_id = c(), items = c()),
+  query_meta = data.frame())
 }
 \arguments{
 \item{texts}{texts of the manifesto documents}
+
+\item{query_meta}{metadata to attach to document by joining on manifesto_id}
 }
 \description{
 Data Source for Manifesto Corpus
