@@ -152,6 +152,34 @@ meyer_miller_2013_policy_dimensions <- function() {
   })
 }
 
+#' Default programmatic clarity dimensions from 
+#' Giebler/Lacewell/Regel/Werner 2015.
+#'
+#' @references Giebler/Lacewell/Regel/Werner (2015). Mass, Catch-all, or 
+#' Programmatic? Toward an Empirical Classification of Party Types. Manuscript.
+#'
+#' @export
+clarity_dimensions <- function() {
+  list(
+    "fsp" = list(pole_1 = c(101), pole_2 = c(102)),
+    "mil" = list(pole_1 = c(104), pole_2 = c(105)),
+    "int" = list(pole_1 = c(107), pole_2 = c(109)),
+    "eui" = list(pole_1 = c(108), pole_2 = c(110)),
+    "con" = list(pole_1 = c(203), pole_2 = c(204)),
+    "cen" = list(pole_1 = c(301), pole_2 = c(302)),
+    "mre" = list(pole_1 = c(401), pole_2 = c(403)),
+    "pro" = list(pole_1 = c(406), pole_2 = c(407)),
+    "fis" = list(pole_1 = c(409), pole_2 = c(414)),
+    "wel" = list(pole_1 = c(504), pole_2 = c(505)),
+    "edu" = list(pole_1 = c(506), pole_2 = c(507)),
+    "nwl" = list(pole_1 = c(601), pole_2 = c(602)),
+    "tmo" = list(pole_1 = c(603), pole_2 = c(604)),
+    "mul" = list(pole_1 = c(607), pole_2 = c(608)),
+    "lab" = list(pole_1 = c(701), pole_2 = c(702))
+  ) %>%
+    lapply(lapply, prefix, "per")
+}
+
 
 #' Aggregate category percentages in groups
 #' 
@@ -165,12 +193,16 @@ meyer_miller_2013_policy_dimensions <- function() {
 #' (as given in the name); see default value for an example of the format
 #' @param na.rm passed on to \code{\link{sum}}
 #' @param keep keep variables that were aggregated in result?
+#' @param overwrite Names of the variables that are allowed to be overwritten by
+#' aggregate. Defaults to all aggregate variable names. If a variable is
+#' overwritten, a message is issued in any case.
 #' 
 #' @export
 aggregate_pers <- function(data,
                            groups = v5_v4_aggregation_relations(),
                            na.rm = FALSE,
-                           keep = FALSE) {
+                           keep = FALSE,
+                           overwrite = names(groups)) {
   
   data <- 
     Reduce(function(data, aggregate) {
@@ -178,17 +210,19 @@ aggregate_pers <- function(data,
           select(one_of(intersect(groups[[aggregate]], names(data))))
         if (ncol(aggregated) != 0L) {
           aggregated <- rowSums(aggregated, na.rm = na.rm)
-          if (aggregate %in% names(data) &&
-              aggregate != "peruncod" &&
+            if (aggregate %in% names(data) &&
                 any(!is.na(data[,aggregate]) & 
-                   data[,aggregate] != 0.0 & 
-                   data[,aggregate] != aggregated)) {
-            warning(paste0("Changing non-zero supercategory per value ", aggregate, 
-                           "when aggregating subcateogory percentages"),
-                    call. = FALSE)
+                    data[,aggregate] != 0.0 & 
+                    na_replace(data[,aggregate] != aggregated), TRUE)) {
+              if (aggregate %in% overwrite) {
+                message(paste0("Changing non-zero supercategory per value ", aggregate, 
+                               "when aggregating subcateogory percentages"))
+                data[,aggregate] <- aggregated
+              }
+            } else {
+              data[,aggregate] <- aggregated
+            }
           }
-          data[,aggregate] <- aggregated
-        }
         data
       },
       names(groups),
@@ -196,7 +230,7 @@ aggregate_pers <- function(data,
   
   if (!keep) {
     data %>%
-      select(-one_of(unlist(groups)))
+      select(-one_of(setdiff(unlist(groups), names(groups))))
   } else {
     data
   }
@@ -340,9 +374,10 @@ count_codes.default <- function(doc,
     df <- data.frame(total = 0L)
   }
   
-  if ("per0" %in% names(df)) {
-    df <- rename(df, peruncod = per0)
-  }
+  df <- aggregate_pers(df,
+                       groups = list(peruncod = c("per0", "per000")),
+                       keep = FALSE,
+                       na.rm = TRUE)
 
   names(df) <- gsub(".", "_", names(df), fixed = TRUE)
     

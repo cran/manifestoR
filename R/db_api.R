@@ -96,7 +96,7 @@ formatmpds <- function(mpds) {
 
   for (name in names(mpds)) {
 
-    if (!name %in% c("edate", "countryname", "partyname")) {
+    if (!name %in% c("edate", "countryname", "partyname", "candidatename")) {
       mpds[,name] <- as.numeric(as.character(mpds[,name]))
     }
 
@@ -212,21 +212,25 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
   # convert to desired format (before caching)
   if (type %in% c(kmtype.versions, kmtype.corecitation, kmtype.corpuscitation)) {
 
-    return(data.frame(fromJSON(jsonstr)))
+    return(data.frame(fromJSON(jsonstr), stringsAsFactors = FALSE))
 
   } else if (type == kmtype.metaversions) {
 
     return(fromJSON(jsonstr)$versions)    
 
   } else if (type == kmtype.main) {
-
-    mpds <- formatmpds(data.frame(fromJSON(jsonstr)))
-  
-    return(mpds)
+    
+    if (is.null(parameters$kind)) {
+      return(formatmpds(data.frame(fromJSON(jsonstr), stringsAsFactors = FALSE)))
+    } else {
+      return(jsonstr %>%
+               fromJSON() %>%
+               getElement("content"))
+    }
 
   } else if (type == kmtype.meta) {
 
-    metadata <- data.frame(separate_missings(fromJSON(jsonstr), request="metadata"))
+    metadata <- data.frame(separate_missings(fromJSON(jsonstr), request="metadata"), stringsAsFactors = FALSE)
 
     if (nrow(metadata) > 0) {
       names(metadata)[which(names(metadata)=="party_id")] <- "party"
