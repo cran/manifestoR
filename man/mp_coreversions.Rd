@@ -4,7 +4,7 @@
 \alias{mp_coreversions}
 \title{List the available versions of the Manifesto Project's Main Dataset}
 \usage{
-mp_coreversions(apikey = NULL, cache = TRUE)
+mp_coreversions(apikey = NULL, cache = TRUE, kind = "main")
 }
 \arguments{
 \item{apikey}{API key to use. Defaults to \code{NULL}, resulting in using
@@ -12,6 +12,9 @@ the API key set via \code{\link{mp_setapikey}}.}
 
 \item{cache}{Boolean flag indicating whether to use locally cached data if
 available.}
+
+\item{kind}{one of "main" (default) or "south_america" to discrimante the Main Dataset
+and the South America Dataset}
 }
 \description{
 List the available versions of the Manifesto Project's Main Dataset

@@ -38,17 +38,30 @@
 mp_maindataset <- function(version="current", south_america = FALSE, download_format = NULL, apikey=NULL, cache=TRUE) {
   
   if (version == "current") {
-    versions <- mp_coreversions(apikey=apikey, cache=cache)
+    versions <- mp_coreversions(apikey=apikey, cache=cache, kind = ifelse(south_america, "south_america", "main"))
     version <- as.character(versions[nrow(versions), "datasets.id"]) # TODO date in dataset
+  } else if (!grepl("MPDS", version)) {
+    version <- paste0(ifelse(south_america, "MPDSSA", "MPDS"), version)
   }
   
-  if (south_america) {
-    if (as.numeric(gsub(".*?(\\d+).*", "\\1", version)) < 2015) {
-      warning("No south america dataset available before 2015!")
-      return(tbl_df(data.frame()))
-    }
-    version <- gsub("MPDS", "MPDSSA", version)
+  if (south_america & !grepl("MPDSSA", version)) {
+    warning(paste("The specified version string", version,
+                  "does not identify a South America dataset, although south_america = TRUE.",
+                  "The returned dataset might be incorrect!"))
   }
+  if (!south_america & grepl("MPDSSA", version)) {
+    warning(paste("The specified version string", version,
+                  "does identify a South America dataset, but south_america = FALSE.",
+                  "The returned dataset might be incorrect!"))
+  }
+  
+  # if (south_america) {
+    # if (as.numeric(gsub(".*?(\\d+).*", "\\1", version)) < 2015) {
+      # warning("No south america dataset available before 2015!")
+      # return(tbl_df(data.frame()))
+    # }
+    # version <- gsub("MPDS", "MPDSSA", version)
+  # }
   
   parameters <- c(key=version, kind=download_format) %>% as.list()
 
@@ -79,6 +92,8 @@ mp_southamerica_dataset <- functional::Curry(mp_maindataset, south_america = TRU
 #'        the API key set via \code{\link{mp_setapikey}}.
 #' @param cache Boolean flag indicating whether to use locally cached data if
 #'              available.
+#' @param kind one of "main" (default) or "south_america" to discrimante the Main Dataset
+#' and the South America Dataset
 #'
 #' @details
 #' For the available versions of the corpus, see \code{\link{mp_corpusversions}}
@@ -86,9 +101,9 @@ mp_southamerica_dataset <- functional::Curry(mp_maindataset, south_america = TRU
 #' @examples
 #' \dontrun{mp_coreversions()}
 #' @export
-mp_coreversions <- function(apikey=NULL, cache=TRUE) {
+mp_coreversions <- function(apikey=NULL, cache=TRUE, kind = "main") {
   
-  versions <- get_viacache(kmtype.versions, apikey=apikey, cache=cache)
+  versions <- get_viacache(kmtype.versions, apikey=apikey, cache=cache, kind=kind)
   
   return(versions)
 }
@@ -107,12 +122,12 @@ formatids <- function(ids) {
   names(ids) <- tolower(names(ids))
   ids <- ids[,intersect(c("party", "date", "edate"), names(ids))]
   
-  suppressWarnings({
-    nodate.idxs <- which(is.null(ids$date) | is.na(ids$date))
-    ids$date[nodate.idxs] <- as.numeric(format(ids[nodate.idxs,]$edate,
-                                               format="%Y%m"))
-  })
-  
+  if ("date" %in% names(ids) & "edate" %in% names(ids)) {
+    ids <- mutate(ids, date = ifelse(is.na(date),
+                                     as.numeric(format(edate, format="%Y%m")),
+                                     date))
+  }
+
   n.before <- nrow(ids)
   suppressWarnings(ids <- ids[which(!is.na(ids$party) & !is.na(ids$date)),])
   n.after <- nrow(ids)
@@ -523,6 +538,7 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
                     apikey = NULL) {
   
   cite_message <- kcitemessage
+  cite_data <- data_frame()
   
   if (is.null(apikey) && is.na(getn("apikey", envir = mp_globalenv))) {
     cite_message <- paste0(cite_message, "\n\n",
@@ -531,31 +547,49 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
   } else {
     
     if (!is.null(corpus_version) && !is.na(corpus_version)) {
+      cite_string <- get_citation(corpus_version, kmtype.corpuscitation, apikey = apikey)
       cite_message <- paste0(cite_message, "\n\n",
                              "You're currently using corpus version ", corpus_version, ", ",
                              "please cite as\n\n",
-                             get_citation(corpus_version, kmtype.corpuscitation, apikey = apikey))
+                             cite_string)
+      cite_data <- cite_data %>%
+        bind_rows(data_frame(data = "corpus",
+                             source = "MARPOR",
+                             version = corpus_version,
+                             citation = cite_string))
       
       corpus_cache <- manifestos_in_cache() %>%
                         select(party, date) %>%
                         mp_metadata(apikey = apikey)
       if (!is.null(corpus_cache) && 
-          !is.null(corpus_cache$source)) {
+          "source" %in% names(corpus_cache)) {
         if(any(corpus_cache$source == "CEMP")) {
+          cite_string <- get_citation("CEMP", kmtype.corpuscitation, apikey = apikey)
           cite_message <- paste0(cite_message, "\n\n",
                                  "You have downloaded uncoded machine-readable manifesto texts, ",
                                  "which have been originally created in the Comparative ",
                                  "Electronic Manifestos Project. ",
                                  "Please cite additionally", "\n\n",
-                                 get_citation("CEMP", kmtype.corpuscitation, apikey = apikey))
+                                 cite_string)
+          cite_data <- cite_data %>%
+            bind_rows(data_frame(data = "corpus-additional",
+                                 source = "CEMP",
+                                 version = corpus_version,
+                                 citation = cite_string))
         }
         if(any(corpus_cache$source == "MZES")) {
+          cite_string <- get_citation("MZES", kmtype.corpuscitation, apikey = apikey)
           cite_message <- paste0(cite_message, "\n\n",
                                  "You have downloaded uncoded machine-readable manifesto texts, ",
                                  "which have been originally created in cooperation with the ",
                                  "Mannheimer Zentrum fuer Europaeische Sozialforschung.",
                                  "Please cite additionally", "\n\n",
-                                 get_citation("MZES", kmtype.corpuscitation, apikey = apikey))
+                                 cite_string)
+          cite_data <- cite_data %>%
+            bind_rows(data_frame(data = "corpus-additional",
+                                 source = "MZES",
+                                 version = corpus_version,
+                                 citation = cite_string))
         }
       }
     } else {
@@ -566,14 +600,22 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
     }
     
     if (length(core_versions) > 0) {
+      cite_strings <- core_versions %>%
+        sapply(get_citation, type = kmtype.corecitation, apikey = apikey)
       cite_message <- paste0(cite_message, "\n\n",
                              "You are using Manifesto Project Dataset version(s) ",
                              paste(core_versions, collapse = ", "), ", please cite as \n\n", 
-                             core_versions %>%
-                               sapply(get_citation, type = kmtype.corecitation, apikey = apikey) %>% 
-                               paste(collapse = "\n\n"))
+                             paste(cite_strings, collapse = "\n\n"))
+      cite_data <- cite_data %>%
+        bind_rows(data_frame(data = rep("dataset", length(core_versions)),
+                             source = rep("MARPOR", length(core_versions)),
+                             version = core_versions,
+                             citation = cite_strings))
     }
   }
 
   message(cite_message)
+  
+  return(cite_data)
+
 }
