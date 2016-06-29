@@ -1,12 +1,12 @@
-5ea2ce41d340cf23c9801a6b41ddb601 *ChangeLog
-d7720ffdb6b11199f26a0afeef147d93 *DESCRIPTION
+4ce8a38054832a968389786fb213630b *ChangeLog
+b598444ffc2a20a7598f0a8882d20175 *DESCRIPTION
 99928b1e4c7bde966ab2b0104c7b5ca2 *NAMESPACE
 25262ef59ba1df0355057e3898a83033 *R/cache.R
 8fbe2d2b81f7020cd1317a86c2197104 *R/clarity.R
 c2426c60ea0b1d7e152b78e32d2ef423 *R/codes.R
 d48fd4e596564e1a55c281ba8ee39ca3 *R/corpus.R
 79ad95bb09a3cb53a911bdcbfa3851a5 *R/dataset.R
-13d10d3b02fec53d4521706e0cabab2c *R/db_api.R
+581bb805adb0197f5b707038f204ecfe *R/db_api.R
 1dbbff7f4033bb98fbbe07551cdf82ba *R/globals.R
 887d0fdf844830eddaef479b23ad7ec9 *R/issue_attention.R
 e67b36048c2bef95982396e9b0bbdd40 *R/manifesto.R
