@@ -21,4 +21,3 @@ If you do not have an account, you can register on the webpage.
 The key is read from the file specified in \code{key.file}. If this
 argument is \code{NULL}, the key given in the argument \code{key} is used.
 }
-

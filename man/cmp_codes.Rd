@@ -27,4 +27,3 @@ converted to a 000, while all other subcategory codes with an appended
 dot and fourth digit are aggregated to the corresponding three-digit 
 main category.
 }
-

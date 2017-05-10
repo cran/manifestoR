@@ -14,4 +14,3 @@ Formats a data.frame of ids such that it can be used for querying
 the Manifesto Project Database. That is, it must have non-NA-fields
 party and date.
 }
-

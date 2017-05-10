@@ -21,4 +21,3 @@ rescale(pos, newmin = -1, newmax = 1, oldmin = min(pos),
 \description{
 Simple linear rescaling of positions
 }
-

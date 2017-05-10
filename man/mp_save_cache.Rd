@@ -20,4 +20,3 @@ and waiting times.
 \examples{
 \dontrun{mp_save_cache() ## save to "mp_cache.RData" in current working directory}
 }
-

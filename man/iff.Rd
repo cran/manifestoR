@@ -24,4 +24,3 @@ otherwise return input value unchanged
 \details{
 iffn is ... if and only if test is FALSE
 }
-

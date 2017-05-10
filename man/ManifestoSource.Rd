@@ -2,8 +2,8 @@
 % Please edit documentation in R/corpus.R
 \docType{class}
 \name{ManifestoSource}
-\alias{ManifestoJSONSource}
 \alias{ManifestoSource}
+\alias{ManifestoJSONSource}
 \title{Data Source for Manifesto Corpus}
 \usage{
 ManifestoSource(texts)
@@ -22,4 +22,3 @@ Data Source for Manifesto Corpus
 \details{
 Used internally for constructing \code{\link{ManifestoCorpus}} objects.
 }
-

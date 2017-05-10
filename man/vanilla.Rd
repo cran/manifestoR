@@ -22,4 +22,3 @@ Factor scores using the regression method are then considered as party positions
 \references{
 Gabel, M. J., & Huber, J. D. (2000). Putting Parties in Their Place: Inferring Party Left-Right Ideological Positions from Party Manifestos Data. American Journal of Political Science, 44(1), 94-103.
 }
-

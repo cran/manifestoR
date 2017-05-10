@@ -25,4 +25,3 @@ Get API results via cache
 This function is internal to manifestoR and not designed for use from
 other namespaces
 }
-

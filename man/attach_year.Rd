@@ -15,4 +15,3 @@ input data with year variable attached
 \description{
 Compute year from date variable in MPDS
 }
-

@@ -19,4 +19,3 @@ data.frame with cases replicated
 \description{
 Replicates cases in a data.frame
 }
-

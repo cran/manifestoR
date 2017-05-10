@@ -29,4 +29,3 @@ split_belgium(data, wallonia_parties = c(21111, 21322, 21422, 21423, 21425,
 Recodes the country variable of a dataset to 218 (Flanders parties)
 and 219 (Wallonia parties) from 21 for Belgium
 }
-

@@ -21,4 +21,3 @@ Giebler, Heiko, Onawa Promise Lacewell, Sven Regel and Annika Werner. 2015.
 Niedergang oder Wandel? Parteitypen und die Krise der repraesentativen Demokratie. 
 In Steckt die Demokratie in der Krise?, ed. Wolfgang Merkel, 181-219. Wiesbaden: Springer VS.
 }
-

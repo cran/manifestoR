@@ -9,4 +9,3 @@ mp_emptycache()
 \description{
 Empty the manifestoR's cache
 }
-

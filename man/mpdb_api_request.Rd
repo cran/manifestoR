@@ -16,4 +16,3 @@ as specified by the Manifesto Project Database API}
 gets the requested url and passes HTTP header error codes on to raise R
 errors with the same text
 }
-

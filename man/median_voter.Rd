@@ -75,4 +75,3 @@ democracies: An update". In: European Journal of Political Research 42.1,
 McDonald, Michael D. (2002). Median Voters: 1950-1995.
 url: www2.binghamton.edu/political-science/research/MedianVoter.doc
 }
-

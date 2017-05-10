@@ -5,7 +5,8 @@
 \title{Interpolate values within election periods}
 \usage{
 mp_interpolate(df, vars = "(^rile$)|(^per((\\\\d{3}(_\\\\d)?)|\\\\d{4})$)",
-  by = "year", approx = zoo::na.approx, ...)
+  by = "year", approx = functional::Curry(zoo::na.approx, na.rm = FALSE),
+  ...)
 }
 \arguments{
 \item{df}{a data.frame with observations to be interpolated}
@@ -30,4 +31,3 @@ mp_interpolate(mp_maindataset(), method = "constant")
 mp_interpolate(mp_maindataset(), approx = na.spline, maxgap = 3)
 }
 }
-

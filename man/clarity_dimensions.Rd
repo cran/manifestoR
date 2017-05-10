@@ -15,4 +15,3 @@ Giebler/Lacewell/Regel/Werner 2015.
 Giebler/Lacewell/Regel/Werner (2015). Mass, Catch-all, or 
 Programmatic? Toward an Empirical Classification of Party Types. Manuscript.
 }
-

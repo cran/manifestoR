@@ -15,4 +15,3 @@ NA if the element is NULL, the element otherwise
 \description{
 Convert NULL to NA
 }
-

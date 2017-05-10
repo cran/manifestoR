@@ -2,8 +2,8 @@
 % Please edit documentation in R/nicheness.R
 \name{mp_nicheness}
 \alias{mp_nicheness}
-\alias{nicheness_bischof}
 \alias{nicheness_meyer_miller}
+\alias{nicheness_bischof}
 \title{Party nicheness measures}
 \usage{
 mp_nicheness(data, method = "bischof", ...)
@@ -84,4 +84,3 @@ Meyer, T.M., & Miller, B. (2013). The Niche Party Concept and Its Measurement. P
 Baeck, H., Debus, M., & Dumont, P. (2010). Who gets what in coalition governments? Predictors of portfolio
 allocation in parliamentary democracies. European Journal of Political Research 50(4): 441-478.
 }
-

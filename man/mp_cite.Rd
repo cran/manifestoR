@@ -18,4 +18,3 @@ the API key set via \code{\link{mp_setapikey}}.}
 \description{
 Print Manifesto Corpus citation information
 }
-

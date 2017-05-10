@@ -54,4 +54,3 @@ median(subset(mpds, countryname == "Switzerland")$rile, na.rm = TRUE)
 mp_maindataset(download_format = "dta") \%>\% read_dta() ## requires package haven
 }
 }
-

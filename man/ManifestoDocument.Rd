@@ -50,4 +50,3 @@ doc <- corpus[[1]]
 print(doc)
 }
 }
-

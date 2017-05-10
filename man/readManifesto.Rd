@@ -21,4 +21,3 @@ Used internally for constructing \code{\link{ManifestoCorpus}} objects.
 For the general mechanism refer to \code{tm}s \code{\link[tm]{Reader}}
 documentation.
 }
-

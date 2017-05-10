@@ -15,4 +15,3 @@ ManifestoDocumentMeta(meta = list(), id = character(0))
 \description{
 Manifesto Document Metadata
 }
-

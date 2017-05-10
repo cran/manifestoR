@@ -23,4 +23,3 @@ For usage and structure of the stored documents see
 \examples{
 \dontrun{corpus <- mp_corpus(subset(mp_maindataset(), countryname == "Russia"))}
 }
-

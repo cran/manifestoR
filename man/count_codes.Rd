@@ -36,4 +36,3 @@ A data.frame with onw row and the counts/percentages as columns
 \description{
 Count the codings from a ManifestoDocument
 }
-

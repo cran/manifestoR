@@ -19,4 +19,3 @@ environment.
 \examples{
 \dontrun{mp_load_cache() ## loads cache from file "mp_cache.RData"}
 }
-

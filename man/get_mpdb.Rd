@@ -26,4 +26,3 @@ Internal implementation. For more convenient access and caching use one of
 \code{\link{mp_availability}},  
 \code{\link{mp_maindataset}}.
 }
-

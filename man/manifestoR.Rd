@@ -17,10 +17,9 @@ License: \tab GPL (>= 3)\cr
 LazyLoad: \tab yes\cr
 }
 }
-\author{
-Jirka Lewandowski \email{jirka.lewandowski@wzb.eu}
-}
 \references{
 \url{https://manifesto-project.wzb.eu/}
 }
-
+\author{
+Jirka Lewandowski \email{jirka.lewandowski@wzb.eu}
+}

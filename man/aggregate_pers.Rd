@@ -27,4 +27,3 @@ variable holding the sum. If a variable with the name for the aggregate
 already exists, it is overwritten, giving a warning if it is changed, not NA,
 not zero and not named "peruncod".
 }
-

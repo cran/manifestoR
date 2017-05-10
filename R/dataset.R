@@ -20,11 +20,10 @@
 mp_interpolate <- function(df,
                            vars = "(^rile$)|(^per((\\d{3}(_\\d)?)|\\d{4})$)",
                            by = "year",
-                           approx = zoo::na.approx,
+                           approx = functional::Curry(zoo::na.approx, na.rm = FALSE),
                            ...)
   {
-  
-  curried_approx <- functional::Curry(approx, ...)
+
   the_approx <- function(x) {
     if (all(is.na(x))) {
       return(NA)
@@ -43,8 +42,8 @@ mp_interpolate <- function(df,
         right_join(data.frame(edate = seq_Date_multi(df$edate, by = by),
                               party = the_party),
                    by = c("edate", "party")) %>%
-        mutate_each_(funs(zoo(., edate) %>% the_approx() %>% as.numeric()),
-                     vars = grep(vars, names(df), value = TRUE))
+        mutate_at(grep(vars, names(df), value = TRUE),
+                  .funs = funs(zoo::zoo(., edate) %>% the_approx() %>% as.numeric()))
   
     } else {
       return(df)

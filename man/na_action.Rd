@@ -14,4 +14,3 @@ na_replace(vec, value = 0L)
 \description{
 Replace NAs in vector with fixed value
 }
-

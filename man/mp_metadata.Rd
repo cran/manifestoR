@@ -43,4 +43,3 @@ wanted <- data.frame(party=c(41320, 41320), date=c(200909, 200509))
 mp_metadata(wanted)
 }
 }
-

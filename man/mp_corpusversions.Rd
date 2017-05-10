@@ -20,4 +20,3 @@ to the corpus texts or metadata are made.
 \details{
 This function always bypasses the cache.
 }
-

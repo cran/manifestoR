@@ -27,4 +27,3 @@ Effective number of Manifesto Issues suggested by Zac Greene. When using the mea
 \references{
 Greene, Z. (2015). Competing on the Issues How Experience in Government and Economic Conditions Influence the Scope of Parties' Policy Messages. Party Politics.
 }
-

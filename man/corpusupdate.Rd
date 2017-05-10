@@ -2,9 +2,9 @@
 % Please edit documentation in R/cache.R
 \name{mp_check_for_corpus_update}
 \alias{mp_check_for_corpus_update}
-\alias{mp_update_cache}
 \alias{mp_which_corpus_version}
 \alias{mp_which_dataset_versions}
+\alias{mp_update_cache}
 \title{Check for Updates of Corpus in Manifesto Project DB}
 \usage{
 mp_check_for_corpus_update(apikey = NULL, only_stable = TRUE)
@@ -52,4 +52,3 @@ and all future calls to the API will request for the newer version.
 Note that this versioning applies to the corpus' texts and metadata, and not the
 versions of the core dataset. For this see \code{\link{mp_coreversions}}
 }
-

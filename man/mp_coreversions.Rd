@@ -25,4 +25,3 @@ For the available versions of the corpus, see \code{\link{mp_corpusversions}}
 \examples{
 \dontrun{mp_coreversions()}
 }
-

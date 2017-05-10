@@ -15,4 +15,3 @@ prefix(text, ...)
 Convenience function to use with magrittr
 wraps \code{\link{paste0}}, hence vectorised as \code{\link{paste0}}
 }
-
