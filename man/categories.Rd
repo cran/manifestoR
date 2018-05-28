@@ -2,14 +2,20 @@
 % Please edit documentation in R/codes.R, R/scaling_rile.R
 \name{v4_categories}
 \alias{v4_categories}
+\alias{v5_categories}
 \alias{v5_v4_aggregation_relations}
+\alias{cee_aggregation_relations}
 \alias{rile_r}
 \alias{rile_l}
 \title{Lists of categories and category relations}
 \usage{
 v4_categories()
 
+v5_categories()
+
 v5_v4_aggregation_relations()
+
+cee_aggregation_relations()
 
 rile_r()
 

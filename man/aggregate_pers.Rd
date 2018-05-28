@@ -22,8 +22,11 @@ aggregate. Defaults to all aggregate variable names. If a variable is
 overwritten, a message is issued in any case.}
 }
 \description{
-General function to aggregate percentage variables by creating a new
+\code{aggregate_pers} is a general function to aggregate percentage variables by creating a new
 variable holding the sum. If a variable with the name for the aggregate
 already exists, it is overwritten, giving a warning if it is changed, not NA,
 not zero and not named "peruncod".
+}
+\seealso{
+\code{\link{aggregate_pers_cee}}
 }

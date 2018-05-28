@@ -4,18 +4,18 @@
 \alias{mp_clarity}
 \title{Programmatic clarity measures (PC)}
 \usage{
-mp_clarity(data, weighting_kind = "party", weighting_source = NULL,
+mp_clarity(data, weighting_kind = "manifesto", weighting_source = NULL,
   auto_rescale_weight = TRUE, auto_rescale_variables = TRUE,
   dimensions = clarity_dimensions())
 }
 \arguments{
-\item{data}{a dataframe or matrix in format of Manifesto Project Main Dataset}
+\item{data}{a dataframe in format of Manifesto Project Main Dataset}
 
-\item{weighting_kind}{party or country-specific weighting of the dimensions}
+\item{weighting_kind}{manifesto or election-specific weighting of the dimensions}
 
-\item{weighting_source}{name of variable with party importance weighting (can be rmps, pervote)}
+\item{weighting_source}{name of variable with party importance (likely its importance within an election) weighting (can be rmps, pervote)}
 
-\item{auto_rescale_weight}{rescale weights to 0-1}
+\item{auto_rescale_weight}{rescale party importance weighting within elections to 0-1}
 
 \item{auto_rescale_variables}{rescale dimension variables to 0-1}
 

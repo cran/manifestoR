@@ -1,19 +1,19 @@
 Package: manifestoR
 Title: Access and Process Data and Documents of the Manifesto Project
-Date: 2017-05-08
-Version: 1.2.4
+Date: 2018-05-22
+Version: 1.3.0
 Authors@R: c(person("Jirka", "Lewandowski",
-		    role = c("aut", "cre"),
-		    email = "jirka.lewandowski@wzb.eu"),
+                    role = c("aut", "cre"),
+                    email = "jirka.lewandowski@wzb.eu"),
              person("Nicolas", "Merz",
                     role = c("aut"),
                     email = "nicolas.merz@wzb.eu"),
-	     person("Sven", "Regel",
-		    role = c("ctb"),
-		    email = "sven.regel@wzb.eu"),
-	     person("Pola", "Lehmann",
-		    role = c("ctb"),
-		    email = "pola.lehmann@wzb.eu"),
+             person("Sven", "Regel",
+                    role = c("ctb"),
+                    email = "sven.regel@wzb.eu"),
+             person("Pola", "Lehmann",
+                    role = c("ctb"),
+                    email = "pola.lehmann@wzb.eu"),
              person("Paul", "Muscat",
                     role = c("ctb"),
                     email = "paul.muscat@wzb.eu"))
@@ -28,14 +28,15 @@ Description: Provides access to coded election programmes from the Manifesto
 Depends: R (>= 3.1.0), NLP (>= 0.1-3), tm (>= 0.6), dplyr (>= 0.5),
         tibble (>= 1.1)
 Imports: utils, stats, magrittr, httr (>= 1.0.0), jsonlite (>= 0.9.12),
-        functional (>= 0.6), zoo (>= 1.7-11), psych, base64enc
+        functional (>= 0.6), zoo (>= 1.7-11), psych, base64enc,
+        htmlwidgets (>= 0.6), DT (>= 0.2), htmltools
 Suggests: knitr, rmarkdown, testthat (>= 1.0.2), R.rsp, haven (>=
         1.0.0), readxl (>= 1.0.0), devtools (>= 1.7.0), formatR, highr
 VignetteBuilder: R.rsp
 Collate: manifestoR-package.r globals.R pipe_helpers.R cache.R db_api.R
         corpus.R manifesto.R codes.R scaling_general.R scaling_rile.R
         scaling_functions.R issue_attention.R nicheness.R clarity.R
-        scaling_bootstrap.R dataset.R
+        scaling_bootstrap.R dataset.R codebook.R
 License: GPL (>= 3)
 URL: https://github.com/ManifestoProject/manifestoR,
         https://manifesto-project.wzb.eu/
@@ -43,7 +44,7 @@ BugReports: https://github.com/ManifestoProject/manifestoR/issues
 LazyData: true
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2017-05-10 08:05:26 UTC; gitlab-runner
+Packaged: 2018-05-23 09:12:58 UTC; gitlab-runner
 Author: Jirka Lewandowski [aut, cre],
   Nicolas Merz [aut],
   Sven Regel [ctb],
@@ -51,4 +52,4 @@ Author: Jirka Lewandowski [aut, cre],
   Paul Muscat [ctb]
 Maintainer: Jirka Lewandowski <jirka.lewandowski@wzb.eu>
 Repository: CRAN
-Date/Publication: 2017-05-10 11:27:50 UTC
+Date/Publication: 2018-05-28 19:09:42 UTC

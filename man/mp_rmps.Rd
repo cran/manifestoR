@@ -4,10 +4,18 @@
 \alias{mp_rmps}
 \title{Relative measure of party size (RMPS)}
 \usage{
-mp_rmps(data)
+mp_rmps(data, adapt_zeros = TRUE, ignore_na = TRUE, threshold_sum = 75)
 }
 \arguments{
 \item{data}{a numerical vector with vote shares}
+
+\item{adapt_zeros}{a boolean to switch on the conversion of zero values to 0.01 
+to avoid issues concerning division by zero}
+
+\item{ignore_na}{a boolean to switch on ignoring NA entries, otherwise having NA entries
+will lead to only NA values in the result}
+
+\item{threshold_sum}{the threshold of the sum of all vote shares for allowing the calculation}
 }
 \value{
 a vector of rmps values
@@ -15,6 +23,10 @@ a vector of rmps values
 \description{
 Computes the relative measure of party size as suggested by 
 Giebler/Lacewell/Regel/Werner 2015.
+}
+\details{
+Hint: In a dataset with multiple elections the usage of the function
+might require to calculate the measure per election (eg. using group_by)
 }
 \references{
 Giebler, Heiko, Onawa Promise Lacewell, Sven Regel and Annika Werner. 2015. 
