@@ -11,8 +11,6 @@ logit_rile(x)
 }
 \arguments{
 \item{x}{A data.frame with cases to be scaled, variables named "per..."}
-
-\item{...}{A ManifestoCorpus or ManifestoDocument with annotated texts to be be scaled}
 }
 \description{
 Computes the RILE or other bipolar linear scaling measures for each case in a

@@ -4,11 +4,16 @@
 \alias{split_belgium}
 \title{Split Belgium party system into separate groups}
 \usage{
-split_belgium(data, wallonia_parties = c(21111, 21322, 21422, 21423, 21425,
-  21426, 21522, 21911), brussels_parties = c(21424, 21912),
-  belgium_parties = c(21320, 21420, 21520), flanders_parties = c(21112,
-  21221, 21321, 21330, 21421, 21430, 21521, 21913, 21914, 21915, 21916, 21917),
-  presplit_countrycode = 21, ...)
+split_belgium(
+  data,
+  wallonia_parties = c(21111, 21322, 21422, 21423, 21425, 21426, 21522, 21911),
+  brussels_parties = c(21424, 21912),
+  belgium_parties = c(21320, 21420, 21520),
+  flanders_parties = c(21112, 21221, 21321, 21330, 21421, 21430, 21521, 21913, 21914,
+    21915, 21916, 21917),
+  presplit_countrycode = 21,
+  ...
+)
 }
 \arguments{
 \item{data}{data.frame in format of the Manifesto Project's Main Dataset}

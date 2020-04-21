@@ -3,7 +3,6 @@
 \docType{package}
 \name{manifestoR}
 \alias{manifestoR}
-\alias{manifestoR-package}
 \title{Access and process data and documents of the Manifesto Project}
 \description{
 Provides access to coded election programmes from the Manifesto

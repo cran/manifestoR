@@ -4,8 +4,11 @@
 \alias{mp_cite}
 \title{Print Manifesto Corpus citation information}
 \usage{
-mp_cite(corpus_version = mp_which_corpus_version(),
-  core_versions = mp_which_dataset_versions(), apikey = NULL)
+mp_cite(
+  corpus_version = mp_which_corpus_version(),
+  core_versions = mp_which_dataset_versions(),
+  apikey = NULL
+)
 }
 \arguments{
 \item{corpus_version}{corpus version for which citation should be printed}

@@ -4,8 +4,13 @@
 \alias{aggregate_pers}
 \title{Aggregate category percentages in groups}
 \usage{
-aggregate_pers(data, groups = v5_v4_aggregation_relations(), na.rm = FALSE,
-  keep = FALSE, overwrite = names(groups))
+aggregate_pers(
+  data,
+  groups = v5_v4_aggregation_relations(),
+  na.rm = FALSE,
+  keep = FALSE,
+  overwrite = names(groups)
+)
 }
 \arguments{
 \item{data}{dataset to use in aggregation}

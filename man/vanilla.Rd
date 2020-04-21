@@ -4,8 +4,11 @@
 \alias{vanilla}
 \title{Vanilla Scaling by Gabel & Huber}
 \usage{
-vanilla(data, vars = grep("per\\\\d{3}$", names(data), value = TRUE),
-  invert = FALSE)
+vanilla(
+  data,
+  vars = grep("per\\\\d{3}$", names(data), value = TRUE),
+  invert = FALSE
+)
 }
 \arguments{
 \item{data}{A data.frame with cases to be scaled, variables named "per..."}

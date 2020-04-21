@@ -7,8 +7,11 @@
 \alias{scale_ratio}
 \title{Scaling functions}
 \usage{
-scale_weighted(data, vars = grep("per((\\\\d{3}(_\\\\d)?)|\\\\d{4}|(uncod))$",
-  names(data), value = TRUE), weights = 1)
+scale_weighted(
+  data,
+  vars = grep("per((\\\\d{3}(_\\\\d)?)|\\\\d{4}|(uncod))$", names(data), value = TRUE),
+  weights = 1
+)
 
 scale_logit(data, pos, neg, N = data[, "total"], zero_offset = 0.5, ...)
 
@@ -39,14 +42,6 @@ Scaling functions take a data.frame of variables with information about
 political parties/text and position the cases on a scale, i.e. output a
 vector of values. For applying scaling functions directly to text documents,
 refer to \code{\link{mp_scale}}.
-
-\code{scale_logit} scales the data on a logit scale as described by Lowe et al. (2011).
-
-\code{scale_bipolar} scales the data by adding up the variable
-values in pos and substracting the variable values in neg.
-
-\code{scale_ratio} scales the data taking the ratio of the sum of the variable
-values in pos and the sum of the variable values in neg as suggested by Kim and Fording (1998) and by Laver & Garry (2000).
 }
 \details{
 \code{scale_weighted} scales the data as a weighted sum of the variable values

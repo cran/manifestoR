@@ -32,6 +32,4 @@ code_layers(x)
 With the accessor the codes of a Manifesto Document can be
 read and modified. The codes of a Manifesto Corpus can only be read,
 modification needs to be done document-wise.
-
-\code{codelayers} gives a list of the names of the coding layers present in the ManifestoDocument
 }

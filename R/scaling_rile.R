@@ -18,7 +18,6 @@ rile_l <- function() {
 #'
 #' @rdname rile
 #' @param x A data.frame with cases to be scaled, variables named "per..."
-#' @param ... A ManifestoCorpus or ManifestoDocument with annotated texts to be be scaled
 #' @export
 rile <- function(x) { UseMethod("rile", x) }
 #' @export

@@ -8,8 +8,10 @@
 \usage{
 ManifestoSource(texts)
 
-ManifestoJSONSource(texts = list(manifesto_id = c(), items = c()),
-  query_meta = data.frame())
+ManifestoJSONSource(
+  texts = list(manifesto_id = c(), items = c()),
+  query_meta = data.frame()
+)
 }
 \arguments{
 \item{texts}{texts of the manifesto documents}

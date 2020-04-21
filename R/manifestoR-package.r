@@ -44,7 +44,7 @@ NULL
 globalVariables(c("one_of", ".", "matches", "starts_with", "contains", # dplyr
                   "manifesto_id", "country", "party", "edate", "per0", # general dataset
                   "md5sum_text.x", "md5sum_text.y", "code", "manifestos", # & metadata & api download
-                  "download", "url_original", "is_primary_doc", "originals",
+                  "download", "url_original", "is_primary_doc", "originals", "annotations",
                   "name", "tag", # metadata versions
                   "the_score", "leadedate", "leglength", "countryname", "w", "p", # scaling
                   "p_lead", "p_lag", "lrcorescores", # median_voter_single

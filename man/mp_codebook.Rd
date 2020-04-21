@@ -8,8 +8,11 @@
 \usage{
 mp_codebook(version = "current", cache = TRUE, chapter = "categories")
 
-mp_describe_code(code, version = "current", columns = c("title",
-  "description_md"))
+mp_describe_code(
+  code,
+  version = "current",
+  columns = c("title", "description_md")
+)
 
 mp_view_codebook(version = "current", columns = c("type", "code", "title"))
 }
@@ -41,9 +44,4 @@ to the different handbook versions under https://manifesto-project.wzb.eu/inform
 Only codebooks from version MPDS2017b on are accessible via the API.
 
 \code{mp_codebook} returns the codebook as a \code{data_frame}, ideal for further automatic processing.
-
-\code{mp_describe_code} pretty prints with information about the requested code(s), ideal for quick interactive use.
-
-\code{mp_view_codebook} displays a searchable table version of the codebook
-in the Viewer pane.
 }

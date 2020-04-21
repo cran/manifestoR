@@ -8,15 +8,24 @@
 \usage{
 mp_nicheness(data, method = "bischof", ...)
 
-nicheness_meyer_miller(data, groups = meyer_miller_2013_policy_dimensions(),
-  transform = NULL, smooth = FALSE, weights = "pervote",
-  party_system_normalization = TRUE, only_non_zero = TRUE)
+nicheness_meyer_miller(
+  data,
+  groups = meyer_miller_2013_policy_dimensions(),
+  transform = NULL,
+  smooth = FALSE,
+  weights = "pervote",
+  party_system_normalization = TRUE,
+  only_non_zero = TRUE
+)
 
-nicheness_bischof(data, out_variables = c("party", "date", "specialization",
-  "nicheness", "nicheness_two"), groups = bischof_issue_groups(),
-  diversification_bounds = c(0, rep(1/length(groups), length(groups)) \%>\% { 
-     -(. * log(.)) } \%>\% sum()), smooth = function(x) {     (x + lag(x,
-  default = first(first(x))))/2 })
+nicheness_bischof(
+  data,
+  out_variables = c("party", "date", "specialization", "nicheness", "nicheness_two"),
+  groups = bischof_issue_groups(),
+  diversification_bounds = c(0, rep(1/length(groups), length(groups)) \%>\% {     -(. *
+    log(.)) } \%>\% sum()),
+  smooth = function(x) {     (x + lag(x, default = first(first(x))))/2 }
+)
 }
 \arguments{
 \item{data}{a dataframe or matrix in format of Manifesto Project Main Dataset}

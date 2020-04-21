@@ -4,8 +4,7 @@
 \alias{rescale}
 \title{Simple linear rescaling of positions}
 \usage{
-rescale(pos, newmin = -1, newmax = 1, oldmin = min(pos),
-  oldmax = max(pos))
+rescale(pos, newmin = -1, newmax = 1, oldmin = min(pos), oldmax = max(pos))
 }
 \arguments{
 \item{pos}{position data to be rescaled}

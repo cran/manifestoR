@@ -5,8 +5,13 @@
 \alias{mp_southamerica_dataset}
 \title{Access the Manifesto Project's Main Dataset}
 \usage{
-mp_maindataset(version = "current", south_america = FALSE,
-  download_format = NULL, apikey = NULL, cache = TRUE)
+mp_maindataset(
+  version = "current",
+  south_america = FALSE,
+  download_format = NULL,
+  apikey = NULL,
+  cache = TRUE
+)
 
 mp_southamerica_dataset(...)
 }

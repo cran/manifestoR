@@ -5,8 +5,11 @@
 \alias{ManifestoDocument}
 \title{Manifesto Document}
 \usage{
-ManifestoDocument(content = data.frame(), id = character(0),
-  meta = ManifestoDocumentMeta())
+ManifestoDocument(
+  content = data.frame(),
+  id = character(0),
+  meta = ManifestoDocumentMeta()
+)
 }
 \arguments{
 \item{content}{data.frame of text and codes for the ManifestoDocument to be constructed.

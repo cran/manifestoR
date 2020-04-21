@@ -4,8 +4,13 @@
 \alias{mp_interpolate}
 \title{Interpolate values within election periods}
 \usage{
-mp_interpolate(df, vars = "(^rile$)|(^per((\\\\d{3}(_\\\\d)?)|\\\\d{4})$)",
-  by = "year", approx = zoo::na.approx, ...)
+mp_interpolate(
+  df,
+  vars = "(^rile$)|(^per((\\\\d{3}(_\\\\d)?)|\\\\d{4})$)",
+  by = "year",
+  approx = zoo::na.approx,
+  ...
+)
 }
 \arguments{
 \item{df}{a data.frame with observations to be interpolated}

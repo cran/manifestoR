@@ -5,11 +5,21 @@
 \alias{median_voter_single}
 \title{Median Voter position}
 \usage{
-median_voter(positions, voteshares = "pervote", scale = "rile",
-  groups = c("country", "edate"), ...)
+median_voter(
+  positions,
+  voteshares = "pervote",
+  scale = "rile",
+  groups = c("country", "edate"),
+  ...
+)
 
-median_voter_single(positions, voteshares, adjusted = FALSE,
-  scalemin = -100, scalemax = 100)
+median_voter_single(
+  positions,
+  voteshares,
+  adjusted = FALSE,
+  scalemin = -100,
+  scalemax = 100
+)
 }
 \arguments{
 \item{positions}{either a vector of values or (possible only for \code{median_voter}) a data.frame containing a column as

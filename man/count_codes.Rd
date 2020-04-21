@@ -4,10 +4,16 @@
 \alias{count_codes}
 \title{Count the codings from a ManifestoDocument}
 \usage{
-count_codes(doc, code_layers = c("cmp_code"), with_eu_codes = "auto",
-  prefix = "per", relative = TRUE, include_codes = if ("cmp_code" \%in\%
-  code_layers) {     v4_categories() } else {     c() },
-  aggregate_v5_subcategories = TRUE)
+count_codes(
+  doc,
+  code_layers = c("cmp_code"),
+  with_eu_codes = "auto",
+  prefix = "per",
+  relative = TRUE,
+  include_codes = if ("cmp_code" \%in\% code_layers) {     v4_categories() } else {    
+    c() },
+  aggregate_v5_subcategories = TRUE
+)
 }
 \arguments{
 \item{doc}{ManifestoDocument, ManifestoCorpus or vector of codes}

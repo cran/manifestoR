@@ -4,8 +4,13 @@
 \alias{mp_corpus}
 \title{Get documents from the Manifesto Corpus Database}
 \usage{
-mp_corpus(ids, apikey = NULL, cache = TRUE, codefilter = NULL,
-  codefilter_layer = "cmp_code")
+mp_corpus(
+  ids,
+  apikey = NULL,
+  cache = TRUE,
+  codefilter = NULL,
+  codefilter_layer = "cmp_code"
+)
 }
 \arguments{
 \item{ids}{Information on which documents to get. This can either be a

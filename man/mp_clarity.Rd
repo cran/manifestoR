@@ -4,9 +4,14 @@
 \alias{mp_clarity}
 \title{Programmatic clarity measures (PC)}
 \usage{
-mp_clarity(data, weighting_kind = "manifesto", weighting_source = NULL,
-  auto_rescale_weight = TRUE, auto_rescale_variables = TRUE,
-  dimensions = clarity_dimensions())
+mp_clarity(
+  data,
+  weighting_kind = "manifesto",
+  weighting_source = NULL,
+  auto_rescale_weight = TRUE,
+  auto_rescale_variables = TRUE,
+  dimensions = clarity_dimensions()
+)
 }
 \arguments{
 \item{data}{a dataframe in format of Manifesto Project Main Dataset}

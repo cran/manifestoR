@@ -6,12 +6,21 @@
 \alias{corpus_scaling}
 \title{Scaling annotated manifesto documents}
 \usage{
-mp_scale(data, scalingfun = rile,
+mp_scale(
+  data,
+  scalingfun = rile,
   scalingname = as.character(substitute(scalingfun)),
-  recode_v5_to_v4 = (scalingname == "rile"), ...)
+  recode_v5_to_v4 = (scalingname == "rile"),
+  ...
+)
 
-document_scaling(scalingfun, returndf = FALSE, scalingname = "scaling",
-  recode_v5_to_v4 = FALSE, ...)
+document_scaling(
+  scalingfun,
+  returndf = FALSE,
+  scalingname = "scaling",
+  recode_v5_to_v4 = FALSE,
+  ...
+)
 
 corpus_scaling(scalingfun, scalingname = "scaling", ...)
 }
@@ -38,12 +47,6 @@ scaling result and, if available party and date is returned by the returned func
 Since scaling functions such as \code{\link{scale_weighted}} only apply to
 data.frames with code percentages, the function \code{mp_scale} makes them
 applies them to a \code{ManifestoCorpus} or \code{ManifestoDocument}.
-
-\code{document_scaling} creates a function applicable to
-a \code{ManifestoDocument} from the scaling function
-
-\code{corpus_scaling} creates a function applicable to
-a \code{ManifestoCorpus} from the scaling function
 }
 \seealso{
 \code{\link{scale}}

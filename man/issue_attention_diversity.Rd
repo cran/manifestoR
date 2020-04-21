@@ -4,11 +4,15 @@
 \alias{issue_attention_diversity}
 \title{Issue Attention Diversity}
 \usage{
-issue_attention_diversity(data, method = "shannon", prefix = "per",
+issue_attention_diversity(
+  data,
+  method = "shannon",
+  prefix = "per",
   include_variables = paste0(prefix, setdiff(v4_categories(), "uncod")),
-  aggregate_categories = list(c(101, 102), c(104, 105), c(107, 109), c(108,
-  110), c(203, 204), c(301, 302), c(406, 407), c(409, 414), c(504, 505), c(506,
-  507), c(601, 602), c(603, 604), c(607, 608), c(701, 702)))
+  aggregate_categories = list(c(101, 102), c(104, 105), c(107, 109), c(108, 110),
+    c(203, 204), c(301, 302), c(406, 407), c(409, 414), c(504, 505), c(506, 507), c(601,
+    602), c(603, 604), c(607, 608), c(701, 702))
+)
 }
 \arguments{
 \item{data}{a data.frame in format of Manifesto Project Main Dataset}

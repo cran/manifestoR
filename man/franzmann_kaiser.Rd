@@ -6,13 +6,21 @@
 \alias{fk_smoothing}
 \title{Left-Right Scores based on Franzmann & Kaiser Method}
 \usage{
-franzmann_kaiser(data, basevalues = TRUE, smoothing = TRUE,
+franzmann_kaiser(
+  data,
+  basevalues = TRUE,
+  smoothing = TRUE,
   vars = grep("per\\\\d{3}$", names(data), value = TRUE),
   issue_structure = read_fk_issue_structure(mean_presplit = mean_presplit),
-  party_system_split = split_belgium, mean_presplit = TRUE, ...)
+  party_system_split = split_belgium,
+  mean_presplit = TRUE,
+  ...
+)
 
-read_fk_issue_structure(path = system.file("extdata",
-  "fk_issue_structure.sav", package = "manifestoR"), mean_presplit = TRUE)
+read_fk_issue_structure(
+  path = system.file("extdata", "fk_issue_structure.sav", package = "manifestoR"),
+  mean_presplit = TRUE
+)
 
 fk_smoothing(data, score_name, use_period_length = TRUE, ...)
 }

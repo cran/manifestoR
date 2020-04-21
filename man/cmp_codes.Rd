@@ -17,10 +17,6 @@ recode_v5_to_v4(x)
 }
 \description{
 Several functions to process the CMP codings
-
-`aggregate_cee_codes` is deprecated and will be removed in a future version of
-manifestoR. Please use only `recode_cee_codes`, which provides the exact same 
-functionality, but is more consistent in its name.
 }
 \details{
 \code{recode_cee_codes} recode the sub-categories used

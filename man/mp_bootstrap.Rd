@@ -4,9 +4,14 @@
 \alias{mp_bootstrap}
 \title{Compute bootstrap distributions for scaling functions}
 \usage{
-mp_bootstrap(data, fun = rile,
+mp_bootstrap(
+  data,
+  fun = rile,
   col_filter = "per((\\\\d{3}(_\\\\d)?)|\\\\d{4}|(uncod))",
-  statistics = list(sd), N = 1000, ...)
+  statistics = list(sd),
+  N = 1000,
+  ...
+)
 }
 \arguments{
 \item{data}{A data.frame with cases to be scaled and bootstrapped}
