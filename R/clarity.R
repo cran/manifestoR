@@ -19,10 +19,10 @@
 #' @return a vector of rmps values
 #' @export
 mp_rmps <- function(data, adapt_zeros = TRUE, ignore_na = TRUE, threshold_sum = 75) {
-  if (sum(data, na.rm = TRUE) < threshold_sum) return(rep_len(NA, length(data)))
-  if (length(data) == 1) { if (is.na(data)) return(NA) else return(1) }
+  if (sum(data, na.rm = TRUE) < threshold_sum) return(rep_len(NA_real_, length(data)))
+  if (length(data) == 1) { if (is.na(data)) return(NA_real_) else return(1) }
   data <- data %>%
-    data_frame(data = .) %>% 
+    tibble(data = .) %>% 
     { if (adapt_zeros) mutate(., data = if_else(data == 0, 0.001, data)) else . } %>%
     mutate(id = row_number())
   data %>%
@@ -88,20 +88,20 @@ mp_clarity <- function(data,
   dimension_categories = dimensions %>% unlist() %>% unique()
   
   data <- data %>%
-    select_(.dots = c("country", "edate", weighting_source, dimension_categories))
+    select(one_of(c("country", "edate", weighting_source,dimension_categories)))
   case_complete = complete.cases(data)
   
   data <- data %>%
     .[which(case_complete), ] %>%
     { if (auto_rescale_weight)
         group_by(., country, edate) %>%
-          mutate_at(., weighting_source, funs(./sum(.))) %>%
+          mutate_at(., weighting_source, ~(./sum(.))) %>%
         ungroup()
       else 
         . } %>%
     { if (auto_rescale_variables) {
-        mutate(., tmp_mp_clarity_sum = rowSums(select_(., .dots = dimension_categories))) %>%
-        mutate_at(dimension_categories, funs(if_else(tmp_mp_clarity_sum == 0, 0, ./tmp_mp_clarity_sum))) %>%
+        mutate(., tmp_mp_clarity_sum = rowSums(select(., one_of(dimension_categories)))) %>%
+        mutate_at(dimension_categories, ~(if_else(tmp_mp_clarity_sum == 0, 0, ./tmp_mp_clarity_sum))) %>%
         select(-tmp_mp_clarity_sum)
       }
       else {
@@ -123,7 +123,7 @@ mp_clarity <- function(data,
         data$sal_dim <- sal_dim
         weight <- data %>%
           group_by(country, edate) %>%
-            mutate_(.dots = setNames(paste("sum(", weighting_source, " * sal_dim)"), "weight")) %>%
+            mutate(weight = sum(!!sym(weighting_source) * sal_dim)) %>%
           ungroup() %>%
           .$weight
 
@@ -138,7 +138,7 @@ mp_clarity <- function(data,
     as.data.frame() %>%
     rowSums()
 
-  rep_len(NA, length(case_complete)) %>%
+  rep_len(NA_real_, length(case_complete)) %>%
     { .[which(case_complete)] <- result; . } 
 
 }

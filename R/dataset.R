@@ -26,8 +26,8 @@ mp_interpolate <- function(df,
 
   the_approx <- function(x) {
     if (all(is.na(x))) {
-      return(NA)
-    } else if (identical(approx, zoo::na.approx)) {
+      return(NA_real_)
+    } else if (identical(approx, zoo::na.approx) || identical(approx, zoo::na.spline)) {
       approx(x, na.rm=FALSE, ...)
     } else {
       approx(x, ...)
@@ -45,7 +45,7 @@ mp_interpolate <- function(df,
                               party = the_party),
                    by = c("edate", "party")) %>%
         mutate_at(grep(vars, names(df), value = TRUE),
-                  .funs = funs(zoo::zoo(., edate) %>% the_approx() %>% as.numeric()))
+                  .funs = ~{ zoo::zoo(., edate) %>% the_approx() %>% as.numeric() })
   
     } else {
       return(df)
@@ -137,8 +137,8 @@ median_voter <- function(positions,
     the_positions <- unlist(positions[,scale])  ## unlist to normalize name
     the_voteshares <- unlist(positions[,voteshares])
     data.frame(the_positions, the_voteshares) %>%
-       bind_cols(select_(positions, .dots = groups)) %>%  ## standard evaluation because of double name
-      group_by_(.dots = groups) %>%
+      bind_cols(select(positions, one_of(groups))) %>%
+      group_by_at(vars(one_of(groups))) %>%
       summarise(median_voter = median_voter_params(the_positions, the_voteshares))
 
   } else {
@@ -160,7 +160,9 @@ lag_fill <- function(vec, val) {
   c(val, vec)
 }
 
-single_scalar <- function(vec, default = NA) {
+
+#' @importFrom methods as
+single_scalar <- function(vec, default = as(NA, class(vec))) {
   if (length(vec) >= 1) {
     return(vec[1])
   } else {
@@ -181,7 +183,7 @@ median_voter_single <- function(positions,
   left_bounds <- function(position) {
     if (adjusted) {
       scalemin <- 2*position[1] - position[2]
-      ((c(scalemin, position) + c(position, NA))/2)[1:length(position)]
+      ((c(scalemin, position) + c(position, NA_real_))/2)[1:length(position)]
     } else {
       c(scalemin, (position[-1] + position[-length(position)])/2)
     }
@@ -189,7 +191,7 @@ median_voter_single <- function(positions,
   right_bounds <- function(position) {
     if (adjusted) {
       scalemax <- 2*position[length(position)] - position[length(position)-1]
-      ((c(NA, position) + c(position, scalemax))/2)[2:(length(position)+1)]
+      ((c(NA_real_, position) + c(position, scalemax))/2)[2:(length(position)+1)]
     } else {
       c((position[-1] + position[1:(length(position)-1)])/2, scalemax)
     }

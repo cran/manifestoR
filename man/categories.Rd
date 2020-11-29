@@ -3,6 +3,7 @@
 \name{v4_categories}
 \alias{v4_categories}
 \alias{v5_categories}
+\alias{cee_categories}
 \alias{v5_v4_aggregation_relations}
 \alias{cee_aggregation_relations}
 \alias{rile_r}
@@ -11,7 +12,9 @@
 \usage{
 v4_categories()
 
-v5_categories()
+v5_categories(include_parents = TRUE)
+
+cee_categories()
 
 v5_v4_aggregation_relations()
 
@@ -20,6 +23,9 @@ cee_aggregation_relations()
 rile_r()
 
 rile_l()
+}
+\arguments{
+\item{include_parents}{include v5-categories that have subcategories}
 }
 \description{
 Code numbers of the Manifesto Project's category scheme. For documentation

@@ -1,7 +1,7 @@
 ---
 title: "Working with the manifestoR package"
 author: "Jirka Lewandowski <jirka.lewandowski@wzb.eu>"
-date: "21/03/2016"
+date: "21/03/2016 (updated `r format(Sys.time(), '%d/%m/%Y')`)"
 output:
   pdf_document:
     number_sections: yes
@@ -137,9 +137,10 @@ They can be found in the current dataset documentation at
 [https://manifesto-project.wzb.eu/datasets]() or in the main dataset.
 
 Note that we received only 1 document, while querying for two.
-This is because the party with the id 41220 (KPD) did not run for elections
-in September 2009.
-Also, not for every party and election data manifesto documents are availabe in the Manifesto Project Corpus.
+This is because the party with the id 41220 
+(`r mpds %>% filter(party == 41220) %>% pull(partyabbrev) %>% .[1]`) 
+did not run for elections in September 2009.
+Also, not for every party and election data manifesto documents are available in the Manifesto Project Corpus.
 You can check availability of your query beforehand with the function
 `mp_availability(...)`:
 ```{r}
@@ -174,6 +175,22 @@ unresponsive.
 mp_view_originals(party > 41000 & party < 41999, maxn = 20)
 ```
 
+## Accessing the category scheme and category descriptions
+
+The main dataset and the corpus are using the alphanumerical category codes of the 
+manifesto project category scheme. To get a data.frame of these codes together with 
+their domains, variable names, titles, descriptions, labels etc. you can use the 
+function `mp_codebook()` (or `mp_describe_code(...)` to show/use the information for 
+the code(s) you are interested in).
+
+```{r}
+mp_codebook()
+mp_describe_code("504")
+```
+
+Finally, you can also use `mp_view_codebook(...)` to start an interactive website for
+browsing the category information.
+
 
 # Processing and analysing the corpus documents
 
@@ -207,8 +224,10 @@ length(doc_subcodes)
 length(doc_subcodes)/length(doc)
 ```
 
-The CMP coding scheme can be found in the online documentation of the Manifesto
-Project dataset at [https://manifesto-project.wzb.eu/coding_schemes/1]().
+More detailed information on the CMP coding scheme can be found in 
+[Accessing the category scheme and category descriptions](#accessing-the-category-scheme-and-category-descriptions) or 
+in the online documentation of the Manifesto Project coding handbooks at 
+[https://manifesto-project.wzb.eu/information/documents/handbooks]().
 
 ## Working with additional layers of codings
 
@@ -262,7 +281,7 @@ findAssocs(tdm, "stadt", 0.97) ## find correlated terms, see ?tm::findAssocs
 ```
 
 For more information about the functionality provided by the `tm`,
-please refer to its [documentation](http://cran.r-project.org/web/packages/tm/vignettes/tm.pdf).
+please refer to its [documentation](https://cran.r-project.org/web/packages/tm/vignettes/tm.pdf).
 
 ## Selecting relevant parts of text
 
@@ -280,7 +299,24 @@ length(doc_subcodes)
 
 # subsetting based on text
 doc_subtext <- subset(doc, grepl("Demokratie", content(doc)))
+```
+
+```{r, eval = FALSE}
 head(content(doc_subtext), n = 3)
+```
+
+```{r, echo = FALSE}
+# simple print layout helper to avoid text overflow
+simple_pretty_print <- function(c) {
+  c %>%
+    { stringr::str_c(stringr::str_c("[", seq_along(.), "] ", stringr::str_c('"', ., '"'))) } %>%
+    stringr::str_wrap(width = 80) %>%
+    stringr::str_c(collapse = "\n")  
+}
+head(content(doc_subtext), n = 3) %>% simple_pretty_print %>% cat
+```
+
+```{r}
 head(codes(doc_subtext), n = 10)
 ```
 
@@ -298,7 +334,14 @@ codes directly when downloading a corpus. For this, the additional argument
 `codefilter` with a list of CMP codes of interest is passed to `mp_corpus`:
 ```{r, warning=FALSE}
 corp_sub <- mp_corpus(countryname == "Australia", codefilter = c(103, 104))
+```
+```{r, eval = FALSE}
 head(content(corp_sub[[1]]))
+```
+```{r, echo = FALSE}
+head(content(corp_sub[[1]])) %>% simple_pretty_print %>% cat
+```
+```{r}
 head(codes(corp_sub))
 ```
 
@@ -330,6 +373,7 @@ The field ...
 * ... `date` contains the month of the election in the same format as in the
 Manifesto Project Dataset (`YYYYMM`)
 * ... `language` specifies the language of the document as a word.
+* ... `has_eu_code` is TRUE for documents in which the additional coding layer `eu_code` is present. These codes have been assigned to quasi-sentences by CMP coders additionally to the main CMP code to indicate policy statements that should or should not be implemented on the level of the European union.
 * ... `is_primary_doc` is FALSE only in cases where for a single party and
 election date multiple manifestos are available and this is the document not used
 for coding by the Manifesto Project.
@@ -340,11 +384,13 @@ recoded after they entered the dataset or cases where the dataset entries are
 derived from hand-written coding sheets used prior to the digitalization of the
 Manifesto Project's data workflow, but the documents were digitalized and added
 to the Manifesto Corpus afterwards.
-* ... `annotations` is TRUE whenenver there are CMP codings available for the document.
-* ... `has_eu_code` marks document in which the additional coding layer `eu_code` is present. These codes have been assigned to quasi-sentences by CMP coders additionally to the main CMP code to indicate policy statements that should or should not be implemented on the level of the European union.
+* ... `annotations` is TRUE whenever there are CMP codings available for the document.
+* ... `handbook` an integer that indicates the version of the coding instructions that was used for the coding (e.g. 4 or 5) (since 2016-6).
+* ... `title` the title of the manifesto (in original language) (since 2017-1).
 
 The other metadata entries have primarily technical functions for communication
-between the `manifestoR` package and the online database.
+between the `manifestoR` package and the online database (for more information have
+a look at the online documentation of the [Manifesto Corpus](https://manifesto-project.wzb.eu/information/documents/corpus)).
 
 
 # Efficiency and reproducibility: caching and versioning
@@ -423,11 +469,8 @@ functions mentioned here as well `mp_use_corpus_version`, `mp_corpusversions`,
 If required `ManifestoCorpus` as well as `ManifestoDocument` objects can be
 converted to R's internal `data.frame` format and processed further:
 ```{r}
-doc_df <- as.data.frame(doc)
-head(within(doc_df, {
-  ## for pretty printing
-  text <- paste0(substr(text, 1, 60), "...")
-}))
+doc_df <- as_tibble(as.data.frame(doc))
+head(doc_df)
 ```
 
 The function also provides a parameter to include all available metadata in
@@ -507,11 +550,11 @@ In addition, `manifestoR` provides several function templates you can use for
 creating scales, e.g. a weighted sum of per variables
 (`scale_weighted`), the logit ratio of category counts (`scale_logit`)
 or ratio scaling as suggested by Kim and Fording (1998) and by Laver & Garry (2000)
-(`scale_ratio`). For example, the ratio equivalent to the simple function
+(`scale_ratio_1`). For example, the ratio equivalent to the simple function
 above can be implemented as:
 ```{r}
 custom_scale <- function(data) {
-    scale_ratio(data, pos = c("per402"), neg = c("per401"))
+    scale_ratio_1(data, pos = c("per402"), neg = c("per401"))
 }
 mp_scale(corpus, scalingfun = custom_scale)
 ```
@@ -532,7 +575,7 @@ mp_bootstrap(data, fun = rile)
 ```
 
 Note that the argument `fun` can be any scaling function and the returned `data.frame`
-containes the scaled position as well as the bootstrapped standard deviations.
+contains the scaled position as well as the bootstrapped standard deviations.
 Also, with the additional parameters `statistics`, you can compute arbitrary statistics
 from the bootstrapped distribution, such as variance or quantiles:
 ```{r}
@@ -549,7 +592,7 @@ mp_bootstrap(data,
 
 For a more detailed reference and complete list of the functions provided
 by `manifestoR`, see the R package reference manual on CRAN:
-[http://cran.r-project.org/web/packages/manifestoR/manifestoR.pdf](http://cran.r-project.org/web/packages/manifestoR/manifestoR.pdf)
+[https://cran.r-project.org/web/packages/manifestoR/manifestoR.pdf](https://cran.r-project.org/web/packages/manifestoR/manifestoR.pdf)
 
 ## Contacting the Manifesto Project team
 
@@ -575,11 +618,11 @@ of the github repository.
 
 # References
 
-Benoit, K., Laver, M., & Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. http://doi.org/10.1111/j.1540-5907.2009.00383.x
+Benoit, K., Laver, M., & Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. https://doi.org/10.1111/j.1540-5907.2009.00383.x
 
 Bischof, D. (2015). Towards a Renewal of the Niche Party Concept Parties, Market Shares and Condensed Offers. Party Politics.
 
-Feinerer, I., & Hornik, K. (2015). Tm: Text Mining Package. http://cran.r-project.org/web/packages/tm/index.html
+Feinerer, I., & Hornik, K. (2015). Tm: Text Mining Package. https://cran.r-project.org/web/packages/tm/index.html
 
 Franzmann, S., & Kaiser, A. (2006): Locating Political Parties in Policy Space. A Reanalysis of Party Manifesto Data, Party Politics, 12:2, 163-188
 

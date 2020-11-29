@@ -7,9 +7,11 @@
 mp_bootstrap(
   data,
   fun = rile,
-  col_filter = "per((\\\\d{3}(_\\\\d)?)|\\\\d{4}|(uncod))",
+  col_filter = "^per(\\\\d{3}|\\\\d{4}|uncod)$",
   statistics = list(sd),
   N = 1000,
+  ignore_na = TRUE,
+  rescale = TRUE,
   ...
 )
 }
@@ -19,13 +21,20 @@ mp_bootstrap(
 \item{fun}{function of a data row the bootstraped distribution of which is of interest}
 
 \item{col_filter}{Regular expression matching the column names that should be
-permuted for the resampling (usually and by default ther per variables)}
+permuted for the resampling (usually and by default the handbook \code{v4_categories} 
+(plus \code{cee_categories}) per variables)}
 
 \item{statistics}{A list (!) of statistics to be computed from the bootstrap
 distribution; defaults to standard deviation (\code{\link{sd}}). Must be
 functions or numbers, where numbers are interpreted as quantiles.}
 
 \item{N}{number of resamples to use for bootstrap distribution}
+
+\item{ignore_na}{if TRUE (default), for each observation drop silently the columns 
+that have an NA value for the permutation}
+
+\item{rescale}{if TRUE (default), rescale the permuted values after the permutation 
+to the sum of the values of the col_filter columns instead of 100}
 
 \item{...}{more arguments passed on to \code{fun}}
 }

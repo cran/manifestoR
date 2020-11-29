@@ -1,3 +1,13 @@
+1.5.0 (2020-11-29)
+==================
+* added 2019 version of franzmann-kaiser issue structures (while allowing for also using older ones)
+* Bugfixes in mp_availability to avoid errors when using more modern dplyr versions
+* Bugfix in scale_ratio and subsequently split into two distinct new functions to avoid confusion
+* Bugfix in mp_bootstrap and added feature to auto-rescale to the sum of the columns to be permuted
+* refactoring of code to prevent deprecations when using more modern versions of package dependencies
+* some smaller things (added cee_categories function; updated v5_categories, mp_describe_code, vignette)
+
+
 1.4.0 (2020-04-20)
 ==================
 * added mp_dedication function in commemoration of Jirka Lewandowski

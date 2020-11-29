@@ -4,7 +4,7 @@
 \alias{mp_setapikey}
 \title{Set the API key for the Manifesto Documents Database.}
 \usage{
-mp_setapikey(key.file = NULL, key = NA)
+mp_setapikey(key.file = NULL, key = NA_character_)
 }
 \arguments{
 \item{key.file}{file name containing the API key}

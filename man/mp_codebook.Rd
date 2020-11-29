@@ -11,7 +11,8 @@ mp_codebook(version = "current", cache = TRUE, chapter = "categories")
 mp_describe_code(
   code,
   version = "current",
-  columns = c("title", "description_md")
+  columns = c("title", "description_md"),
+  print = TRUE
 )
 
 mp_view_codebook(version = "current", columns = c("type", "code", "title"))
@@ -27,11 +28,14 @@ the most recent codebook version. Must be formatted as e.g. "MPDS2017b".}
 \item{chapter}{Which part of the codebook should be returned. As of this manifestoR
 release, only the content-analytical variables (parameter value "categories") are accessible via the API.}
 
-\item{code}{specific code (as character) to display information about.}
+\item{code}{specific code(s) (as character (vector)) to display information about.}
 
 \item{columns}{Information to display about each variable. Given as a vector of
 selected column names from: "type", "domain_code", "domain_name", "code", "variable_name",
 "title", "description_md", "label"}
+
+\item{print}{if TRUE (default), print the information, but as the function also returns invisible a tibble
+containing the information, you can set print to FALSE for alternative uses.}
 }
 \description{
 These functions provide access to machine- and human-readable versions
@@ -42,6 +46,13 @@ are accessible. Note also that the codebook contains only condensed descriptions
 of the categories. For detailed information on coding instructions, you can refer
 to the different handbook versions under https://manifesto-project.wzb.eu/information/documents/handbooks .
 Only codebooks from version MPDS2017b on are accessible via the API.
+}
+\details{
+\code{mp_codebook} returns the codebook as a \code{tibble}, ideal for further automatic processing.
 
-\code{mp_codebook} returns the codebook as a \code{data_frame}, ideal for further automatic processing.
+\code{mp_describe_code} pretty prints with information about the requested code(s), ideal for quick interactive use,
+but also returns invisible the code(s) information as a \code{tibble}
+
+\code{mp_view_codebook} displays a searchable table version of the codebook
+in the Viewer pane.
 }

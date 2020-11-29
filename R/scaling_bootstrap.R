@@ -10,57 +10,65 @@
 #' @param data A data.frame with cases to be scaled and bootstrapped
 #' @param fun function of a data row the bootstraped distribution of which is of interest
 #' @param col_filter Regular expression matching the column names that should be
-#' permuted for the resampling (usually and by default ther per variables)
+#' permuted for the resampling (usually and by default the handbook \code{v4_categories} 
+#' (plus \code{cee_categories}) per variables)
 #' @param statistics A list (!) of statistics to be computed from the bootstrap
 #' distribution; defaults to standard deviation (\code{\link{sd}}). Must be
 #' functions or numbers, where numbers are interpreted as quantiles.
 #' @param N number of resamples to use for bootstrap distribution
+#' @param ignore_na if TRUE (default), for each observation drop silently the columns 
+#' that have an NA value for the permutation
+#' @param rescale if TRUE (default), rescale the permuted values after the permutation 
+#' to the sum of the values of the col_filter columns instead of 100
 #' @param ... more arguments passed on to \code{fun}
 #' @references Benoit, K., Laver, M., & Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. http://doi.org/10.1111/j.1540-5907.2009.00383.x
 #' @importFrom stats sd
 #' @export
 mp_bootstrap <- function(data,
                          fun = rile,
-                         col_filter = "per((\\d{3}(_\\d)?)|\\d{4}|(uncod))",
+                         col_filter = "^per(\\d{3}|\\d{4}|uncod)$",
                          statistics = list(sd),
                          N = 1000,
-                         ...) {  
-
+                         ignore_na = TRUE,
+                         rescale = TRUE,
+                         ...) {
+  
   ## deparse arguments for conversion and naming
   stat_names <- sapply(substitute(statistics)[-1], as.character)
   quantiles <- sapply(statistics, is.numeric)
   stat_names[quantiles] <- paste0("q", stat_names[quantiles])
   stat_funs <- statistics
   stat_funs[quantiles] <- lapply(statistics[quantiles],
-                                    function(q) {
-                                      functional::Curry(stats::quantile, probs = q)
-                                    })
+                                 function(q) {
+                                   functional::Curry(stats::quantile, probs = q)
+                                 })
   fun_name <- as.character(substitute(fun))
-
+  
   ## how to bootstrap a single row
   bootstrap_row <- function(row) {
-    
     total <- row$total
-    to_permute <- grepl(col_filter, names(row)) & !is.na(row[1,])
-    row_permute <- row %>% select(which(to_permute)) %>% mutate(rowid=1)
+    to_permute <- grepl(col_filter, names(row)) & (!is.na(row[1,]) | !ignore_na)
+    row_permute <- row %>% select(which(to_permute))
     row_dontpermute <- row %>% select(which(!to_permute)) %>% mutate(rowid=1)
+    rescale_factor <- if (rescale) { sum(row_permute) } else { 100 }
     bootstrap_distribution <- do.call(
-        fun,
-        list(right_join(row_dontpermute, by = c("rowid"),
-                       as.data.frame(t(stats::rmultinom(N, total, row_permute[1,])))/total * 100),
-             ...))
-
+      fun,
+      list(right_join(row_dontpermute, by = c("rowid"),
+                      (as.data.frame(t(stats::rmultinom(N, total, row_permute)))/total * rescale_factor) %>%
+                        mutate(rowid = 1)),
+           ...))
+    
     df <- bind_cols(data.frame(do.call(fun, list(row, ...))),
                     as.data.frame(lapply(stat_funs, do.call, list(bootstrap_distribution))))
     names(df) <- c(fun_name, stat_names)
-
+    
     return(df)
   }
-
+  
   ## do the bootstrapping for all rows
   bind_rows(lapply(1:nrow(data),
                    function(idx) {
-                      bootstrap_row(data[idx,])
+                     bootstrap_row(data[idx,])
                    } ))
-
+  
 }

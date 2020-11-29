@@ -9,7 +9,8 @@
 #' to the different handbook versions under https://manifesto-project.wzb.eu/information/documents/handbooks .
 #' Only codebooks from version MPDS2017b on are accessible via the API.
 #' 
-#' @description \code{mp_codebook} returns the codebook as a \code{data_frame}, ideal for further automatic processing.
+#' @details 
+#' \code{mp_codebook} returns the codebook as a \code{tibble}, ideal for further automatic processing.
 #' 
 #' @param version version of the Manifesto Project Main Dataset for which the
 #' codebook is requested. Note that only codebooks from version MPDS2017b on
@@ -50,18 +51,26 @@ mp_codebook <- function(version = "current", cache = TRUE, chapter = "categories
   
 }
 
-#' \code{mp_describe_code} pretty prints with information about the requested code(s), ideal for quick interactive use.
+#' \code{mp_describe_code} pretty prints with information about the requested code(s), ideal for quick interactive use,
+#' but also returns invisible the code(s) information as a \code{tibble}
 #' 
-#' @param code specific code (as character) to display information about.
+#' @param code specific code(s) (as character (vector)) to display information about.
+#' @param print if TRUE (default), print the information, but as the function also returns invisible a tibble
+#' containing the information, you can set print to FALSE for alternative uses.
 #' 
+#' @details
+#' \code{mp_describe_code} pretty prints with information about the requested code(s), ideal for quick interactive use,
+#' but also returns invisible the code(s) information as a \code{tibble}
+#'
 #' @export
 #' @importFrom magrittr %T>%
 #' @rdname mp_codebook
-mp_describe_code <- function(code, version = "current", columns = c("title", "description_md")) {
-  data_frame(code = code) %>%
+mp_describe_code <- function(code, version = "current", columns = c("title", "description_md"), print = TRUE) {
+  if (!is.character(code) && any(!is.na(code))) stop("please provide the code(s) as character")
+  tibble(code = code) %>%
     left_join(mp_codebook(version), by = "code") %>%
     select(one_of("code"), one_of(columns)) %T>%
-    apply(1, pretty_print_code_info) %>%
+    { if (print) { apply(., 1, pretty_print_code_info) } } %>%
     invisible()
 }
 
@@ -83,6 +92,10 @@ pretty_print_code_info <- function(code_info) {
 #' selected column names from: "type", "domain_code", "domain_name", "code", "variable_name",
 #' "title", "description_md", "label"
 #' 
+#' @details
+#' \code{mp_view_codebook} displays a searchable table version of the codebook
+#' in the Viewer pane.
+#'
 #' @importFrom htmlwidgets prependContent
 #' @importFrom DT datatable
 #' @importFrom htmltools h1 p a

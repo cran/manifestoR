@@ -19,7 +19,7 @@ kmurl.originalsroot <- "https://manifesto-project.wzb.eu"
 #' @param key new API key
 #' @param key.file file name containing the API key
 #' @export
-mp_setapikey <- function(key.file = NULL, key = NA) {
+mp_setapikey <- function(key.file = NULL, key = NA_character_) {
   if (!is.null(key.file)) {
     tryCatch({
       fl <- file(key.file)
@@ -29,7 +29,7 @@ mp_setapikey <- function(key.file = NULL, key = NA) {
   }
   assign(kapikey, key, envir = mp_globalenv)
 }
-mp_setapikey(key = NA)
+mp_setapikey(key = NA_character_)
 
 toamplist <- function(params) {
   pairs <- paste(names(params), params, sep="=")
@@ -232,7 +232,8 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
 
   } else if (type == kmtype.meta) {
 
-    metadata <- data.frame(separate_missings(fromJSON(jsonstr), request="metadata"), stringsAsFactors = FALSE)
+    metadata <- data.frame(separate_missings(fromJSON(jsonstr), request="metadata"), stringsAsFactors = FALSE) %>%
+      mutate_all(as.character)
 
     if (nrow(metadata) > 0) {
       names(metadata)[which(names(metadata)=="party_id")] <- "party"
@@ -242,6 +243,10 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
       metadata <- within(metadata, {
         party <- as.numeric(party)
         date <- as.numeric(date)
+        if (exists("annotations")) annotations <- as.logical(annotations)
+        if (exists("primary_doc")) primary_doc <- as.logical(primary_doc)
+        if (exists("may_contradict_core_dataset")) may_contradict_core_dataset <- as.logical(may_contradict_core_dataset)
+        if (exists("has_eu_code")) has_eu_code <- as.logical(has_eu_code)
       })      
     }
 
@@ -258,8 +263,8 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
     
     jsonstr %>%
       fromJSON() %>%
-      as_data_frame() %>%
-      { set_names(., .[1,]) } %>%
+      as_tibble(.name_repair = "minimal") %>%
+      { set_names(., as.character(.[1,])) } %>%
       dplyr::slice(2:n()) %>%
       magrittr::set_rownames(NULL)
         

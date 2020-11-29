@@ -18,8 +18,9 @@ franzmann_kaiser(
 )
 
 read_fk_issue_structure(
-  path = system.file("extdata", "fk_issue_structure.sav", package = "manifestoR"),
-  mean_presplit = TRUE
+  path = system.file("extdata", "fk_issue_structure_2019.csv", package = "manifestoR"),
+  mean_presplit = TRUE,
+  format_version = 2
 )
 
 fk_smoothing(data, score_name, use_period_length = TRUE, ...)
@@ -34,7 +35,8 @@ fk_smoothing(data, score_name, use_period_length = TRUE, ...)
 \item{vars}{Variables/Categories to use for computation of score. Defaults to all
 available handbook version 4 categories.}
 
-\item{issue_structure}{issue structure to use for Franzmann & Kaiser method, default to original replication values}
+\item{issue_structure}{issue structure to use for Franzmann & Kaiser method, default 
+to most recent bundled version (for details see \code{read_fk_issue_structure})}
 
 \item{party_system_split}{function to recode the country variable to re-partition
 party systems. Defaults to splitting Belgium into two halfs as done in Franzmann 2009}
@@ -42,13 +44,17 @@ party systems. Defaults to splitting Belgium into two halfs as done in Franzmann
 \item{mean_presplit}{if TRUE, for Belgium as a whole (before the split into two
 party systems) the mean of the issue weights is used (which is equal to taking
 the mean of the output values, since all subsequent transformations are linear). This step
-is required to replicate the Franzmann 2009 dataset.}
+is required to replicate the Franzmann 2009 dataset. If the issue structures already
+contain values for Belgium as a whole they are overwritten by the newly generated ones.}
 
-\item{...}{passed on to fk_smoothing and \code{party_system_split}}
+\item{...}{passed on to \code{fk_smoothing} and \code{party_system_split}}
 
-\item{path}{path from were to read issue structures (as SPSS data file). Defaults
-to the file bundled in the manifestoR package from the replication material of
-Franzmann 2009.}
+\item{path}{path from were to read issue structures (as csv data file). Defaults
+to the most recent file bundled in the manifestoR package.}
+
+\item{format_version}{can be 1 or 2 to switch between different structural versions 
+of the issue structures file (1 for files containing "structure"-columns, 
+2 for files containing "per"-columns)}
 
 \item{score_name}{name of variable with LR Score values to be smoothed}
 
@@ -57,8 +63,9 @@ Franzmann 2009.}
 \description{
 Computes left-right scores based on the Franzmann & Kaiser Method (see
 reference below). The issue structures are not calculated from scratch but
-taken as given from Franzmann 2009. Note that they are not available for the
-entire Manifesto Project Dataset, but only for a subset of countries and elections.
+taken as given from Franzmann 2009 (or later updates). Note that they 
+are not available for the entire Manifesto Project Dataset, but only for a 
+subset of countries and elections.
 }
 \references{
 Franzmann, Simon/Kaiser, Andre (2006): Locating Political Parties in Policy Space. A Reanalysis of Party Manifesto Data, Party Politics, 12:2, 163-188

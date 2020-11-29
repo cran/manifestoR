@@ -80,18 +80,18 @@ default_list <- function(the_names, default_val = 0L) {
 #' @param data A data.frame with cases to be scaled
 #' @param vars variable names that should contribute to the linear combination;
 #' defaults to all CMP category percentage variables in the Manifesto Project's Main Dataset
+#' @param weights weights of the linear combination in the same order as `vars`.
 #' 
 #' @details
 #' If variable names used for the definition of the scale
 #' are not present in the data frame they are assumed to be 0.
 #' \code{scale_weighted} scales the data as a weighted sum of the category percentages
 #' 
-#' @param weights weights of the linear combination in the same order as `vars`.
 #' @seealso \code{\link{mp_scale}}
 #' @export
 #' @rdname scale
 scale_weighted <- function(data,
-                     vars = grep("per((\\d{3}(_\\d)?)|\\d{4}|(uncod))$", names(data), value=TRUE),
+                     vars = grep("per((\\d{3}(_\\d)?)|\\d{4}|(uncod))$", names(data), value = TRUE),
                      weights = 1) {
   
   data <- select(data, one_of(vars[vars %in% names(data)]))
@@ -177,6 +177,10 @@ null_to_na <- function(x) {
 #' @param N vector of numbers of quasi sentences to convert percentages to counts
 #' @param zero_offset Constant to be added to prevent 0/0 and log(0); defaults to 0.5 (smaller than any possible non-zero count)
 #' @param ... further parameters passed on to \code{\link{scale_weighted}}
+#'
+#' @details
+#' \code{scale_logit} scales the data on a logit scale as described by Lowe et al. (2011).
+#'
 #' @references Lowe, W., Benoit, K., Mikhaylov, S., & Laver, M. (2011). Scaling Policy Preferences from Coded Political Texts. Legislative Studies Quarterly, 36(1), 123-155. 
 #' @rdname scale
 #' @export
@@ -189,6 +193,10 @@ scale_logit <- function(data, pos, neg, N = data[,"total"], zero_offset = 0.5, .
 #' \code{scale_bipolar} scales the data by adding up the variable
 #' values in pos and substracting the variable values in neg.
 #'
+#' @details
+#' \code{scale_bipolar} scales the data by adding up the variable
+#' values in pos and substracting the variable values in neg.
+#'
 #' @rdname scale
 #' @export
 scale_bipolar <- function(data, pos, neg, ...) {
@@ -198,16 +206,36 @@ scale_bipolar <- function(data, pos, neg, ...) {
            ...)
 }
 
-#' \code{scale_ratio} scales the data taking the ratio of the sum of the variable
-#' values in pos and the sum of the variable values in neg as suggested by Kim and Fording (1998) and by Laver & Garry (2000).
+#' \code{scale_ratio_1} scales the data taking the ratio of the difference of the sum of the variable
+#' values in pos and the sum of the variable values in neg to the sum of the variable values in pos and neg 
+#' as suggested by Kim and Fording (1998) and by Laver & Garry (2000).
+#'
+#' @details
+#' \code{scale_ratio_1} scales the data taking the ratio of the difference of the sum of the variable
+#' values in pos and the sum of the variable values in neg to the sum of the variable values in pos and neg 
+#' as suggested by Kim and Fording (1998) and by Laver & Garry (2000).
 #'
 #' @references Kim, H., & Fording, R. C. (1998). Voter ideology in western democracies, 1946-1989. European Journal of Political Research, 33(1), 73-97.
 #' @references Laver, M., & Garry, J. (2000). Estimating Policy Positions from Political Texts. American Journal of Political Science, 44(3), 619-634.
 #' @rdname scale
 #' @export
-scale_ratio <- function(data, pos, neg, ...) {
-   scale_bipolar(data, pos = pos, neg = c(), ...) /
-      scale_bipolar(data, pos = neg, neg = c(), ...)
+scale_ratio_1 <- function(data, pos, neg, ...) {
+  scale_bipolar(data, pos = pos, neg = neg, ...) /
+  scale_bipolar(data, pos = c(pos, neg), neg = c(), ...)
+}
+
+#' \code{scale_ratio_2} scales the data taking the ratio of the sum of the variable
+#' values in pos and the sum of the variable values in neg.
+#'
+#' @details
+#' \code{scale_ratio_2} scales the data taking the ratio of the sum of the variable
+#' values in pos and the sum of the variable values in neg.
+#'
+#' @rdname scale
+#' @export
+scale_ratio_2 <- function(data, pos, neg, ...) {
+  scale_bipolar(data, pos = pos, neg = c(), ...) /
+  scale_bipolar(data, pos = neg, neg = c(), ...)
 }
 
 #' \code{document_scaling} creates a function applicable to

@@ -4,7 +4,8 @@
 \alias{scale_weighted}
 \alias{scale_logit}
 \alias{scale_bipolar}
-\alias{scale_ratio}
+\alias{scale_ratio_1}
+\alias{scale_ratio_2}
 \title{Scaling functions}
 \usage{
 scale_weighted(
@@ -17,7 +18,9 @@ scale_logit(data, pos, neg, N = data[, "total"], zero_offset = 0.5, ...)
 
 scale_bipolar(data, pos, neg, ...)
 
-scale_ratio(data, pos, neg, ...)
+scale_ratio_1(data, pos, neg, ...)
+
+scale_ratio_2(data, pos, neg, ...)
 }
 \arguments{
 \item{data}{A data.frame with cases to be scaled}
@@ -50,6 +53,18 @@ refer to \code{\link{mp_scale}}.
 If variable names used for the definition of the scale
 are not present in the data frame they are assumed to be 0.
 \code{scale_weighted} scales the data as a weighted sum of the category percentages
+
+\code{scale_logit} scales the data on a logit scale as described by Lowe et al. (2011).
+
+\code{scale_bipolar} scales the data by adding up the variable
+values in pos and substracting the variable values in neg.
+
+\code{scale_ratio_1} scales the data taking the ratio of the difference of the sum of the variable
+values in pos and the sum of the variable values in neg to the sum of the variable values in pos and neg 
+as suggested by Kim and Fording (1998) and by Laver & Garry (2000).
+
+\code{scale_ratio_2} scales the data taking the ratio of the sum of the variable
+values in pos and the sum of the variable values in neg.
 }
 \references{
 Lowe, W., Benoit, K., Mikhaylov, S., & Laver, M. (2011). Scaling Policy Preferences from Coded Political Texts. Legislative Studies Quarterly, 36(1), 123-155.

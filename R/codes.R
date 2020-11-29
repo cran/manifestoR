@@ -106,16 +106,33 @@ v4_categories <- function() {
     704, 705, 706)
 }
 
+#' @param include_parents include v5-categories that have subcategories
+#' 
 #' @rdname categories
 #' @export 
-v5_categories <- function() {
+v5_categories <- function(include_parents = TRUE) {
   v5_v4_aggregation_relations() %>%
     unlist() %>%
     { gsub("per", "", .) } %>%
     { gsub("_", ".", .) } %>%
     c(v4_categories()) %>%
     unique() %>%
+    { if (!include_parents) purrr::discard(., ~ { .x %in% gsub("per", "", setdiff(names(v5_v4_aggregation_relations()), "peruncod")) }) else . } %>%
     sort()
+}
+
+#' @rdname categories
+#' @export 
+cee_categories <- function() {
+  c("1011", "1012", "1013", "1014", "1015", "1016", "1021", "1022", 
+    "1023", "1024", "1025", "1026", "1031", "1032", "1033", 
+    "2021", "2022", "2023", "2031", "2032", "2033", "2041", 
+    "3011", "3051", "3052", "3053", "3054", "3055", 
+    "4011", "4012", "4013", "4014", "4121", "4122", "4123", "4124", 
+    "4131", "4132", 
+    "5021", "5031", "5041", "5061", 
+    "6011", "6012", "6013", "6014", "6061", "6071", "6072", "6081", 
+    "7051", "7052", "7061", "7062")
 }
 
 #' @rdname categories
@@ -464,7 +481,7 @@ count_codes.default <- function(doc,
     
   if (length(include_codes) > 0) {
     for (the_name in setdiff(paste0(prefix, gsub(".", "_", include_codes, fixed = TRUE)), names(df))) {
-      df[,the_name] <- ifelse(df$total == 0L, NA, 0.0)
+      df[,the_name] <- ifelse(df$total == 0L, NA_real_, 0.0)
     }
   }
   

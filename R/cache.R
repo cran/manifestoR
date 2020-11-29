@@ -183,7 +183,7 @@ mp_which_corpus_version <- function(cache_env = mp_cache()) {
   cacheversion <- getn(kmetaversion, envir = cache_env, inherits = FALSE)
   
   if (is.null(cacheversion)) {
-    return(NA)
+    return(NA_character_)
   } else {
     return(cacheversion)
   }
@@ -241,10 +241,10 @@ mp_use_corpus_version <- function(versionid, apikey=NULL) {
 
 
       if (!("md5sum_text" %in% names(meta_from_cache))) {
-        meta_from_cache <- mutate(meta_from_cache, md5sum_text = NA)
+        meta_from_cache <- mutate(meta_from_cache, md5sum_text = NA_character_)
       }
       if (!("md5sum_text" %in% names(newmeta))) {
-        newmeta <- mutate(newmeta, md5sum_text = NA)
+        newmeta <- mutate(newmeta, md5sum_text = NA_character_)
       }
 
       assign(kmetadata, newmeta, envir = new_cache)        

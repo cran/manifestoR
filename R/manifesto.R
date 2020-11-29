@@ -57,7 +57,7 @@ mp_maindataset <- function(version="current", south_america = FALSE, download_fo
   # if (south_america) {
     # if (as.numeric(gsub(".*?(\\d+).*", "\\1", version)) < 2015) {
       # warning("No south america dataset available before 2015!")
-      # return(tbl_df(data.frame()))
+      # return(as_tibble(data.frame()))
     # }
     # version <- gsub("MPDS", "MPDSSA", version)
   # }
@@ -74,7 +74,7 @@ mp_maindataset <- function(version="current", south_america = FALSE, download_fo
       writeBin(tmp)
     return(tmp)
   } else {
-    return(tbl_df(mpds))
+    return(as_tibble(mpds))
   }
   
 }
@@ -193,7 +193,7 @@ mp_metadata <- function(ids, apikey=NULL, cache=TRUE) {
     if (exists("manifesto_id", inherits = FALSE)) {
       manifesto_id <- as.character(manifesto_id)
     } else {
-      manifesto_id <- as.character(rep(NA, times = nrow(metadata)))
+      manifesto_id <- as.character(rep(NA_character_, times = nrow(metadata)))
     }
     if (exists("is_primary_doc", inherits = FALSE)) {
       is_primary_doc <- as.logical(is_primary_doc)
@@ -207,7 +207,7 @@ mp_metadata <- function(ids, apikey=NULL, cache=TRUE) {
     }
   })
   
-  metadata <- tbl_df(metadata)
+  metadata <- as_tibble(metadata)
 
   class(metadata) <- c("ManifestoMetadata", class(metadata))
   
@@ -292,13 +292,13 @@ mp_availability <- function(ids, apikey=NULL, cache=TRUE) {
                                           envir = parent.frame()))
 
   if (!("language" %in% names(metadata))) {
-    metadata <- mutate(metadata, language = NA)
+    metadata <- mutate(metadata, language = NA_character_)
   }
   if (!("annotations" %in% names(metadata))) {
     metadata <- mutate(metadata, annotations = FALSE)
   }
   if (!("url_original" %in% names(metadata))) {
-    metadata <- mutate(metadata, url_original = NA)
+    metadata <- mutate(metadata, url_original = NA_character_)
   }
   availability <- select(metadata, one_of(columns))
 
@@ -307,15 +307,15 @@ mp_availability <- function(ids, apikey=NULL, cache=TRUE) {
 
   availability <-
       metadata %>%
+        as_tibble %>%
         select(one_of("party", "date")) %>%
         anti_join(availability, by = c("party", "date")) %>%
         mutate(manifestos = FALSE,
                originals = FALSE,
                annotations  = FALSE,
-               language = NA) %>%
+               language = NA_character_) %>%
         bind_rows(availability)
 
-  
   attr(availability, "query") <- metadata
   attr(availability, "date") <- date()
   attr(availability, "corpus_version") <- mp_which_corpus_version()
@@ -542,7 +542,7 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
                     apikey = NULL) {
   
   cite_message <- kcitemessage
-  cite_data <- data_frame()
+  cite_data <- tibble()
   
   if (is.null(apikey) && is.na(getn("apikey", envir = mp_globalenv))) {
     cite_message <- paste0(cite_message, "\n\n",
@@ -557,10 +557,10 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
                              "please cite as\n\n",
                              cite_string)
       cite_data <- cite_data %>%
-        bind_rows(data_frame(data = "corpus",
-                             source = "MARPOR",
-                             version = corpus_version,
-                             citation = cite_string))
+        bind_rows(tibble(data = "corpus",
+                         source = "MARPOR",
+                         version = corpus_version,
+                         citation = cite_string))
       
       corpus_cache <- manifestos_in_cache() %>%
                         select(party, date) %>%
@@ -576,10 +576,10 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
                                  "Please cite additionally", "\n\n",
                                  cite_string)
           cite_data <- cite_data %>%
-            bind_rows(data_frame(data = "corpus-additional",
-                                 source = "CEMP",
-                                 version = corpus_version,
-                                 citation = cite_string))
+            bind_rows(tibble(data = "corpus-additional",
+                             source = "CEMP",
+                             version = corpus_version,
+                             citation = cite_string))
         }
         if(any(corpus_cache$source == "MZES")) {
           cite_string <- get_citation("MZES", kmtype.corpuscitation, apikey = apikey)
@@ -590,10 +590,10 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
                                  "Please cite additionally", "\n\n",
                                  cite_string)
           cite_data <- cite_data %>%
-            bind_rows(data_frame(data = "corpus-additional",
-                                 source = "MZES",
-                                 version = corpus_version,
-                                 citation = cite_string))
+            bind_rows(tibble(data = "corpus-additional",
+                             source = "MZES",
+                             version = corpus_version,
+                             citation = cite_string))
         }
       }
     } else {
@@ -611,7 +611,7 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
                              paste(core_versions, collapse = ", "), ", please cite as \n\n", 
                              paste(cite_strings, collapse = "\n\n"))
       cite_data <- cite_data %>%
-        bind_rows(data_frame(data = rep("dataset", length(core_versions)),
+        bind_rows(tibble(data = rep("dataset", length(core_versions)),
                              source = rep("MARPOR", length(core_versions)),
                              version = core_versions,
                              citation = cite_strings))

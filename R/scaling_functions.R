@@ -2,8 +2,9 @@
 #' 
 #' Computes left-right scores based on the Franzmann & Kaiser Method (see
 #' reference below). The issue structures are not calculated from scratch but
-#' taken as given from Franzmann 2009. Note that they are not available for the
-#' entire Manifesto Project Dataset, but only for a subset of countries and elections.
+#' taken as given from Franzmann 2009 (or later updates). Note that they 
+#' are not available for the entire Manifesto Project Dataset, but only for a 
+#' subset of countries and elections.
 #' 
 #'
 #' @param data A data.frame with cases to be scaled, variables named "per..."
@@ -11,14 +12,15 @@
 #' @param smoothing flag for using smoothing
 #' @param vars Variables/Categories to use for computation of score. Defaults to all
 #' available handbook version 4 categories.
-#' @param issue_structure issue structure to use for Franzmann & Kaiser method, default to original replication values
+#' @param issue_structure issue structure to use for Franzmann & Kaiser method, default 
+#' to most recent bundled version (for details see \code{read_fk_issue_structure})
 #' @param party_system_split function to recode the country variable to re-partition
 #' party systems. Defaults to splitting Belgium into two halfs as done in Franzmann 2009
 #' @param mean_presplit if TRUE, for Belgium as a whole (before the split into two
 #' party systems) the mean of the issue weights is used (which is equal to taking
 #' the mean of the output values, since all subsequent transformations are linear). This step
 #' is required to replicate the Franzmann 2009 dataset.
-#' @param ... passed on to fk_smoothing and \code{party_system_split}
+#' @param ... passed on to \code{fk_smoothing} and \code{party_system_split}
 #' @references Franzmann, Simon/Kaiser, Andre (2006): Locating Political Parties in Policy Space. A Reanalysis of Party Manifesto Data, Party Politics, 12:2, 163-188
 #' @references Franzmann, Simon (2009): The Change of Ideology: How the Left-Right Cleavage transforms into Issue Competition. An Analysis of Party Systems using Party Manifesto Data. PhD Thesis. Cologne.
 #' @export
@@ -30,84 +32,87 @@ franzmann_kaiser <- function(data,
                              party_system_split = split_belgium,
                              mean_presplit = TRUE,
                              ...) {
-           
-   
 
-   if(!("country" %in% names(data)) & ("party" %in% names(data))) {
-     data <- mutate(data, country = as.integer(substr(party, 1, 2)))
-   }
+  if (!("country" %in% names(data)) & ("party" %in% names(data))) {
+    data <- mutate(data, country = as.integer(substr(party, 1, 2)))
+  }
 
   if (!is.null(party_system_split) & is.function(party_system_split)) {
     data <- party_system_split(data, ...)
   }
   
-   if (basevalues) {
-      ## calculates positional scores = saliency scores - base value // pos scores = (x - min(x)) where x is saliency score
-      data <- data %>%
-         group_by(country, edate) %>%
-         #select(one_of(vars)) %>%
-        mutate_at(vars, .funs = funs(.-min(., na.rm=TRUE))) %>%
-         ungroup()
-   }
+  if (basevalues) {
+    ## calculates positional scores = saliency scores - base value // pos scores = (x - min(x)) where x is saliency score
+    data <- data %>%
+      group_by(country, edate) %>%
+      mutate_at(vars, .funs = ~{ .-min(., na.rm=TRUE) }) %>%
+      ungroup()
+  }
   
-   data %>%
-     select(one_of("country", "edate")) %>%
-     left_join(issue_structure) %>%
-     select(one_of(vars)) %>%
-     { scale_weighted(data, vars = vars, weights = .) /
-                  scale_weighted(data, vars = vars, weights = 1) } -> fkscores
+  data %>%
+    select(all_of(c("country", "edate"))) %>%
+    left_join(issue_structure, by = c("country", "edate")) %>%
+    select(all_of(vars)) %>%
+    { scale_weighted(data, vars = vars, weights = .) /
+        scale_weighted(data, vars = vars, weights = 1) } -> fkscores
    
-   if (smoothing) {
-      combined <- cbind(data, fkscores)
-      fkscores <- fk_smoothing(data = combined, score_name = "fkscores", ...)
-   }
+  if (smoothing) {
+    combined <- cbind(data, fkscores)
+    fkscores <- fk_smoothing(data = combined, score_name = "fkscores", ...)
+  }
    
-   return( (fkscores + 1)*5 )
+  return((fkscores + 1) * 5)
 
 }
 
 #' @importFrom magrittr set_names
-#' @param path path from were to read issue structures (as SPSS data file). Defaults
-#' to the file bundled in the manifestoR package from the replication material of
-#' Franzmann 2009.
+#' @importFrom readr cols col_integer col_character col_date col_double
+#' @param path path from were to read issue structures (as csv data file). Defaults
+#' to the most recent file bundled in the manifestoR package.
+#' @param mean_presplit if TRUE, for Belgium as a whole (before the split into two
+#' party systems) the mean of the issue weights is used (which is equal to taking
+#' the mean of the output values, since all subsequent transformations are linear). This step
+#' is required to replicate the Franzmann 2009 dataset. If the issue structures already
+#' contain values for Belgium as a whole they are overwritten by the newly generated ones.
+#' @param format_version can be 1 or 2 to switch between different structural versions 
+#' of the issue structures file (1 for files containing "structure"-columns, 
+#' 2 for files containing "per"-columns)
 #' @export
 #' @rdname franzmann_kaiser
-read_fk_issue_structure <- function(path = system.file("extdata", "fk_issue_structure.sav", package = "manifestoR"),
-                                    mean_presplit = TRUE) {
+read_fk_issue_structure <- function(path = system.file("extdata", "fk_issue_structure_2019.csv", package = "manifestoR"),
+                                    mean_presplit = TRUE,
+                                    format_version = 2) {
+
+  if (!format_version %in% c(1, 2)) { stop("please provide a valid format_version.") }
   
-  if (requireNamespace("haven", quietly = TRUE)) {
-    
-    convert_date <- function(edate) {
-      tryCatch(as.Date(edate),
-               error = function(e) {
-                 as.Date(edate/(24*60*60), origin = "1582-10-14")
-               })
-    }
-    
-    path %>%
-      haven::read_sav() %>%
-      mutate(edate = convert_date(edate),
-             country = as.numeric(country)) %>%
-             { set_names(., gsub("e(\\d+)_structure", "per\\1", names(.))) } %>%
-      mutate_at(vars(-edate, -country), .funs = funs(as.numeric)) %>%
-      select(-countryname) %>%
-      iff(mean_presplit, function(data) {
-        data %>%
-        { (select(subset(., country == 218), starts_with("per"))  + 
+  data = switch(format_version,
+    `1` = {
+      path %>%
+        readr::read_csv(col_types = cols(country = col_integer(), countryname = col_character(), edate = col_date(format = ""), .default = col_double())) %>%
+        { set_names(., gsub("e(\\d+)_structure", "per\\1", names(.))) } %>%
+        select(-countryname)
+    },
+    `2` = {
+      path %>%
+        readr::read_csv(col_types = cols(country = col_integer(), edate = col_date(format = ""), .default = col_character())) %>%
+        select(country, edate, starts_with("per")) %>%
+        mutate_at(vars(starts_with("per")), ~dplyr::recode(.x, "valence" = 0, "left" = -1, "right" = 1))
+    })
+  
+  data %>%
+    iff(mean_presplit, function(data) {
+      data %>%
+        { (select(subset(., country == 218), starts_with("per")) + 
              select(subset(., country == 219), starts_with("per")))/2 } %>%
-          set_names(subset(names(data), grepl("^per", names(data)))) %>%
-          mutate(country = 21) %>%
-          bind_cols(data %>% subset(country == 218) %>% select(edate)) %>%
-          bind_rows(data)
-      })
-  } else {
-    stop('Using the original Franzmann 2009 issue structure requires the package haven.
-         Install package haven with install.packages("haven") provide issue structures
-         from an alternative source.')
-  }
-  
+        set_names(subset(names(data), grepl("^per", names(data)))) %>%
+        mutate(country = 21) %>%
+        bind_cols(data %>% subset(country == 218) %>% select(edate)) %>%
+        bind_rows(data %>% filter(country != 21)) %>%
+        arrange(country, edate)
+    })
 
 }
+
 
 #' Split Belgium party system into separate groups
 #' 
@@ -133,7 +138,7 @@ split_belgium <- function(data,
     mutate(country = ifelse(country == 21,
                             ifelse(party %in% wallonia_parties, 219,
                             ifelse(party %in% flanders_parties, 218,
-                            ifelse(party %in% brussels_parties, NA,
+                            ifelse(party %in% brussels_parties, NA_integer_,
                             presplit_countrycode))),
                             country))
 }
@@ -168,21 +173,21 @@ fk_smoothing <- function(data, score_name, use_period_length = TRUE, ...) {
    data$n <- c(1:nrow(data))
    smoothed <- data %>% 
       group_by(party) %>% 
-      select(one_of("country","edate","the_score","n")) %>% 
-      arrange(edate) %>%
-      mutate(
-         leadedate = lead(edate),
-         leglength = as.numeric(difftime(leadedate, edate, units="days")),
-         w = leglength/(lagl(leglength) + leglength + leadl(leglength)),
-         p_lag = lagl(the_score),
-         p = the_score ,
-         p_lead = leadl(the_score),
-         smooth = ifelse(rep(use_period_length, n()),
-                         (lagl(w)*p_lag + w*p + leadl(w)*p_lead),
-                         (leadl(the_score) + the_score + lagl(the_score))/3)) %>%
+        select(one_of("party","country","edate","the_score","n")) %>% 
+        arrange(edate) %>%
+        mutate(
+           leadedate = leadl(edate),
+           leglength = as.numeric(difftime(leadedate, edate, units="days")),
+           w = leglength/(lagl(leglength) + leglength + leadl(leglength)),
+           p_lag = lagl(the_score),
+           p = the_score ,
+           p_lead = leadl(the_score),
+           smooth = if_else(rep(use_period_length, n()),
+                            (lagl(w)*p_lag + w*p + leadl(w)*p_lead),
+                            (leadl(the_score) + the_score + lagl(the_score))/3)) %>%
       ungroup() %>%
       arrange(n)
-  
+
    return(smoothed$smooth)
 }
 
