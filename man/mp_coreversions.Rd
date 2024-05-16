@@ -13,8 +13,11 @@ the API key set via \code{\link{mp_setapikey}}.}
 \item{cache}{Boolean flag indicating whether to use locally cached data if
 available.}
 
-\item{kind}{one of "main" (default) or "south_america" to discrimante the Main Dataset
-and the South America Dataset}
+\item{kind}{one of "main" (default) or "south_america" to discriminate the Main Dataset
+and the South America Dataset. "south_america" is nowadays deprecated as the South
+American Dataset has been integrated into the Main Dataset from version 2023a onwards.
+Using "south_america" will still return past South American Dataset versions but also 
+as the most recent version a reference to an empty dataset.}
 }
 \description{
 List the available versions of the Manifesto Project's Main Dataset

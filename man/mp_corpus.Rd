@@ -2,6 +2,8 @@
 % Please edit documentation in R/manifesto.R
 \name{mp_corpus}
 \alias{mp_corpus}
+\alias{mp_corpus_df}
+\alias{mp_corpus_df_bilingual}
 \title{Get documents from the Manifesto Corpus Database}
 \usage{
 mp_corpus(
@@ -9,7 +11,30 @@ mp_corpus(
   apikey = NULL,
   cache = TRUE,
   codefilter = NULL,
-  codefilter_layer = "cmp_code"
+  codefilter_layer = "cmp_code",
+  translation = NULL,
+  as_tibble = FALSE,
+  tibble_metadata = "simplified"
+)
+
+mp_corpus_df(
+  ids,
+  apikey = NULL,
+  cache = TRUE,
+  codefilter = NULL,
+  codefilter_layer = "cmp_code",
+  translation = NULL,
+  tibble_metadata = "simplified"
+)
+
+mp_corpus_df_bilingual(
+  ids,
+  apikey = NULL,
+  cache = TRUE,
+  codefilter = NULL,
+  codefilter_layer = "cmp_code",
+  translation = "en",
+  tibble_metadata = "simplified"
 )
 }
 \arguments{
@@ -33,6 +58,22 @@ with the codes specified in \code{codefilter} are returned. If \code{NULL},
 no filtering is applied}
 
 \item{codefilter_layer}{layer to which the codefilter should apply, defaults to cmp_code}
+
+\item{translation}{A string containing the two digit ISO code of a translation language
+that should be used for the text instead of the original document language.
+Defaults to \code{NULL}, resulting in the original language of a document. For
+documents that are already originally in the requested translation language, it
+returns the original text. English would be "en".}
+
+\item{as_tibble}{Boolean flag indicating whether to return a tibble/data.frame object
+instead of a ManifestoCorpus object, for backward compatibility defaults to FALSE}
+
+\item{tibble_metadata}{A string specifing the handling of document-level metadata when
+using `as_tibble` = TRUE. It can be one of the following values:
+"none" = no metadata,
+"simplified" = basic metadata ("manifesto_id", "party", "date", "language", "annotations", "translation_en"),
+"all" = all metadata,
+defaults to "simplified"}
 }
 \value{
 an object of \code{\link[tm]{Corpus}}'s subclass
@@ -46,10 +87,22 @@ memory to ensure internal consistency, enable offline use and
 reduce online traffic.
 }
 \details{
+`mp_corpus_df` is a shorthand for getting the documents of the Manifesto Corpus
+as a tibble/data.frame object instead of a ManifestoCorpus object. It takes
+the same parameters as `mp_corpus`
+(it is equivalent to \code{mp_corpus(..., as_tibble = TRUE)}).
 See \code{\link{mp_save_cache}} for ensuring reproducibility by
 saving cache and version identifier to the hard drive.
 See \code{\link{mp_update_cache}} for updating the locally saved content with
 the most recent version from the Manifesto Project Database API.
+
+`mp_corpus_df_bilingual` is a shorthand for getting the original text and the english
+translations (or in case further translation languages become available also other
+translation languages than english) from the Manifesto Corpus as a tibble/data.frame
+object. The original text ends up in the "text" column and the english translation in
+"text_en" (or more abstract in case of further translation languages in a column
+named "text_<two digit ISO language code>"). It accepts the same additional parameters
+as `mp_corpus_df`.
 }
 \examples{
 \dontrun{
@@ -62,5 +115,14 @@ mp_corpus(subset(mp_maindataset(), countryname == "France"))
 
 partially_available <- data.frame(party=c(41320, 41320), date=c(200909, 200509))
 mp_corpus(partially_available)
+
+corpus_df <- mp_corpus(party == 61620 & rile > 10, as_tibble = TRUE)
+corpus_df <- mp_corpus_df(party == 61620 & rile > 10)
+corpus_df <- mp_corpus_df(party == 61620 & rile > 10, tibble_metadata = "all")
+
+mp_corpus(wanted, translation = "en")
+mp_corpus_df(wanted, translation = "en")
+
+mp_corpus_df_bilingual(wanted, translation = "en")
 }
 }

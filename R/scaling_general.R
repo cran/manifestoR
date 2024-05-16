@@ -18,7 +18,7 @@
 mp_scale <- function(data,
                      scalingfun = rile,
                      scalingname = as.character(substitute(scalingfun)),
-                     recode_v5_to_v4 = (scalingname == "rile"),
+                     recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")),
                      ...) {
   UseMethod("mp_scale", data)
 }
@@ -28,7 +28,7 @@ mp_scale <- function(data,
 mp_scale.default <- function(data,
                              scalingfun = rile,
                              scalingname = as.character(substitute(scalingfun)),
-                             recode_v5_to_v4 = (scalingname == "rile"),
+                             recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")),
                              ...) {
   scalingfun(data, ...)
 }
@@ -38,7 +38,7 @@ mp_scale.default <- function(data,
 mp_scale.ManifestoDocument <- function(data,
         scalingfun = rile,
         scalingname = as.character(substitute(scalingfun)),
-        recode_v5_to_v4 = (scalingname == "rile"),
+        recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")),
         ...) {
 
   do.call(document_scaling(scalingfun,
@@ -54,10 +54,12 @@ mp_scale.ManifestoDocument <- function(data,
 mp_scale.ManifestoCorpus <- function(data,
         scalingfun = rile,
         scalingname = as.character(substitute(scalingfun)),
+        recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")),
         ...) {
 
     do.call(corpus_scaling(scalingfun,
-                           scalingname = scalingname),
+                           scalingname = scalingname,
+                           recode_v5_to_v4 = recode_v5_to_v4),
             list(data, ...))
 
 }
@@ -279,9 +281,12 @@ document_scaling <- function(scalingfun,
 #' 
 #' @export
 #' @rdname mp_scale
-corpus_scaling <- function(scalingfun, scalingname = "scaling", ...) {
+corpus_scaling <- function(scalingfun,
+                           scalingname = "scaling",
+                           recode_v5_to_v4 = FALSE,
+                           ...) {
 
-  doc_scale_loc <- document_scaling(scalingfun, ...)
+  doc_scale_loc <- document_scaling(scalingfun, scalingname = scalingname, recode_v5_to_v4 = recode_v5_to_v4, ...)
 
   function(x) {
     scalings <- lapply(content(x), doc_scale_loc)

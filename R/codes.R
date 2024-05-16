@@ -25,6 +25,7 @@ recode_cee_codes.default <- function(x) {
 }
 
 #' @method recode_cee_codes ManifestoDocument
+#' @export
 recode_cee_codes.ManifestoDocument <- function(x) {
   doc <- x
   codes(doc) <- recode_cee_codes(codes(doc))
@@ -184,7 +185,7 @@ cee_aggregation_relations <- function() {
 
 
 baeck_policy_dimensions <- function() {
-  list(foreign = c(101, 102, 103, 106, 107, 108, 109),
+  list(foreign = c(101, 102, 103, 106, 107, 108, 109, 110),
        defence = c(104, 105),
        interior = c(201, 202, 203, 204, 301, 302,
                     303, 304, 605, 607, 608),
@@ -250,8 +251,8 @@ clarity_dimensions <- function() {
 #' 
 #' \code{aggregate_pers} is a general function to aggregate percentage variables by creating a new
 #' variable holding the sum. If a variable with the name for the aggregate
-#' already exists, it is overwritten, giving a warning if it is changed, not NA,
-#' not zero and not named "peruncod".
+#' already exists and if it is part of the `overwrite` parameter, it is
+#' overwritten.
 #' 
 #' @param data dataset to use in aggregation
 #' @param groups (named) list of variable name vectors to aggregate to a new one
@@ -259,8 +260,8 @@ clarity_dimensions <- function() {
 #' @param na.rm passed on to \code{\link{sum}}
 #' @param keep keep variables that were aggregated in result?
 #' @param overwrite Names of the variables that are allowed to be overwritten by
-#' aggregate. Defaults to all aggregate variable names. If a variable is
-#' overwritten, a message is issued in any case.
+#' aggregate. Defaults to all aggregate variable names.
+#' @param verbose show messages in case of possibly problematic side effects
 #' @seealso \code{\link{aggregate_pers_cee}}
 #' 
 #' @rdname aggregate_pers
@@ -269,7 +270,8 @@ aggregate_pers <- function(data,
                            groups = v5_v4_aggregation_relations(),
                            na.rm = FALSE,
                            keep = FALSE,
-                           overwrite = names(groups)) {
+                           overwrite = names(groups),
+                           verbose = TRUE) {
   
   data <- 
     Reduce(function(data, aggregate) {
@@ -277,19 +279,28 @@ aggregate_pers <- function(data,
           select(one_of(intersect(groups[[aggregate]], names(data))))
         if (ncol(aggregated) != 0L) {
           aggregated <- rowSums(aggregated, na.rm = na.rm)
-            if (aggregate %in% names(data) &&
-                any(!is.na(data[,aggregate]) & 
-                    data[,aggregate] != 0.0 & 
-                    na_replace(data[,aggregate] != aggregated), TRUE)) {
-              if (aggregate %in% overwrite) {
-                message(paste0("Changing non-zero supercategory per value ", aggregate, 
-                               " when aggregating subcateogory percentages"))
-                data[,aggregate] <- aggregated
+          if (aggregate %in% names(data)) {
+            if (aggregate %in% overwrite) {
+              if (verbose) {
+                if (any(!is.na(data[,aggregate]) &
+                        data[,aggregate] != 0.0 &
+                        !is.na(aggregate) &
+                        na_replace(data[,aggregate] != aggregated, TRUE))) {
+                  message(paste0("Changing non-zero supercategory per value ", aggregate,
+                                 " when aggregating subcategory percentages"))
+                }
+                if (any(!is.na(data[,aggregate]) &
+                        is.na(aggregated))) {
+                  message(paste0("Changing non-NA supercategory per value ", aggregate, " to NA",
+                                 " when aggregating subcategory percentages"))
+                }
               }
-            } else {
               data[,aggregate] <- aggregated
             }
+          } else {
+            data[,aggregate] <- aggregated
           }
+        }
         data
       },
       names(groups),
@@ -330,12 +341,17 @@ aggregate_pers_cee <- function(data) {
 #' @param with_eu_codes Whether to include special EU code layer; by default ("auto") taken
 #' from the document's metadata
 #' @param prefix prefix for naming the count/percentage columns in the resulting data.frame
-#' @param relative If true, percentages are returned, absolute counts else
+#' @param relative If true, percentages are returned, absolute counts else; the percentages
+#' are calculated after the exclusion of the categories provided in `drop_codes`
 #' @param include_codes Vector of categories that should be included even if they are not
 #' present in the data; the value of the created variables then defaults to 0.0 (or NA if
-#' no codes are present at all);
+#' no codes are present at all); in contrast to `drop_codes` this only adds variables
+#' for possibly missing categories but does not remove any; Defaults to `v4_categories()` if
+#' `code_layers` parameter contains `cmp_code`
 #' @param aggregate_v5_subcategories if TRUE, for handbook version 5 subcategories, the aggregate
 #' category's count/percentage is computed as well
+#' @param drop_codes Vector of categories that should be excluded even if they are
+#' present in the data; Defaults to `c("H")` if `code_layers` parameter contains `cmp_code`
 #' @return A data.frame with onw row and the counts/percentages as columns
 #' @export
 count_codes <- function(doc,
@@ -344,8 +360,10 @@ count_codes <- function(doc,
                         prefix = "per",
                         relative = TRUE,
                         include_codes = if("cmp_code" %in% code_layers)
-                                           { v4_categories() } else { c() },
-                        aggregate_v5_subcategories = TRUE) {
+                                          { v4_categories() } else { c() },
+                        aggregate_v5_subcategories = TRUE,
+                        drop_codes = if("cmp_code" %in% code_layers)
+                                       { c("H") } else { c() }) {
   UseMethod("count_codes", doc)
 }
 
@@ -362,7 +380,7 @@ fix_names_code_table <- function(df, prefix, include_codes) {
     
     the_order <- order(names(df))
     df %>%
-      select(the_order) %>%
+      select(all_of(the_order)) %>%
       select(dplyr::matches("party"),
              dplyr::matches("date"),
              dplyr::starts_with(prefix),
@@ -374,7 +392,7 @@ fix_names_code_table <- function(df, prefix, include_codes) {
     
     the_order <- order(names(df))
     df %>%
-      select(the_order) %>%
+      select(all_of(the_order)) %>%
       select(dplyr::matches("party"),
              dplyr::matches("date"),
              dplyr::starts_with(prefix),
@@ -401,12 +419,14 @@ count_codes.ManifestoCorpus <- function(doc,
                                         prefix = "per",
                                         relative = TRUE,
                                         include_codes = if("cmp_code" %in% code_layers)
-                                                           { v4_categories() } else { c() },
-                                        aggregate_v5_subcategories = TRUE) {
+                                                          { v4_categories() } else { c() },
+                                        aggregate_v5_subcategories = TRUE,
+                                        drop_codes = if("cmp_code" %in% code_layers)
+                                                       { c("H") } else { c() }) {
   
   lapply(content(doc),
          count_codes,
-         code_layers, with_eu_codes, prefix, relative, include_codes, aggregate_v5_subcategories) %>%
+         code_layers, with_eu_codes, prefix, relative, include_codes, aggregate_v5_subcategories, drop_codes) %>%
     bind_rows() %>%
     fix_missing_counted_codes(relative = relative) %>%
     fix_names_code_table(prefix,
@@ -421,8 +441,10 @@ count_codes.ManifestoDocument <- function(doc,
                         prefix = "per",
                         relative = TRUE,
                         include_codes = if("cmp_code" %in% code_layers)
-                                           { v4_categories() } else { c() },
-                        aggregate_v5_subcategories = TRUE) {
+                                          { v4_categories() } else { c() },
+                        aggregate_v5_subcategories = TRUE,
+                        drop_codes = if("cmp_code" %in% code_layers)
+                                       { c("H") } else { c() }) {
   
   if (with_eu_codes == "auto") {
     with_eu_codes <- meta(doc, "has_eu_code")
@@ -443,7 +465,7 @@ count_codes.ManifestoDocument <- function(doc,
   }
   data.frame(party = null_to_na(meta(doc, "party")),
              date = null_to_na(meta(doc, "date"))) %>%
-    bind_cols(count_codes(the_codes, code_layers, with_eu_codes, prefix, relative, include_codes, aggregate_v5_subcategories))
+    bind_cols(count_codes(the_codes, code_layers, with_eu_codes, prefix, relative, include_codes, aggregate_v5_subcategories, drop_codes))
   
   
 }
@@ -455,10 +477,16 @@ count_codes.default <- function(doc,
                                 prefix = "per",
                                 relative = TRUE,
                                 include_codes = if("cmp_code" %in% code_layers)
-                                                   { v4_categories() } else { c() },
-                                aggregate_v5_subcategories = TRUE) {
+                                                  { v4_categories() } else { c() },
+                                aggregate_v5_subcategories = TRUE,
+                                drop_codes = if("cmp_code" %in% code_layers)
+                                               { c("H") } else { c() }) {
   
   tt <- table(doc)
+  
+  if(length(drop_codes) > 0){
+    tt = tt[!names(tt) %in% drop_codes]
+  }
 
   df <- as.data.frame(t(as.matrix(tt)))
   if (ncol(df) > 0) {

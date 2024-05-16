@@ -4,14 +4,17 @@
 \alias{mp_corpusversions}
 \title{List the available versions of the Manifesto Project's Corpus}
 \usage{
-mp_corpusversions(apikey = NULL)
+mp_corpusversions(apikey = NULL, only_stable = TRUE)
 }
 \arguments{
 \item{apikey}{API key to use. Defaults to \code{NULL}, resulting in using
 the API key set via \code{\link{mp_setapikey}}.}
+
+\item{only_stable}{Consider only for versions marked as stable by the Manifesto
+Project Team, defaults to TRUE}
 }
 \value{
-a character vector with the available version ids
+a data.table with the available version ids (name, tag)
 }
 \description{
 The Manifesto Project Database API assigns a new version code whenever changes

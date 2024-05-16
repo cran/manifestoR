@@ -1,3 +1,34 @@
+1.6.0 (2024-05-16)
+==================
+* added translation parameter to mp_corpus function to allow for retrieving (english) translations
+* added mp_parties function to access the party datasets
+* added mp_corpus_df convenience function to retrieve the corpus as tibble/data.frame
+* added mp_corpus_df_bilingual convenience function to retrieve the corpus with both the original
+language text and the (english) translated text as tibble/data.frame
+* added as_tibble parameter to mp_corpus function to retrieve corpus as tibble/data.frame
+* added as_tibble function for ManifestoDocument and ManifestoCorpus objects
+* added tibble_metadata parameter to mp_corpus function to select document level metadata variables
+* count_codes now excludes "H" codes by default to avoid unintended effects on category percentages
+and subsequent problems in scaling functions
+* added detailed missing documents explanation for mp_corpus* requests
+* added na.rm.voteshares and na.rm.positions parameters to median_voter function
+* adaptations for the integration of the south america dataset into the normal dataset
+* added missing function export of recode_cee_codes.ManifestoDocument
+* updated vignette with the new features and a clarification for enhanced reproducability
+* added only_stable parameter to mp_corpusversions to hide corpus development versions by default
+* Bugfix and clarification in aggregate_pers function regarding handling of NAs/overwriting
+* Bugfix in mp_scale.ManifestoCorpus to handle handbook v5 documents correctly
+* Bugfix in baeck_policy_dimensions (thus meyer_miller_2013_policy_dimensions and mp_nicheness) by
+adding 110 category to foreign dimension
+* Bugfix in as.data.frame to avoid all metadata columns being cast to character class
+* Bugfix in mp_metadata regarding the ordering of the results in a specific scenario
+* Bugfix of a small cache handling inconstency
+* Bugfix for the rare scenario requesting the same item multiple times in a single mp_corpus request
+* removed some unnecessary warnings when filtering mp_corpus by variables with NA values in the dataset
+* removed some unnecessary type casting warnings
+* changed the default manifesto project api root url
+
+
 1.5.0 (2020-11-29)
 ==================
 * added 2019 version of franzmann-kaiser issue structures (while allowing for also using older ones)

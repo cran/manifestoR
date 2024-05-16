@@ -9,7 +9,8 @@ aggregate_pers(
   groups = v5_v4_aggregation_relations(),
   na.rm = FALSE,
   keep = FALSE,
-  overwrite = names(groups)
+  overwrite = names(groups),
+  verbose = TRUE
 )
 }
 \arguments{
@@ -23,14 +24,15 @@ aggregate_pers(
 \item{keep}{keep variables that were aggregated in result?}
 
 \item{overwrite}{Names of the variables that are allowed to be overwritten by
-aggregate. Defaults to all aggregate variable names. If a variable is
-overwritten, a message is issued in any case.}
+aggregate. Defaults to all aggregate variable names.}
+
+\item{verbose}{show messages in case of possibly problematic side effects}
 }
 \description{
 \code{aggregate_pers} is a general function to aggregate percentage variables by creating a new
 variable holding the sum. If a variable with the name for the aggregate
-already exists, it is overwritten, giving a warning if it is changed, not NA,
-not zero and not named "peruncod".
+already exists and if it is part of the `overwrite` parameter, it is
+overwritten.
 }
 \seealso{
 \code{\link{aggregate_pers_cee}}

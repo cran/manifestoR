@@ -10,10 +10,13 @@ Objects returned by \code{\link{mp_availability}}.
 \details{
 ManifestoAvailability objects are data.frames with variables \code{party}
 and \code{date} identifying the requested manifestos as in the Manifesto
-Project's Main & South America Datasets. The additional variables
-specify whether a machine readable document is available (\code{manifestos}),
-whether digital CMP coding annotations are available (\code{annotations}) or
-whether an orignal PDF is available (\code{originals}).
+Project's Main Datasets. The additional variables specify whether a machine 
+readable document is available (\code{manifestos}, "Documents found"),
+whether digital CMP coding annotations are available (\code{annotations},
+"Coded Documents found"), whether an orignal PDF is available
+(\code{originals}, "Originals found"), or whether an english translation
+for the (digitally annotated) machine-readable document is available
+(\code{translation_en}, "English Translations found").
 
 Additional a ManifestoAvailability object has attributes \code{query}, containing
 the original id set which was queried, \code{corpus_version}, specifying the

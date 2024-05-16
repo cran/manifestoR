@@ -21,7 +21,11 @@ mp_southamerica_dataset(...)
 \code{\link{mp_coreversions}} for a list of available
 versions.}
 
-\item{south_america}{flag whether to download corresponding South America dataset instead of Main Dataset}
+\item{south_america}{flag whether to download corresponding South America dataset
+instead of Main Dataset. This parameter deprecated as the previously separated South
+America Dataset has been integrated into the Main Dataset from version 2023a onwards.
+To allow for backward compatibilty old South American Datasets can still be accessed
+but querying for the most recent South American Dataset will result in an empty dataset.}
 
 \item{download_format}{Download format. If not NULL, instead of the dataset
 being returned as an R data.frame, a file path to a temporary file in the specified
@@ -47,7 +51,8 @@ the local cache, if it was already downloaded before.
 \details{
 \code{mp_southamerica_dataset} is a shorthand for getting the Manifesto
 Project's South America Dataset (it is equivalent to 
-\code{mp_maindataset(..., south_america = TRUE)}).
+\code{mp_maindataset(..., south_america = TRUE)}). It is nowadays deprecated, for 
+details see explanation in `south_america` parameter documentation.
 }
 \examples{
 \dontrun{

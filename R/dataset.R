@@ -44,6 +44,7 @@ mp_interpolate <- function(df,
         right_join(data.frame(edate = seq_Date_multi(df$edate, by = by),
                               party = the_party),
                    by = c("edate", "party")) %>%
+        arrange(edate) %>%
         mutate_at(grep(vars, names(df), value = TRUE),
                   .funs = ~{ zoo::zoo(., edate) %>% the_approx() %>% as.numeric() })
   
@@ -117,6 +118,8 @@ seq_Date_multi <- function(dates, by) {
 #' @param scale variable of which to compute the median voter position (default: rile)
 #' @param groups names of grouping variables to use for aggregation, default
 #' results in one median voter position per election
+#' @param na.rm.voteshares remove observations where voteshares is NA (default: FALSE)
+#' @param na.rm.positions remove observations where positions is NA (default: FALSE)
 #' @param ... further arguments passed to \code{\link{median_voter_single}}
 #' 
 #' @export
@@ -124,9 +127,14 @@ median_voter <- function(positions,
                          voteshares = "pervote",
                          scale = "rile",
                          groups = c("country", "edate"),
+                         na.rm.voteshares = FALSE,
+                         na.rm.positions = FALSE,
                          ...) {
 
-  median_voter_params <- functional::Curry(median_voter_single, ...)
+  median_voter_params <- functional::Curry(median_voter_single,
+                                           na.rm.voteshares = na.rm.voteshares,
+                                           na.rm.positions = na.rm.positions,
+                                           ...)
 
   if (is.numeric(positions) & is.numeric(voteshares)) {
 
@@ -178,7 +186,9 @@ median_voter_single <- function(positions,
                                 voteshares,
                                 adjusted = FALSE,
                                 scalemin = -100,
-                                scalemax = 100) {
+                                scalemax = 100,
+                                na.rm.voteshares = FALSE,
+                                na.rm.positions = FALSE) {
 
   left_bounds <- function(position) {
     if (adjusted) {
@@ -197,8 +207,14 @@ median_voter_single <- function(positions,
     }
   }
   
-  data.frame(position = positions[order(positions)],
+  data = data.frame(position = positions[order(positions)],
              voteshare = voteshares[order(positions)]) %>%
+      filter(!(na.rm.voteshares & is.na(voteshare))) %>%
+      filter(!(na.rm.positions & is.na(position)))
+
+  if (nrow(data) == 0) return(NA)
+
+  data %>%
       group_by(position) %>%
       summarize(voteshare = sum(voteshare)) %>%
       ungroup() %>%

@@ -47,6 +47,9 @@ DB API.
 the new version via: \code{\link{mp_use_corpus_version}}. That is, 
 the internal cache of manifestoR will automatically be updated to newer version
 and all future calls to the API will request for the newer version.
+Note that updating/downgrading the corpus version after having already
+downloaded translated manifestos is not yet implemented and will result in
+an error message.
 
 
 Note that this versioning applies to the corpus' texts and metadata, and not the

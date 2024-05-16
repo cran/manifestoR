@@ -14,7 +14,7 @@ rile_l <- function() {
 #' RILE
 #' 
 #' Computes the RILE or other bipolar linear scaling measures for each case in a
-#' data.frame or ManifestoCorpus
+#' data.frame or ManifestoCorpus or for a ManifestoDocument
 #'
 #' @rdname rile
 #' @param x A data.frame with cases to be scaled, variables named "per..."
@@ -30,13 +30,15 @@ rile.default <- function(x) {
 #' @export
 rile.ManifestoDocument <- function(x) {
   .Deprecated("mp_scale(doc, scalingfun = rile)")
-  f <- document_scaling(rile.default, scalingname = "rile")
+  scalingname = "rile"
+  f <- document_scaling(rile.default, scalingname = scalingname, recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")))
   f(x)
 }
 #' @export
 rile.ManifestoCorpus <- function(x) {
   .Deprecated("mp_scale(corpus, scalingfun = rile)")
-  f <- corpus_scaling(rile.default, scalingname = "rile")
+  scalingname = "rile"
+  f <- corpus_scaling(rile.default, scalingname = scalingname, recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")))
   f(x)
 }
 
@@ -44,18 +46,23 @@ rile.ManifestoCorpus <- function(x) {
 #' @export
 logit_rile <- function(x) { UseMethod("logit_rile", x) }
 #' @export
-logit_rile.default <- functional::Curry(scale_logit,
-                                        pos=paste0("per", rile_r()),
-                                        neg=paste0("per", rile_l()))
+logit_rile.default <- function(x) {
+  x %>%
+    { suppressMessages(aggregate_pers(., overwrite = "peruncod")) } %>%  ## Aggregation from Handbook 5 to 4, peruncod might change
+    scale_logit(pos = paste0("per", rile_r()), neg = paste0("per", rile_l()))
+}
+
 #' @export
 logit_rile.ManifestoDocument <- function(x) {
   .Deprecated("mp_scale(doc, scalingfun = logit_rile)")
-  f <- document_scaling(logit_rile.default, scalingname = "logit_rile")
+  scalingname = "logit_rile"
+  f <- document_scaling(logit_rile.default, scalingname = "logit_rile", recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")))
   f(x)
 }
 #' @export
 logit_rile.ManifestoCorpus <- function(x) {
   .Deprecated("mp_scale(corpus, scalingfun = logit_rile)")
-  f <- corpus_scaling(logit_rile.default, scalingname = "logit_rile")
+  scalingname = "logit_rile"
+  f <- corpus_scaling(logit_rile.default, scalingname = "logit_rile", recode_v5_to_v4 = (scalingname %in% c("rile", "logit_rile")))
   f(x)
 }

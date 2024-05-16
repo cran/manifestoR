@@ -48,7 +48,7 @@ write_multivar_to_cache <- function(df, ids) {
   
   sapply(df$manifesto_id, function(id) {
     
-    vname <- ids$cache_varname[which(ids$manifesto_id == id)]
+    vname <- ids$cache_varname[which(ids$manifesto_id == id)][1]
     assign(vname, subset(df, manifesto_id == id), envir = mp_cache())
     
   })
@@ -75,21 +75,23 @@ multi_var_caching <- function(ids, get_fun, varname_fun,
      cache_varname <- varname_fun(ids)
      is_cached <- sapply(cache_varname, Curry(exists, envir = mp_cache(), inherits = FALSE))
   })
-  
-  fromcache <- read_multivar_from_cache(subset(ids, is_cached)$cache_varname)
+
   idstoget <- subset(ids, !is_cached)
   if (nrow(idstoget) > 0) {
     fromdb <- get_fun(idstoget)
     write_multivar_to_cache(fromdb, idstoget)    
-    return(bind_rows(fromcache, fromdb))
-  } else {
-    return(fromcache)
   }
+
+  ids <- within(ids, {
+    is_cached <- sapply(cache_varname, Curry(exists, envir = mp_cache(), inherits = FALSE))
+  })
   
+  read_multivar_from_cache(subset(ids, is_cached)$cache_varname)
 }
 
 table_caching <- function(varname, fun, ids,
-                          id.names = names(ids), cache = TRUE) {
+                          id.names = names(ids), cache = TRUE,
+                          remove_cache_duplicates = TRUE) {
   
   ids <- select(ids, one_of(id.names))
   
@@ -103,33 +105,23 @@ table_caching <- function(varname, fun, ids,
 
     ## check which ids are and are not already in cache
     datatoget <- anti_join(ids, cachedata, by = id.names)
-    datafromcache <- semi_join(cachedata, ids, by = id.names)
-
     if (nrow(datatoget) > 0) {
-
       ## get missing ids
       requested <- fun(datatoget)
-
-      if (nrow(datatoget) > 0) {
-
+      if (nrow(requested) > 0) {
         ## write missings to cache
         cachedata <- bind_rows(cachedata, requested)
+        if (remove_cache_duplicates) cachedata <- unique(cachedata)
         assign(varname, cachedata, envir = mp_cache())
-
-        ## return all the requested ids
-        data <- bind_rows(requested, datafromcache) 
-
-      } else { ## only invalid queries
-
-        data <- datafromcache
-
       }
- 
-    } else {
-
-      data <- datafromcache
-
     }
+
+    datafromcache <- cachedata %>%
+      inner_join(ids %>% unique %>% mutate(idx = row_number()),
+                 by = id.names) %>%
+      arrange(idx) %>%
+      select(-idx)
+    data <- datafromcache
 
   } else {
     data <- fun(ids)
@@ -149,6 +141,9 @@ table_caching <- function(varname, fun, ids,
 #' the new version via: \code{\link{mp_use_corpus_version}}. That is, 
 #' the internal cache of manifestoR will automatically be updated to newer version
 #' and all future calls to the API will request for the newer version.
+#' Note that updating/downgrading the corpus version after having already
+#' downloaded translated manifestos is not yet implemented and will result in
+#' an error message.
 #' 
 #' @details
 #' Note that this versioning applies to the corpus' texts and metadata, and not the
@@ -205,7 +200,10 @@ mp_which_dataset_versions <- function(cache_env = mp_cache()) {
 #' The internal cache of manifestoR will be updated to the specified version
 #' and all future calls to the API will request for the specified version. Note
 #' that this versioning applies to the corpus' texts and metadata, and not the
-#' versions of the core dataset. For this see \code{\link{mp_coreversions}}
+#' versions of the core dataset. For this see \code{\link{mp_coreversions}}.
+#' Also note that updating/downgrading the corpus version after having already
+#' downloaded translated manifestos is not yet implemented and will result in
+#' an error message.
 #' 
 #' @param apikey API key to use. Defaults to \code{NULL}, resulting in using
 #'        the API key set via \code{\link{mp_setapikey}}.
@@ -225,6 +223,10 @@ mp_use_corpus_version <- function(versionid, apikey=NULL) {
 
     meta_from_cache <- getn(kmetadata, envir = mp_cache(), inherits = FALSE)
     texts_in_cache <- manifestos_in_cache(mp_cache())
+
+    if (has_translated_manifesto_in_cache(mp_cache())) {
+      stop("You have already translated texts in your manifestoR cache. Unfortunately updating the corpus version of translated texts is not yet implemented in manifestoR. You can simply get the new corpus version of your documents by starting with an empty manifestoR cache, e.g. by calling `mp_emptycache()` or by starting a fresh R-session.")
+    }
 
     if (!is.null(meta_from_cache)) {
 
@@ -305,6 +307,13 @@ manifestos_in_cache <- function(cache_env = mp_cache()) {
                     party = extract_ids(nms, "\\1"),
                     date = extract_ids(nms, "\\2")))
   
+}
+
+has_translated_manifesto_in_cache <- function(cache_env = mp_cache()) {
+  re <- paste0(ktextname, "_(\\d+)_(\\d+)_.*?_translation-[a-z]{2,3}")
+  nms <- ls(envir = cache_env)
+  nms <- subset(nms, grepl(re, nms))
+  length(nms) > 0
 }
 
 copy_to_env <- function(vars, env1, env2) {
@@ -398,6 +407,16 @@ get_viacache <- function(type, ids = c(), cache = TRUE, versionid = NULL, ...) {
     return(single_var_caching(paste0(kcodebookname, ids$key, ids$kind), call,
                               cache = cache))
     
+  } else if (type == kmtype.parties) {
+
+    call <- wrap_mpdb_call(get_mpdb(kmtype.parties,
+                                    parameters=ids,
+                                    versionid = versionid,
+                                    ...),
+                           version = versionid)
+    return(single_var_caching(paste0(kpartiesname, ids$key, ids$list_form), call,
+                              cache = cache))
+
   } else if (type == kmtype.meta) {
     
     fun <- wrap_mpdb_call_with_ids(function(ids) {
@@ -414,20 +433,23 @@ get_viacache <- function(type, ids = c(), cache = TRUE, versionid = NULL, ...) {
     
   } else if (type == kmtype.text) {
     
+    additional_parameters <- ids[names(ids) != "ids"]
     get_fun <- wrap_mpdb_call_with_ids(function(ids) {
-      
       return(get_mpdb(type = kmtype.text,
-                      parameters = formattextparams(ids),
+                      parameters = formattextparams(ids, additional_parameters),
                       versionid = versionid,
-                      ...))      
+                      ...))
     },
     version = versionid)
     
-    varname_fun <- function(ids) {
-      paste(ktextname, ids$party, ids$date, ids$manifesto_id, sep = "_")
+    varname_fun_abstract <- function(ids, parameters = c()) {
+      suffix <- ""
+      if (length(parameters) > 0) suffix <- paste0("_", paste(names(parameters), parameters, sep = "-", collapse = "_"))
+      paste0(paste(ktextname, ids$party, ids$date, ids$manifesto_id, sep = "_"), suffix)
     }
+    varname_fun <- Curry(varname_fun_abstract, parameters = additional_parameters)
     
-    return(multi_var_caching(ids, get_fun, varname_fun,
+    return(multi_var_caching(ids$ids, get_fun, varname_fun,
                              cache = cache))
   }
   
@@ -452,11 +474,14 @@ mp_emptycache <- function() {
 #' 
 #' @param apikey API key to use. Defaults to \code{NULL}, resulting in using
 #'        the API key set via \code{\link{mp_setapikey}}.
-#' @return a character vector with the available version ids
+#' @param only_stable Consider only for versions marked as stable by the Manifesto
+#'        Project Team, defaults to TRUE
+#' @return a data.table with the available version ids (name, tag)
 #' @export
-mp_corpusversions <- function(apikey=NULL) {
+mp_corpusversions <- function(apikey = NULL, only_stable = TRUE) {
   
-  versions <- get_mpdb(kmtype.metaversions, apikey=apikey)
+  versions <- get_mpdb(kmtype.metaversions, apikey=apikey) %>%
+    subset(!only_stable | !is.na(tag))
   
   return(versions)
 }

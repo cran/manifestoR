@@ -10,9 +10,18 @@ count_codes(
   with_eu_codes = "auto",
   prefix = "per",
   relative = TRUE,
-  include_codes = if ("cmp_code" \%in\% code_layers) {     v4_categories() } else {    
-    c() },
-  aggregate_v5_subcategories = TRUE
+  include_codes = if ("cmp_code" \%in\% code_layers) {
+     v4_categories()
+ } else {
+   
+     c()
+ },
+  aggregate_v5_subcategories = TRUE,
+  drop_codes = if ("cmp_code" \%in\% code_layers) {
+     c("H")
+ } else {
+     c()
+ }
 )
 }
 \arguments{
@@ -27,14 +36,20 @@ from the document's metadata}
 
 \item{prefix}{prefix for naming the count/percentage columns in the resulting data.frame}
 
-\item{relative}{If true, percentages are returned, absolute counts else}
+\item{relative}{If true, percentages are returned, absolute counts else; the percentages
+are calculated after the exclusion of the categories provided in `drop_codes`}
 
 \item{include_codes}{Vector of categories that should be included even if they are not
 present in the data; the value of the created variables then defaults to 0.0 (or NA if
-no codes are present at all);}
+no codes are present at all); in contrast to `drop_codes` this only adds variables
+for possibly missing categories but does not remove any; Defaults to `v4_categories()` if
+`code_layers` parameter contains `cmp_code`}
 
 \item{aggregate_v5_subcategories}{if TRUE, for handbook version 5 subcategories, the aggregate
 category's count/percentage is computed as well}
+
+\item{drop_codes}{Vector of categories that should be excluded even if they are
+present in the data; Defaults to `c("H")` if `code_layers` parameter contains `cmp_code`}
 }
 \value{
 A data.frame with onw row and the counts/percentages as columns

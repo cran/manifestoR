@@ -5,13 +5,18 @@
 #' 
 #' \code{mp_southamerica_dataset} is a shorthand for getting the Manifesto
 #' Project's South America Dataset (it is equivalent to 
-#' \code{mp_maindataset(..., south_america = TRUE)}).
+#' \code{mp_maindataset(..., south_america = TRUE)}). It is nowadays deprecated, for 
+#' details see explanation in `south_america` parameter documentation.
 #'
 #' @param version Specify the version of the dataset you want to access. Use
 #'                "current" to obtain the most recent, or use
 #'                \code{\link{mp_coreversions}} for a list of available
 #'                versions.
-#' @param south_america flag whether to download corresponding South America dataset instead of Main Dataset
+#' @param south_america flag whether to download corresponding South America dataset
+#' instead of Main Dataset. This parameter deprecated as the previously separated South
+#' America Dataset has been integrated into the Main Dataset from version 2023a onwards.
+#' To allow for backward compatibilty old South American Datasets can still be accessed
+#' but querying for the most recent South American Dataset will result in an empty dataset.
 #' @param apikey API key to use. Defaults to \code{NULL}, resulting in using
 #'        the API key set via \code{\link{mp_setapikey}}.
 #' @param cache Boolean flag indicating whether to use locally cached data if
@@ -38,6 +43,10 @@
 mp_maindataset <- function(version="current", south_america = FALSE, download_format = NULL, apikey=NULL, cache=TRUE) {
   
   if (version == "current") {
+    if (south_america) {
+      warning(paste("The South American Dataset has been integrated into the Main Dataset from version 2023a onwards.",
+                    "Requesting the most recent version of the South American Dataset will result in an empty dataset."))
+    }
     version <- current_dataset_version(south_america = south_america, apikey = apikey, cache = cache)
   } else if (!grepl("MPDS", version)) {
     version <- paste0(ifelse(south_america, "MPDSSA", "MPDS"), version)
@@ -79,10 +88,18 @@ mp_maindataset <- function(version="current", south_america = FALSE, download_fo
   
 }
 
+#' `mp_southamerica_dataset` is deprecated as the previously separated South America Dataset
+#' has been integrated into the Main Dataset from version 2023a onwards. To allow for backward
+#' compatibilty old South American Datasets can still be accessed but querying for the most
+#' recent South American Dataset will result in an empty dataset.
+#'
 #' @rdname mp_maindataset
 #' @param ... all arguments of \code{mp_southamerica_data} are passed on to \code{mp_maindataset}
 #' @export
-mp_southamerica_dataset <- functional::Curry(mp_maindataset, south_america = TRUE)
+mp_southamerica_dataset <- function(...) {
+  .Deprecated("mp_maindataset", package = "manifestoR")
+  functional::Curry(mp_maindataset, south_america = TRUE)(...)
+}
 
 
 #' List the available versions of the Manifesto Project's Main Dataset
@@ -91,8 +108,11 @@ mp_southamerica_dataset <- functional::Curry(mp_maindataset, south_america = TRU
 #'        the API key set via \code{\link{mp_setapikey}}.
 #' @param cache Boolean flag indicating whether to use locally cached data if
 #'              available.
-#' @param kind one of "main" (default) or "south_america" to discrimante the Main Dataset
-#' and the South America Dataset
+#' @param kind one of "main" (default) or "south_america" to discriminate the Main Dataset
+#' and the South America Dataset. "south_america" is nowadays deprecated as the South
+#' American Dataset has been integrated into the Main Dataset from version 2023a onwards.
+#' Using "south_america" will still return past South American Dataset versions but also 
+#' as the most recent version a reference to an empty dataset.
 #'
 #' @details
 #' For the available versions of the corpus, see \code{\link{mp_corpusversions}}
@@ -205,6 +225,14 @@ mp_metadata <- function(ids, apikey=NULL, cache=TRUE) {
       has_eu_code <- as.logical(has_eu_code)
       has_eu_code[is.na(has_eu_code)] <- FALSE
     }
+    translation_columns = ls()[grep("^translation_[a-z]{2,3}", ls())]
+    if (length(translation_columns > 0)) {
+      for (translation_column in translation_columns) {
+        if (exists(translation_column, inherits = FALSE)) assign(translation_column, as.logical(get(translation_column)))
+      }
+    }
+    if (exists("translation_columns", inherits = FALSE)) rm(translation_columns)
+    if (exists("translation_column", inherits = FALSE)) rm(translation_column)
   })
   
   metadata <- as_tibble(metadata)
@@ -219,25 +247,22 @@ mp_metadata <- function(ids, apikey=NULL, cache=TRUE) {
 
 ## ids must be quoted for this function
 as.metaids <- function(ids, apikey=NULL, cache=TRUE, envir = parent.frame(n = 2),
-                       attach_meta = TRUE,
-                       include_southamerica = TRUE) {
+                       attach_meta = TRUE) {
 
   ## non standard evaluation handling
   ## two frames up is where the user was, as.metaids is not exported
   
   id_is_df <- tryCatch(is.data.frame(eval(ids, envir = envir)), error = function(e) { FALSE } )
-  
 
   if (id_is_df) {
     ids <- eval(ids, envir = envir)
   } else {
     
     search_data <- mp_maindataset(apikey = apikey, cache = cache) %>%
-      iff(include_southamerica, bind_rows, mp_southamerica_dataset(apikey = apikey, cache = cache)) %>%
       attach_year()
     
-    ids <- search_data[eval(ids, envir = search_data,
-                                 enclos = envir),]
+    ids_to_be_used <- eval(ids, envir = search_data, enclos = envir)
+    ids <- search_data[replace(ids_to_be_used, is.na(ids_to_be_used), FALSE), ]
   } 
 
   if (attach_meta && !("ManifestoMetadata" %in% class(ids))) {
@@ -284,7 +309,7 @@ is.naorstringna <- function(v) {
 #' @export
 mp_availability <- function(ids, apikey=NULL, cache=TRUE) {
   
-  columns <- c("party", "date", "language", "annotations")
+  columns <- c("party", "date", "language", "annotations", "translation_en")
   
   metadata <- suppressWarnings(as.metaids(substitute(ids),
                                           apikey=apikey,
@@ -300,6 +325,9 @@ mp_availability <- function(ids, apikey=NULL, cache=TRUE) {
   if (!("url_original" %in% names(metadata))) {
     metadata <- mutate(metadata, url_original = NA_character_)
   }
+  if (!("translation_en" %in% names(metadata))) {
+    metadata <- mutate(metadata, translation_en = FALSE)
+  }
   availability <- select(metadata, one_of(columns))
 
   availability$manifestos <- !is.naorstringna(metadata$manifesto_id)
@@ -313,6 +341,7 @@ mp_availability <- function(ids, apikey=NULL, cache=TRUE) {
         mutate(manifestos = FALSE,
                originals = FALSE,
                annotations  = FALSE,
+               translation_en = FALSE,
                language = NA_character_) %>%
         bind_rows(availability)
 
@@ -332,10 +361,13 @@ mp_availability <- function(ids, apikey=NULL, cache=TRUE) {
 #' @details
 #' ManifestoAvailability objects are data.frames with variables \code{party}
 #' and \code{date} identifying the requested manifestos as in the Manifesto
-#' Project's Main & South America Datasets. The additional variables
-#' specify whether a machine readable document is available (\code{manifestos}),
-#' whether digital CMP coding annotations are available (\code{annotations}) or
-#' whether an orignal PDF is available (\code{originals}).
+#' Project's Main Datasets. The additional variables specify whether a machine 
+#' readable document is available (\code{manifestos}, "Documents found"),
+#' whether digital CMP coding annotations are available (\code{annotations},
+#' "Coded Documents found"), whether an orignal PDF is available
+#' (\code{originals}, "Originals found"), or whether an english translation
+#' for the (digitally annotated) machine-readable document is available
+#' (\code{translation_en}, "English Translations found").
 #' 
 #' Additional a ManifestoAvailability object has attributes \code{query}, containing
 #' the original id set which was queried, \code{corpus_version}, specifying the
@@ -378,6 +410,11 @@ print.ManifestoAvailability <- function(x, ...) {
     unique() %>%
     nrow()
   
+  ncoveredtranslen <- avl %>%
+    subset(translation_en) %>%
+    unique() %>%
+    nrow()
+
   languages <- stats::na.omit(unique(avl$language))
   
   summary <- list('Queried for'=nqueried,
@@ -391,12 +428,22 @@ print.ManifestoAvailability <- function(x, ...) {
                   'Originals found'=paste(sum(avl$originals, na.rm = TRUE),
                                         " (", round(100*ncoveredorigs/nqueried, decs), "%)",
                                         sep=""),
+                  'English Translations found'=paste(sum(avl$translation_en, na.rm = TRUE),
+                                        " (", round(100*ncoveredtranslen/nqueried, decs), "%)",
+                                        sep=""),
                   Languages=paste(length(languages),
                                   " (", Reduce(paste, languages), ")", sep=""))
   
   class(summary) <- c("summaryDefault", "table")
   print(summary)
   
+}
+
+language_codes = function(iso2 = NULL) {
+  languages <- c(ar = "arabic", bn = "bengali", zh = "chinese", en = "english", fr = "french",
+                 de = "german", hi = "hindi", id = "indonesian", ja = "japanese",
+                 pt = "portuguese", ru = "russian", es = "spanish", ur = "urdu")
+  languages[iso2]
 }
 
 #' Get documents from the Manifesto Corpus Database
@@ -407,10 +454,22 @@ print.ManifestoAvailability <- function(x, ...) {
 #' memory to ensure internal consistency, enable offline use and
 #' reduce online traffic.
 #' 
+#' `mp_corpus_df` is a shorthand for getting the documents of the Manifesto Corpus
+#' as a tibble/data.frame object instead of a ManifestoCorpus object. It takes
+#' the same parameters as `mp_corpus`
+#' (it is equivalent to \code{mp_corpus(..., as_tibble = TRUE)}).
 #' See \code{\link{mp_save_cache}} for ensuring reproducibility by
 #' saving cache and version identifier to the hard drive.
 #' See \code{\link{mp_update_cache}} for updating the locally saved content with
 #' the most recent version from the Manifesto Project Database API.
+#'
+#' `mp_corpus_df_bilingual` is a shorthand for getting the original text and the english
+#' translations (or in case further translation languages become available also other
+#' translation languages than english) from the Manifesto Corpus as a tibble/data.frame
+#' object. The original text ends up in the "text" column and the english translation in
+#' "text_en" (or more abstract in case of further translation languages in a column
+#' named "text_<two digit ISO language code>"). It accepts the same additional parameters
+#' as `mp_corpus_df`.
 #'
 #' @param ids Information on which documents to get. This can either be a
 #'            list of partys (as ids) and dates of elections as given to
@@ -428,6 +487,19 @@ print.ManifestoAvailability <- function(x, ...) {
 #'        with the codes specified in \code{codefilter} are returned. If \code{NULL},
 #'        no filtering is applied
 #' @param codefilter_layer layer to which the codefilter should apply, defaults to cmp_code
+#' @param translation A string containing the two digit ISO code of a translation language
+#'        that should be used for the text instead of the original document language.
+#'        Defaults to \code{NULL}, resulting in the original language of a document. For
+#'        documents that are already originally in the requested translation language, it
+#'        returns the original text. English would be "en".
+#' @param as_tibble Boolean flag indicating whether to return a tibble/data.frame object
+#'        instead of a ManifestoCorpus object, for backward compatibility defaults to FALSE
+#' @param tibble_metadata A string specifing the handling of document-level metadata when
+#'        using `as_tibble` = TRUE. It can be one of the following values:
+#'        "none" = no metadata,
+#'        "simplified" = basic metadata ("manifesto_id", "party", "date", "language", "annotations", "translation_en"),
+#'        "all" = all metadata,
+#'        defaults to "simplified"
 #'              
 #' @return an object of \code{\link[tm]{Corpus}}'s subclass
 #' \code{\link{ManifestoCorpus}} holding the available of the requested documents
@@ -443,42 +515,192 @@ print.ManifestoAvailability <- function(x, ...) {
 #' 
 #' partially_available <- data.frame(party=c(41320, 41320), date=c(200909, 200509))
 #' mp_corpus(partially_available)
+#'
+#' corpus_df <- mp_corpus(party == 61620 & rile > 10, as_tibble = TRUE)
+#' corpus_df <- mp_corpus_df(party == 61620 & rile > 10)
+#' corpus_df <- mp_corpus_df(party == 61620 & rile > 10, tibble_metadata = "all")
+#'
+#' mp_corpus(wanted, translation = "en")
+#' mp_corpus_df(wanted, translation = "en")
+#'
+#' mp_corpus_df_bilingual(wanted, translation = "en")
 #' }
 mp_corpus <- function(ids,
                       apikey=NULL,
                       cache=TRUE,
                       codefilter = NULL,
-                      codefilter_layer = "cmp_code") {
+                      codefilter_layer = "cmp_code",
+                      translation = NULL,
+                      as_tibble = FALSE,
+                      tibble_metadata = "simplified") {
+
+  if (!tibble_metadata %in% c("none", "simplified", "all"))
+    stop("please provide a valid value for tibble_metadata parameter")
 
   ids <- as.metaids(substitute(ids), apikey=apikey, cache=cache, envir = parent.frame())
 
-  if (nrow(ids) > 0) {
-    ids <- base::subset(ids, !is.naorstringna(manifesto_id) &
-                          (is.null(codefilter) | annotations))
+  n_ids <- nrow(ids)
+  missings <- list()
+
+  if ("title" %in% colnames(ids)) {
+    ids <- base::subset(ids, !(!is.null(title) & !is.na(title) & tolower(title) %in% c("no document coded", "estimate")))
+    missings$`no real documents coded (see progtype 3 and 99)` <- (n_ids - sum(unlist(missings), na.rm = TRUE)) - nrow(ids)
   }
-  
+
   if (nrow(ids) > 0) {
-    
-    corpus <- get_viacache(kmtype.text, ids, apikey=apikey, cache=cache) %>%
+
+    ids <- base::subset(ids, !is.naorstringna(manifesto_id))
+    missings$`no machine-readable texts` <- (n_ids - sum(unlist(missings), na.rm = TRUE)) - nrow(ids)
+    ids <- base::subset(ids, (is.null(codefilter) | annotations))
+    missings$`no machine-readable annotations` <- (n_ids - sum(unlist(missings), na.rm = TRUE)) - nrow(ids)
+
+    if (!is.null(translation)) {
+      translation_column <- paste0("translation_", translation)
+      ids <- dplyr::filter(ids, (!is.na(.data[[translation_column]]) & .data[[translation_column]] == TRUE) |
+                                (!is.na(.data[["language"]]) & .data[["language"]] == language_codes(iso2 = translation)))
+      missings$`no translations` <- (n_ids - sum(unlist(missings), na.rm = TRUE)) - nrow(ids)
+    }
+  }
+
+  if (nrow(ids) > 0) {
+
+    parameters <- list(ids = ids)
+    if (!is.null(translation)) parameters$translation = translation
+    corpus <- get_viacache(kmtype.text, parameters, apikey=apikey, cache=cache) %>%
       ManifestoJSONSource(query_meta = ids) %>%
       ManifestoCorpus()
-    
+
   } else {
     
     corpus <- ManifestoCorpus()
     
   }
   
-  
+  missings$`no corpus response` <- nrow(ids) - length(corpus)
+
   ## codefilter
   if (!is.null(codefilter)) {
     corpus <- tm_map(corpus, function(doc) {
           return(subset(doc, codes(doc, codefilter_layer) %in% codefilter))
       })
   }
+
+  if (any(!is.na(missings) & missings > 0)) {
+    missings_stats <- missings[!is.na(missings) & missings > 0] %>%
+      { paste0(., " having ", names(.)) } %>%
+      paste0(collapse = ", ")
+    message(paste0("Your query resulted in ", n_ids, " requested document items containing corpus metadata. Of these items ",
+                   sum(unlist(missings), na.rm = TRUE), " could not be retrieved",
+                   " (reasons: ", missings_stats, ")."))
+  }
   
-  return(corpus)
+  if (as_tibble == TRUE) {
+    corpus_df = corpus %>% as_tibble(with.meta = TRUE)
+    if (nrow(corpus_df) == 0) return(corpus_df)
+    metadata_columns = names(meta(corpus[[1]]))
+    corpus_df = switch(tibble_metadata,
+           "none" = corpus_df %>%
+             select(-any_of(metadata_columns)),
+           "simplified" = corpus_df %>%
+             select(-any_of(setdiff(metadata_columns,
+                                    c("manifesto_id", "party", "date", "language", "annotations", "translation_en")))),
+           "all" = corpus_df)
+    return(corpus_df)
+  } else {
+    return(corpus)
+  }
+
+}
+
+#' `mp_corpus_df` is a shorthand for getting the documents of the Manifesto Corpus
+#' as a tibble/data.frame object instead of a ManifestoCorpus object.
+#' (it is equivalent to \code{mp_corpus(..., as_tibble = TRUE)}).
+#'
+#' @rdname mp_corpus
+#' @export
+mp_corpus_df <- function(ids,
+                         apikey = NULL,
+                         cache = TRUE,
+                         codefilter = NULL,
+                         codefilter_layer = "cmp_code",
+                         translation = NULL,
+                         tibble_metadata = "simplified") {
+  if (!tibble_metadata %in% c("none", "simplified", "all"))
+    stop("please provide a valid value for tibble_metadata parameter")
+
+  ids <- as.metaids(substitute(ids), apikey=apikey, cache=cache, envir = parent.frame())
   
+  mp_corpus(
+    ids = ids,
+    apikey = apikey,
+    cache = cache,
+    codefilter = codefilter,
+    codefilter_layer = codefilter_layer,
+    translation = translation,
+    tibble_metadata = tibble_metadata,
+    as_tibble = TRUE
+  )
+}
+
+#' `mp_corpus_df_bilingual` is a shorthand for getting the original text and the english
+#' translations (or in case further translation languages become available also other
+#' translation languages than english) from the Manifesto Corpus as a tibble/data.frame
+#' object. The original text ends up in the "text" column and the english translation in
+#' "text_en" (or more abstract in case of further translation languages in a column
+#' named "text_<two digit ISO language code>"). It accepts the same additional parameters
+#' as `mp_corpus_df`.
+#'
+#' @rdname mp_corpus
+#' @export
+mp_corpus_df_bilingual <- function(ids,
+                                   apikey = NULL,
+                                   cache = TRUE,
+                                   codefilter = NULL,
+                                   codefilter_layer = "cmp_code",
+                                   translation = "en",
+                                   tibble_metadata = "simplified") {
+  if (!tibble_metadata %in% c("none", "simplified", "all"))
+    stop("please provide a valid value for tibble_metadata parameter")
+
+  ids <- as.metaids(substitute(ids), apikey=apikey, cache=cache, envir = parent.frame())
+
+  data_original <- mp_corpus_df(
+    ids = ids,
+    apikey = apikey,
+    cache = cache,
+    codefilter = codefilter,
+    codefilter_layer = codefilter_layer,
+    tibble_metadata = tibble_metadata
+  )
+
+  if (nrow(data_original) > 0) {
+    data_translation <- mp_corpus_df(
+      ids = ids,
+      apikey = apikey,
+      cache = cache,
+      codefilter = codefilter,
+      codefilter_layer = codefilter_layer,
+      tibble_metadata = tibble_metadata,
+      translation = "en"
+    )
+
+    column_translation = paste0("text_", translation)
+
+    if (nrow(data_translation) > 0) {
+      data_original %>%
+        left_join(data_translation %>%
+                    rename(all_of(setNames("text", column_translation))) %>%
+                    select(manifesto_id, pos, all_of(column_translation)),
+                  by = c("manifesto_id", "pos")) %>%
+        select(text, all_of(column_translation), everything())
+    } else {
+      data_original %>%
+        mutate(text_en = NA_character_) %>%
+        select(text, all_of(column_translation), everything())
+    }
+  } else {
+    tibble()
+  }
 }
 
 is.nacode <- function(x) {
@@ -524,7 +746,7 @@ mp_view_originals <- function(ids, maxn = 5, apikey = NULL, cache = TRUE) {
                   "of mp_view_originals"))
   } else {
     for (url in ids$url_original) {
-      utils::browseURL(paste0(kmurl.originalsroot, url))
+      utils::browseURL(paste0(get(kurloriginalsroot, envir = mp_globalenv), url))
     }
   }
 
@@ -604,6 +826,10 @@ mp_cite <- function(corpus_version = mp_which_corpus_version(),
     }
     
     if (length(core_versions) > 0) {
+      if (length(core_versions) > 1 && "MPDSSA9999a" %in% core_versions) {
+        core_versions <- setdiff(core_versions, c("MPDSSA9999a"))
+      }
+
       cite_strings <- core_versions %>%
         sapply(get_citation, type = kmtype.corecitation, apikey = apikey)
       cite_message <- paste0(cite_message, "\n\n",

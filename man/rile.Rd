@@ -14,5 +14,5 @@ logit_rile(x)
 }
 \description{
 Computes the RILE or other bipolar linear scaling measures for each case in a
-data.frame or ManifestoCorpus
+data.frame or ManifestoCorpus or for a ManifestoDocument
 }

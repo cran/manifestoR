@@ -22,9 +22,13 @@ nicheness_bischof(
   data,
   out_variables = c("party", "date", "specialization", "nicheness", "nicheness_two"),
   groups = bischof_issue_groups(),
-  diversification_bounds = c(0, rep(1/length(groups), length(groups)) \%>\% {     -(. *
-    log(.)) } \%>\% sum()),
-  smooth = function(x) {     (x + lag(x, default = first(first(x))))/2 }
+  diversification_bounds = c(0, rep(1/length(groups), length(groups)) \%>\% {
+     -(. *
+    log(.))
+ } \%>\% sum()),
+  smooth = function(x) {
+     (x + lag(x, default = first(first(x))))/2
+ }
 )
 }
 \arguments{

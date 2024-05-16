@@ -196,8 +196,15 @@ as.data.frame.ManifestoDocument <- function(x,
   if (with.meta & nrow(dftotal) > 0) {
     metadata <- data.frame(t(unlist(meta(x))),
                             stringsAsFactors = stringsAsFactors) %>%
-                mutate(party = as.numeric(as.character(party)),
-                       date = as.numeric(as.character(date)))
+                mutate_at(vars(
+                  any_of(c("party", "date"))),
+                  ~as.numeric(as.character(.x))) %>%
+                mutate_at(vars(any_of(
+                  c("has_eu_code", "is_primary_doc",
+                    "may_contradict_core_dataset", "annotations"))),
+                  ~as.logical(as.character(.x))) %>%
+                mutate_at(vars(matches("^translation_[a-z]{2,3}$")),
+                  ~as.logical(as.character(.x)))
     dftotal <- data.frame(dftotal, metadata)
   }
   return(dftotal)
@@ -221,6 +228,24 @@ as.data.frame.ManifestoCorpus <- function(x,
                                           ...))
     do.call(bind_rows, dfslist)
   })
+}
+
+#' @method as_tibble ManifestoDocument
+#' @export
+as_tibble.ManifestoDocument <- function(x,
+                                        with.meta = FALSE,
+                                        ...) {
+  as.data.frame(x, with.meta = with.meta, ...) %>%
+    as_tibble()
+}
+
+#' @method as_tibble ManifestoCorpus
+#' @export
+as_tibble.ManifestoCorpus <- function(x,
+                                      with.meta = FALSE,
+                                      ...) {
+  as.data.frame(x, with.meta = with.meta, ...) %>%
+    as_tibble()
 }
 
 #' @method head ManifestoDocument

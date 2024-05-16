@@ -10,7 +10,7 @@ mp_scale(
   data,
   scalingfun = rile,
   scalingname = as.character(substitute(scalingfun)),
-  recode_v5_to_v4 = (scalingname == "rile"),
+  recode_v5_to_v4 = (scalingname \%in\% c("rile", "logit_rile")),
   ...
 )
 
@@ -22,7 +22,12 @@ document_scaling(
   ...
 )
 
-corpus_scaling(scalingfun, scalingname = "scaling", ...)
+corpus_scaling(
+  scalingfun,
+  scalingname = "scaling",
+  recode_v5_to_v4 = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{\code{ManifestoDocument} or \code{ManifestoCorpus} with coding

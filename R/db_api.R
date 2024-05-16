@@ -3,9 +3,6 @@ kmerror.keymissing <-
           "or go to https://manifesto-project.wzb.eu to create key and/or",
           "account.")
 
-kmurl.apiroot <- "https://manifesto-project.wzb.eu/tools/"
-kmurl.originalsroot <- "https://manifesto-project.wzb.eu"
-
 #' Set the API key for the Manifesto Documents Database.
 #' 
 #' If you do not have an API key for the Manifesto Documents Database,
@@ -31,6 +28,24 @@ mp_setapikey <- function(key.file = NULL, key = NA_character_) {
 }
 mp_setapikey(key = NA_character_)
 
+seturlapiroot <- function(apiroot) {
+  if (grepl("^(https://([^/\\.]*\\.)*manifesto-project\\.wzb\\.eu|https*://(localhost|127.0.0.1)(:[0-9]+)*)/", apiroot)) {
+    assign(kurlapiroot, apiroot, envir = mp_globalenv)
+  } else {
+    stop("please provide valid value for the api root url")
+  }
+}
+seturlapiroot("https://manifesto-project.wzb.eu/api/v1/")
+
+seturloriginalsroot <- function(originalsroot) {
+  if (grepl("^(https://([^/\\.]*\\.)*manifesto-project\\.wzb\\.eu|https*://(localhost|127.0.0.1)(:[0-9]+)*)/", originalsroot)) {
+    assign(kurloriginalsroot, originalsroot, envir = mp_globalenv)
+  } else {
+    stop("please provide valid value for originals root url")
+  }
+}
+seturloriginalsroot("https://manifesto-project.wzb.eu/")
+
 toamplist <- function(params) {
   pairs <- paste(names(params), params, sep="=")
   return(Reduce(function(x, y){ paste(x, y, sep="&") }, pairs))
@@ -46,12 +61,12 @@ formatmetaparams <- function(ids) {
   
 }
 
-formattextparams <- function(ids) {
+formattextparams <- function(ids, additional_parameters = list()) {
   
   parameters <- as.list(ids$manifesto_id)
   names(parameters) <- rep("keys[]", length(parameters))
   
-  return(parameters)
+  return(c(parameters, additional_parameters))
   
 }
 
@@ -97,7 +112,7 @@ formatmpds <- function(mpds) {
   for (name in names(mpds)) {
 
     if (!name %in% c("edate", "countryname", "partyname", "candidatename", "partyabbrev", "datasetversion", "id_perm", "corpusversion")) {
-      mpds[,name] <- as.numeric(as.character(mpds[,name]))
+      mpds[,name] <- as.numeric(recode(as.character(mpds[,name]), "NA" = NA_character_))
     }
 
     if (name == "edate") {
@@ -110,6 +125,22 @@ formatmpds <- function(mpds) {
 
 }
 
+#' Format the parties data set
+#'
+#' Creates the format that is visible to the R user
+#' from the internal data.frames files (in cache or from the API)
+#'
+#' @param partiesds A data.frame with a parties dataset to be formatted
+formatpartiesds <- function(partiesds) {
+  for (name in names(partiesds)) {
+    if (name %in% c("country", "party", "year_min", "year_max", "max_pervote", "max_presvote", "year_max_pervote", "year_max_presvote",
+                    "change_rank", "change_year_min", "change_year_max", "is_alliance")) {
+      partiesds[, name] <- as.numeric(recode(as.character(partiesds[[name]]), "NA" = NA_character_))
+    }
+  }
+  return(partiesds)
+}
+
 #' Manifesto Project DB API request
 #' 
 #' gets the requested url and passes HTTP header error codes on to raise R
@@ -120,7 +151,7 @@ formatmpds <- function(mpds) {
 #' as specified by the Manifesto Project Database API
 mpdb_api_request <- function(file, body) {
 
-  response <- httr::POST(url=paste0(kmurl.apiroot, file),
+  response <- httr::POST(url=paste0(get(kurlapiroot, envir = mp_globalenv), file),
                          body=body,
                          httr::user_agent(paste("httr",
                                                 utils::packageVersion("httr"),
@@ -180,22 +211,24 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
 
   # select URL
   if (type == kmtype.versions) {
-    requestfile <- "api_list_core_versions.json"
+    requestfile <- "list_core_versions"
   } else if (type == kmtype.main) {
-    requestfile <- "api_get_core.json"    
+    requestfile <- "get_core"
   } else if (type == kmtype.meta) {
-    requestfile <- "api_metadata.json"
+    requestfile <- "metadata"
   } else if (type == kmtype.text) {
-    requestfile <- "api_texts_and_annotations.json"
+    requestfile <- "texts_and_annotations"
   } else if (type == kmtype.metaversions) {
-    requestfile <- "api_list_metadata_versions.json"
+    requestfile <- "list_metadata_versions"
     parameters <- c(parameters, tag = "true")
   } else if (type == kmtype.corecitation) {
-    requestfile <- "api_get_core_citation"
+    requestfile <- "get_core_citation"
   } else if (type == kmtype.corpuscitation) {
-    requestfile <- "api_get_corpus_citation"
+    requestfile <- "get_corpus_citation"
   } else if (type == kmtype.codebook) {
-    requestfile <- "api_get_core_codebook"
+    requestfile <- "get_core_codebook"
+  } else if (type == kmtype.parties) {
+    requestfile <- "get_parties"
   }
 
   # prepare version parameter if needed
@@ -244,7 +277,7 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
         party <- as.numeric(party)
         date <- as.numeric(date)
         if (exists("annotations")) annotations <- as.logical(annotations)
-        if (exists("primary_doc")) primary_doc <- as.logical(primary_doc)
+        if (exists("is_primary_doc")) is_primary_doc <- as.logical(is_primary_doc)
         if (exists("may_contradict_core_dataset")) may_contradict_core_dataset <- as.logical(may_contradict_core_dataset)
         if (exists("has_eu_code")) has_eu_code <- as.logical(has_eu_code)
       })      
@@ -268,6 +301,16 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
       dplyr::slice(2:n()) %>%
       magrittr::set_rownames(NULL)
         
+  } else if (type == kmtype.parties) {
+
+    jsonstr %>%
+      fromJSON() %>%
+      as_tibble(.name_repair = "minimal") %>%
+      { set_names(., as.character(.[1,])) } %>%
+      dplyr::slice(2:n()) %>%
+      magrittr::set_rownames(NULL) %>%
+      formatpartiesds()
+
   }
 }
 

@@ -10,6 +10,8 @@ median_voter(
   voteshares = "pervote",
   scale = "rile",
   groups = c("country", "edate"),
+  na.rm.voteshares = FALSE,
+  na.rm.positions = FALSE,
   ...
 )
 
@@ -18,7 +20,9 @@ median_voter_single(
   voteshares,
   adjusted = FALSE,
   scalemin = -100,
-  scalemax = 100
+  scalemax = 100,
+  na.rm.voteshares = FALSE,
+  na.rm.positions = FALSE
 )
 }
 \arguments{
@@ -32,6 +36,10 @@ named in argument scale (default: rile) and one as named in argument voteshares 
 
 \item{groups}{names of grouping variables to use for aggregation, default
 results in one median voter position per election}
+
+\item{na.rm.voteshares}{remove observations where voteshares is NA (default: FALSE)}
+
+\item{na.rm.positions}{remove observations where positions is NA (default: FALSE)}
 
 \item{...}{further arguments passed to \code{\link{median_voter_single}}}
 

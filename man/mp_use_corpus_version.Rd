@@ -17,5 +17,8 @@ the API key set via \code{\link{mp_setapikey}}.}
 The internal cache of manifestoR will be updated to the specified version
 and all future calls to the API will request for the specified version. Note
 that this versioning applies to the corpus' texts and metadata, and not the
-versions of the core dataset. For this see \code{\link{mp_coreversions}}
+versions of the core dataset. For this see \code{\link{mp_coreversions}}.
+Also note that updating/downgrading the corpus version after having already
+downloaded translated manifestos is not yet implemented and will result in
+an error message.
 }
