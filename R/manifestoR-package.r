@@ -4,15 +4,13 @@
 ## usethis namespace: start
 #' @importFrom utils head
 #' @importFrom utils tail
-#' @import zoo
-#' @importFrom psych fa
 #' @importFrom purrr map map_if map_at map_chr map_dbl map_chr map_df map_dfc map_lgl map_int walk
-#' @import NLP
+#' @importFrom NLP content `content<-` meta `meta<-`
 #' @import tibble
 #' @import dplyr
 #' @import tidyselect
 #' @import functional
-#' @import tm
+#' @importFrom tm Corpus VCorpus SimpleSource PlainTextDocument getElem tm_map
 #' @import jsonlite
 ## usethis namespace: end
 NULL

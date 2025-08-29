@@ -206,6 +206,12 @@ fk_smoothing <- function(data, score_name, use_period_length = TRUE, ...) {
 vanilla <- function(data,
                     vars = grep("per\\d{3}$", names(data), value=TRUE),
                     invert=FALSE) {
+  if (!requireNamespace("psych", quietly = TRUE)) {
+    stop(
+      "Package \"psych\" must be installed to use \"vanilla\" function.",
+      call. = FALSE
+    )
+  }
   fa.results <- psych::fa(data[,vars],1,scores="regression")
   vanilla.scores <- fa.results$scores[,1] 
   if (invert==TRUE) vanilla.scores <- vanilla.scores*-1

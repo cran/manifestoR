@@ -8,7 +8,7 @@
 #' @param df a data.frame with observations to be interpolated
 #' @param vars a regular expression matching the names of the variables to be interpolated
 #' @param by increment of the interpolation sequence, passed to \code{\link{seq.Date}}
-#' @param approx Interpolation function, defaults to zoo's \code{\link{na.approx}}
+#' @param approx Interpolation function, defaults to \code{\link[zoo]{na.approx}}
 #' @param ... Further arguments, passed on to approx
 #'
 #' @examples
@@ -23,6 +23,12 @@ mp_interpolate <- function(df,
                            approx = zoo::na.approx,
                            ...)
   {
+  if (!requireNamespace("zoo", quietly = TRUE)) {
+    stop(
+      "Package \"zoo\" must be installed to use \"mp_interpolate\" function.",
+      call. = FALSE
+    )
+  }
 
   the_approx <- function(x) {
     if (all(is.na(x))) {

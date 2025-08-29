@@ -1,3 +1,9 @@
+1.6.1 (2025-08-29)
+==================
+* moved tm and NLP package dependencies from depends to imports
+* moved zoo, psych, DT, htmlwidgets, htmltools package dependencies from imports to suggests
+* moved API authorization to request headers
+
 1.6.0 (2024-05-16)
 ==================
 * added translation parameter to mp_corpus function to allow for retrieving (english) translations

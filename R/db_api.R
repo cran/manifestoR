@@ -148,11 +148,19 @@ formatpartiesds <- function(partiesds) {
 #'
 #' @param file file to request below apiroot url
 #' @param body body text of the posted request: should contain the parameters
-#' as specified by the Manifesto Project Database API
-mpdb_api_request <- function(file, body) {
+#'             as specified by the Manifesto Project Database API
+#' @param apikey API key to use, defaults to \code{NULL}, which means no key 
+#'               is provided
+mpdb_api_request <- function(file, body, apikey = NULL) {
 
+  additional_headers <- if (!is.null(apikey)) {
+    httr::add_headers(Authorization = paste0("Token ", apikey))
+  } else {
+    list()
+  }
   response <- httr::POST(url=paste0(get(kurlapiroot, envir = mp_globalenv), file),
                          body=body,
+                         config = additional_headers,
                          httr::user_agent(paste("httr",
                                                 utils::packageVersion("httr"),
                                                 "manifestoR",
@@ -241,8 +249,8 @@ get_mpdb <- function(type, parameters=c(), versionid=NULL, apikey=NULL) {
 
   # get content from web
   jsonstr <- mpdb_api_request(file=requestfile,
-                              body=paste0("api_key=", apikey, "&",
-                                          toamplist(parameters)))
+                              body=toamplist(parameters),
+                              apikey=apikey)
 
   # convert to desired format (before caching)
   if (type %in% c(kmtype.versions, kmtype.corecitation, kmtype.corpuscitation)) {

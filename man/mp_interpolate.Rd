@@ -19,7 +19,7 @@ mp_interpolate(
 
 \item{by}{increment of the interpolation sequence, passed to \code{\link{seq.Date}}}
 
-\item{approx}{Interpolation function, defaults to zoo's \code{\link{na.approx}}}
+\item{approx}{Interpolation function, defaults to \code{\link[zoo]{na.approx}}}
 
 \item{...}{Further arguments, passed on to approx}
 }

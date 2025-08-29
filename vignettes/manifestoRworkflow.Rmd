@@ -364,6 +364,10 @@ Since the Manifesto Corpus uses the infrastructure of the `tm` package
 (Feinerer & Hornik 2015), all of `tm`s filtering and transformation functionality
 can be applied directly to the downloaded `ManifestoCorpus`.
 
+```{r}
+library(tm)
+```
+
 For example, standard natural language processors are available to clean the corpus:
 
 ```{r}
@@ -739,7 +743,7 @@ of the github repository.
 
 # References
 
-Benoit, K., Laver, M., & Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. https://doi.org/10.1111/j.1540-5907.2009.00383.x
+Benoit, K., Laver, M., & Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. https://doi.org/10.1111/j.1540-5907.2009.00383.x 
 
 Bischof, D. (2015). Towards a Renewal of the Niche Party Concept Parties, Market Shares and Condensed Offers. Party Politics.
 
@@ -761,11 +765,10 @@ Laver, M. & Budge, I., eds. (1992). Party Policy and Government Coalitions, Houn
 
 Laver, M., & Garry, J. (2000). Estimating Policy Positions from Political Texts. American Journal of Political Science, 44(3), 619-634.
 
-Lehmann, P.,  Matthieß, T., Merz, N., Regel, S., & Werner, A. (2015): Manifesto Corpus. Version: 2015-4. Berlin: WZB Berlin Social Science Center.
+Lehmann, P., Franzmann, S., Al-Gaddooa, D., Burst, T., Ivanusch, C., Lewandowski, J., Regel, S., Riethmüller, F., Zehnter, L. (2024): Manifesto Corpus. Version: 2024-1. Berlin: WZB Berlin Social Science Center/Göttingen: Institute for Democracy Research (IfDem).
 
 Lowe, W., Benoit, K., Mikhaylov, S., & Laver, M. (2011). Scaling Policy Preferences from Coded Political Texts. Legislative Studies Quarterly, 36(1), 123-155.
 
 Meyer, T.M., & Miller, B. (2013). The Niche Party Concept and Its Measurement. Party Politics 21(2): 259-271.
 
-Volkens, A., Lehmann, P., Matthieß, T., Merz, N., Regel, S., & Werner, A (2015): The Manifesto Data Collection. Manifesto Project (MRG/CMP/MARPOR). Version 2015a. Berlin: Wissenschaftszentrum Berlin für Sozialforschung (WZB)
-
+Lehmann, P., Franzmann, S., Al-Gaddooa, D., Burst, T., Ivanusch, C., Regel, S., Riethmüller, F., Volkens, A., Weßels, B., Zehnter, L. (2024): The Manifesto Data Collection. Manifesto Project (MRG/CMP/MARPOR). Version 2024a. Berlin: Wissenschaftszentrum Berlin für Sozialforschung (WZB) / Göttingen: Institut für Demokratieforschung (IfDem). https://doi.org/10.25522/manifesto.mpds.2024a

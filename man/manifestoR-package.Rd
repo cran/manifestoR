@@ -11,24 +11,22 @@ Provides access to coded election programmes from the Manifesto Corpus and to th
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/ManifestoProject/manifestoR}
-  \item \url{https://manifesto-project.wzb.eu/}
-  \item Report bugs at \url{https://github.com/ManifestoProject/manifestoR/issues}
+  \item \url{https://manifesto-project.wzb.eu/manifestoR}
 }
 
 }
 \author{
-\strong{Maintainer}: Sven Regel \email{sven.regel@wzb.eu}
+\strong{Maintainer}: Pola Lehmann \email{pola.lehmann@wzb.eu} [contributor]
 
 Authors:
 \itemize{
   \item Jirka Lewandowski \email{jirka.lewandowski@wzb.eu}
   \item Nicolas Merz \email{nicolas.merz@wzb.eu}
+  \item Sven Regel \email{sven.regel@wzb.eu}
 }
 
 Other contributors:
 \itemize{
-  \item Pola Lehmann \email{pola.lehmann@wzb.eu} [contributor]
   \item Paul Muscat \email{paul.muscat@wzb.eu} [contributor]
 }
 

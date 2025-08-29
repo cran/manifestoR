@@ -4,13 +4,16 @@
 \alias{mpdb_api_request}
 \title{Manifesto Project DB API request}
 \usage{
-mpdb_api_request(file, body)
+mpdb_api_request(file, body, apikey = NULL)
 }
 \arguments{
 \item{file}{file to request below apiroot url}
 
 \item{body}{body text of the posted request: should contain the parameters
 as specified by the Manifesto Project Database API}
+
+\item{apikey}{API key to use, defaults to \code{NULL}, which means no key 
+is provided}
 }
 \description{
 gets the requested url and passes HTTP header error codes on to raise R

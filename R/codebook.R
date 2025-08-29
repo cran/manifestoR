@@ -96,13 +96,18 @@ pretty_print_code_info <- function(code_info) {
 #' \code{mp_view_codebook} displays a searchable table version of the codebook
 #' in the Viewer pane.
 #'
-#' @importFrom htmlwidgets prependContent
-#' @importFrom DT datatable
-#' @importFrom htmltools h1 p a
 #' @export
 #' @rdname mp_codebook
 mp_view_codebook <- function(version = "current", columns = c("type", "code", "title")) {
-  
+  purrr::walk(c("htmlwidgets", "DT", "htmltools"), function(pkg) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop(
+        paste0("Package \"", pkg, "\" must be installed to use \"mp_view_codebook\" function."),
+        call. = FALSE
+      )
+    }}
+  )
+
   if (version == "current") {
     version <- current_dataset_version(south_america = FALSE)
   }
