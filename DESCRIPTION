@@ -1,8 +1,8 @@
 Encoding: UTF-8
 Package: manifestoR
 Title: Access and Process Data and Documents of the Manifesto Project
-Date: 2025-08-29
-Version: 1.6.1
+Date: 2026-01-28
+Version: 1.6.2
 Authors@R: c(person("Jirka", "Lewandowski",
                     role = c("aut"),
                     email = "jirka.lewandowski@wzb.eu"),
@@ -46,7 +46,7 @@ License: GPL (>= 3)
 URL: https://manifesto-project.wzb.eu/manifestoR
 RoxygenNote: 7.3.1
 NeedsCompilation: no
-Packaged: 2025-08-29 08:16:23 UTC; gitlab-runner
+Packaged: 2026-01-29 14:56:33 UTC; gitlab-runner
 Author: Jirka Lewandowski [aut],
   Nicolas Merz [aut],
   Sven Regel [aut],
@@ -54,4 +54,4 @@ Author: Jirka Lewandowski [aut],
   Paul Muscat [ctb]
 Maintainer: Pola Lehmann <pola.lehmann@wzb.eu>
 Repository: CRAN
-Date/Publication: 2025-08-29 08:40:02 UTC
+Date/Publication: 2026-01-29 16:10:03 UTC

@@ -1,6 +1,6 @@
-20eb830af820689717b232d642ba8791 *DESCRIPTION
+13dee5b50357c68e46fdaf7d5c685b30 *DESCRIPTION
 3e26e0ae28d78fda470a7267a81a139c *NAMESPACE
-1857dd9ed2ff73ebcbfd127a1c382aba *NEWS
+0e3ae570229c1b63069639dc0b418001 *NEWS
 df5cb76b25734da76992d07249f3858e *R/cache.R
 4f5aecfaf3c9f59f58661996686d7a7f *R/clarity.R
 1d67034c70b73f67b1e26505adb8a905 *R/codebook.R
@@ -13,7 +13,7 @@ e1f34f1538fd5d513319d001e8b9e52d *R/globals.R
 e160633a6e9bc59eb72a4d7274ba8ccd *R/issue_attention.R
 c1a31bae3eeef260ec70169db3eebadb *R/manifesto.R
 88b1c5f5e8c8369881c2d46c84d13d5c *R/manifestoR-defunct.R
-ab3f998a0e5796128f4c04c8b64e2962 *R/manifestoR-package.r
+d12e6efc8cd0eb3f2b2d8b20654d0315 *R/manifestoR-package.r
 984137f0722b1fcfe0a936d629e9471a *R/nicheness.R
 58ab286d499c99b19a64c605a18ecb67 *R/parties.R
 4b109e35189ac0663ac103807c66b597 *R/pipe_helpers.R
@@ -26,7 +26,7 @@ b0c99d35d83d65516cd90345ba17e72f *R/scaling_general.R
 32e58050ffe5c8641294b78a9e3a1589 *R/scaling_rile.R
 63012b4b921b8ff6988ae0b5accbad71 *README.md
 e65c1bed072a9288bcc99ecb7a567313 *build/vignette.rds
-c0248572c200b00f60b84d5350310ef2 *inst/doc/manifestoRworkflow.pdf
+394deb088f23666bdc975e611d7b0613 *inst/doc/manifestoRworkflow.pdf
 aeb34246af9f19857b9cfd6ad9fb9f90 *inst/doc/manifestoRworkflow.pdf.asis
 3743505ce846519381b9806b28077505 *inst/extdata/fk_issue_structure_2015.csv
 ea622cb9b1397c673196e84f46e97bd9 *inst/extdata/fk_issue_structure_2019.csv
@@ -88,5 +88,5 @@ d32b8c2b60e9e06971102981a0f76c26 *man/rescale.Rd
 a5c8ffcba05aee6a7784b4759aef34b6 *man/scale.Rd
 9c8201bf4ead6b0a76cc401dba75438d *man/split_belgium.Rd
 d405d19407f5a7f803d4b6addb72a212 *man/vanilla.Rd
-b3ba0b8c871fbd138d41e3220a4776a4 *vignettes/manifestoRworkflow.Rmd
+506764855ab938ddb4e7c1a8091e8de1 *vignettes/manifestoRworkflow.Rmd
 aeb34246af9f19857b9cfd6ad9fb9f90 *vignettes/manifestoRworkflow.pdf.asis
