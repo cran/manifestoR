@@ -220,12 +220,14 @@ as.data.frame.ManifestoCorpus <- function(x,
                                           
                                           ...) {
   suppressWarnings({
-    dfslist <- lapply(content(x), Curry(as.data.frame,
-                                          stringsAsFactors = stringsAsFactors,
-                                          with.meta = with.meta,
-                                          row.names = row.names,
-                                          optional = optional,
-                                          ...))
+    dfslist <- lapply(content(x), function(doc) {
+      as.data.frame(doc,
+                     stringsAsFactors = stringsAsFactors,
+                     with.meta = with.meta,
+                     row.names = row.names,
+                     optional = optional,
+                     ...)
+    })
     do.call(bind_rows, dfslist)
   })
 }

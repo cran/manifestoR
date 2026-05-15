@@ -9,7 +9,6 @@
 #' @import tibble
 #' @import dplyr
 #' @import tidyselect
-#' @import functional
 #' @importFrom tm Corpus VCorpus SimpleSource PlainTextDocument getElem tm_map
 #' @import jsonlite
 ## usethis namespace: end

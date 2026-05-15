@@ -137,14 +137,9 @@ median_voter <- function(positions,
                          na.rm.positions = FALSE,
                          ...) {
 
-  median_voter_params <- functional::Curry(median_voter_single,
-                                           na.rm.voteshares = na.rm.voteshares,
-                                           na.rm.positions = na.rm.positions,
-                                           ...)
-
   if (is.numeric(positions) & is.numeric(voteshares)) {
 
-    median_voter_params(positions, voteshares)
+    median_voter_single(positions, voteshares, na.rm.voteshares = na.rm.voteshares, na.rm.positions = na.rm.positions)
 
   } else if (is.data.frame(positions)) {
 
@@ -153,7 +148,7 @@ median_voter <- function(positions,
     data.frame(the_positions, the_voteshares) %>%
       bind_cols(select(positions, one_of(groups))) %>%
       group_by_at(vars(one_of(groups))) %>%
-      summarise(median_voter = median_voter_params(the_positions, the_voteshares))
+      summarise(median_voter = median_voter_single(positions = the_positions, voteshares = the_voteshares, na.rm.voteshares = na.rm.voteshares, na.rm.positions = na.rm.positions))
 
   } else {
 

@@ -235,7 +235,7 @@ then using the `translation_en` metadata value. To learn more about querying met
 ```{r warning = FALSE}
 wanted_en = mp_metadata(TRUE) %>%
   dplyr::filter(translation_en == TRUE)
-# ... or if you also want to include also the original english documents
+# ... or if you also want to include the original english documents
 wanted_en = mp_metadata(TRUE) %>%
   dplyr::filter(translation_en == TRUE | language == "english")
 
@@ -695,7 +695,7 @@ the standard errors of the scale variable by bootstrapping its distribution.
 This procedure is available via the function `mp_bootstrap`:
 
 ```{r}
-data <- subset(mpds, countryname == "Sweden")
+data <- subset(mpds, countryname == "Sweden" & date > 200501)
 mp_bootstrap(data, fun = rile)
 ```
 
@@ -743,7 +743,7 @@ of the github repository.
 
 # References
 
-Benoit, K., Laver, M., & Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. https://doi.org/10.1111/j.1540-5907.2009.00383.x 
+Benoit, K., Laver, M., & Mikhaylov, S. (2009). Treating Words as Data with Error: Uncertainty in Text Statements of Policy Positions. American Journal of Political Science, 53(2), 495-513. https://doi.org/10.1111/j.1540-5907.2009.00383.x  
 
 Bischof, D. (2015). Towards a Renewal of the Niche Party Concept Parties, Market Shares and Condensed Offers. Party Politics.
 
@@ -771,4 +771,4 @@ Lowe, W., Benoit, K., Mikhaylov, S., & Laver, M. (2011). Scaling Policy Preferen
 
 Meyer, T.M., & Miller, B. (2013). The Niche Party Concept and Its Measurement. Party Politics 21(2): 259-271.
 
-Lehmann, P., Franzmann, S., Al-Gaddooa, D., Burst, T., Ivanusch, C., Regel, S., Riethmüller, F., Volkens, A., Weßels, B., Zehnter, L. (2025): The Manifesto Data Collection. Manifesto Project (MRG/CMP/MARPOR). Version 2025a. Berlin: Wissenschaftszentrum Berlin für Sozialforschung (WZB) / Göttingen: Institut für Demokratieforschung (IfDem). https://doi.org/10.25522/manifesto.mpds.2025a
+Lehmann, P., Franzmann, S., Al-Gaddooa, D., Burst, T., Ivanusch, C., Regel, S., Riethmüller, F., Volkens, A., Weßels, B., Zehnter, L. (2025): The Manifesto Data Collection. Manifesto Project (MRG/CMP/MARPOR). Version 2025a. Berlin: Wissenschaftszentrum Berlin für Sozialforschung (WZB) / Göttingen: Institut für Demokratieforschung (IfDem). https://doi.org/10.25522/manifesto.mpds.2025a 

@@ -1,3 +1,7 @@
+1.6.3 (2026-05-15)
+==================
+* removed functional package dependency from imports
+
 1.6.2 (2026-01-28)
 ==================
 * added id and id_2 to global variables to avoid reverse dependency problems with dplyr

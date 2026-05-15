@@ -40,7 +40,9 @@ mp_bootstrap <- function(data,
   stat_funs <- statistics
   stat_funs[quantiles] <- lapply(statistics[quantiles],
                                  function(q) {
-                                   functional::Curry(stats::quantile, probs = q)
+                                   function(x, ...) {
+                                     stats::quantile(x, probs = q, ...)
+                                   }
                                  })
   fun_name <- as.character(substitute(fun))
   

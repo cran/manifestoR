@@ -73,7 +73,7 @@ multi_var_caching <- function(ids, get_fun, varname_fun,
   
   ids <- within(ids, {
      cache_varname <- varname_fun(ids)
-     is_cached <- sapply(cache_varname, Curry(exists, envir = mp_cache(), inherits = FALSE))
+     is_cached <- sapply(cache_varname, exists, envir = mp_cache(), inherits = FALSE)
   })
 
   idstoget <- subset(ids, !is_cached)
@@ -83,7 +83,7 @@ multi_var_caching <- function(ids, get_fun, varname_fun,
   }
 
   ids <- within(ids, {
-    is_cached <- sapply(cache_varname, Curry(exists, envir = mp_cache(), inherits = FALSE))
+    is_cached <- sapply(cache_varname, exists, envir = mp_cache(), inherits = FALSE)
   })
   
   read_multivar_from_cache(subset(ids, is_cached)$cache_varname)
@@ -447,7 +447,9 @@ get_viacache <- function(type, ids = c(), cache = TRUE, versionid = NULL, ...) {
       if (length(parameters) > 0) suffix <- paste0("_", paste(names(parameters), parameters, sep = "-", collapse = "_"))
       paste0(paste(ktextname, ids$party, ids$date, ids$manifesto_id, sep = "_"), suffix)
     }
-    varname_fun <- Curry(varname_fun_abstract, parameters = additional_parameters)
+    varname_fun <- function(...) {
+          varname_fun_abstract(parameters = additional_parameters, ...)
+        }
     
     return(multi_var_caching(ids$ids, get_fun, varname_fun,
                              cache = cache))

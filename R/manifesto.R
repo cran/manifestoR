@@ -98,7 +98,9 @@ mp_maindataset <- function(version="current", south_america = FALSE, download_fo
 #' @export
 mp_southamerica_dataset <- function(...) {
   .Deprecated("mp_maindataset", package = "manifestoR")
-  functional::Curry(mp_maindataset, south_america = TRUE)(...)
+  args <- list(...)
+  args$south_america <- TRUE
+  do.call(mp_maindataset, args)
 }
 
 

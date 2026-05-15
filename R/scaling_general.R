@@ -254,8 +254,6 @@ document_scaling <- function(scalingfun,
                              scalingname = "scaling",
                              recode_v5_to_v4 = FALSE,
                              ...) {
-  
-  count_codes_loc <- functional::Curry(count_codes, aggregate_v5_subcategories = FALSE, ...)
 
   return(function(x) {
     
@@ -263,7 +261,7 @@ document_scaling <- function(scalingfun,
       x <- recode_v5_to_v4(x)
     }
 
-    df <- count_codes_loc(x)
+    df <- count_codes(x, aggregate_v5_subcategories = FALSE, ...)
 
     df[,scalingname] <- scalingfun(df)
 
